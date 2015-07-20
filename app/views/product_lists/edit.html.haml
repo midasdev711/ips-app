@@ -1,0 +1,16 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        - if admin?
+          %li= link_to 'Dealerships', dealerships_path
+          %li.current= @listable.name
+        - if financial_manager? && @product_list.listable_type == "Deal"
+          %li= link_to 'Deals', deals_path
+          %li= link_to @listable.client.name, deal_path(@listable)
+%main
+  .row
+    .columns
+      %h1 Product List
+      = render 'form'
+  

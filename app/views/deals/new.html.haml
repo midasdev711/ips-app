@@ -1,0 +1,15 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Deals', deals_path
+%main
+  .row
+    .medium-4.columns
+      %h1 New Deal
+      = form_for @deal do |f|
+        = f.fields_for :client, legend: 'Client' do |cf|
+          = cf.text_field :name
+          = cf.text_field :email
+          = cf.text_field :phone
+        = f.submit

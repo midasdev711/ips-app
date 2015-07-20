@@ -1,0 +1,12 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Dealerships', dealerships_path
+        %li.current= @dealership.name
+        %li= link_to 'Users', dealership_users_path(@dealership)
+%main
+  .row
+    .columns.medium-4
+      %h1 Edit User
+      = render 'form'

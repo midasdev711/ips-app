@@ -1,0 +1,15 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Dealerdhips', dealerships_path
+%main
+  .row
+    .medium-4.columns
+      %h1 Edit Profile
+      = form_for @user, url: profile_path do |f|
+        = f.text_field :name
+        = f.text_field :email
+        = f.password_field :password
+        = f.password_field :password_confirmation
+        = f.submit "Save changes", class: 'button success'

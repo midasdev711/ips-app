@@ -1,0 +1,33 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Deals', deals_path
+        %li.current= @client.name
+%section
+  .row
+    .columns
+      .button-bar
+        %ul.button-group.radius
+          - if [1, 2].include?(@deal.scenario)
+            %li{ class: ('active' if @deal.option == 1)}
+              = link_to 'Option 1', deal_option_path(@deal, 1), class: 'tiny secondary button'
+            %li{ class: ('active' if @deal.option == 2)}
+              = link_to 'Option 2', deal_option_path(@deal, 2), class: 'tiny secondary button'
+            %li{ class: ('active' if @deal.option == 3)}
+              = link_to 'Manual', deal_option_path(@deal, 3), class: 'tiny secondary button'
+          - if [2, 3].include?(@deal.scenario)
+            %li{ class: ('active' if @deal.option == 4)}
+              = link_to 'Lease to Finance', deal_option_path(@deal, 4), class: 'tiny secondary button'
+          - if [3].include?(@deal.scenario)
+            %li{ class: ('active' if @deal.option == 5)}
+              = link_to 'Lease to Lease', deal_option_path(@deal, 5), class: 'tiny secondary button'
+        %ul.button-group.radius
+          %li= link_to 'Product List', edit_deal_product_list_path(@deal), class: 'tiny secondary button'
+          %li= link_to 'Worksheet', deal_worksheet_path(@deal), class: 'tiny secondary button'
+          %li= link_to 'Print', deal_option_path(@deal, @deal.option, format: :pdf), class: 'tiny secondary button'
+%main
+  .row
+    .columns
+      #options-form-container
+        = render 'form'

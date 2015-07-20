@@ -1,0 +1,19 @@
+%h1.logo Innovative Pricing Solutions
+
+.form.row
+  .medium-6.large-4.medium-centered.columns
+    = form_for :user, url: session_path(:user) do |f|
+      = f.text_field :email, label: false, placeholder: 'Email', autofocus: true
+      = f.password_field :password, label: false, placeholder: 'Password'
+      = f.check_box :remember_me, class: 'remember'
+      = f.submit 'Sign in', class: 'button'
+
+      = link_to "Forgot your password?", new_password_path(:user), class: 'forgot'
+
+%ul.sub-nav
+  %li
+    = link_to 'Legal info'
+  %li
+    = link_to 'How to register'
+  %li
+    = link_to 'Support'

@@ -1,0 +1,32 @@
+%header.row
+  .columns
+    %h1 Deals
+    %span.buttons
+      = link_to 'Default Product List', edit_product_list_path, class: 'button'
+      = link_to 'Profile', edit_profile_path, class: 'button'
+%main
+  .row
+    .columns
+      -if @deals.empty?
+        %p
+          No Deals yet
+      -else
+        %table.basic-table
+          %thead
+            %tr
+              %th Name
+              %th Email
+              %th Phone
+          %tbody
+            - @deals.each do |deal|
+              %tr
+                %td
+                  = link_to deal.client.name, deal_path(deal)
+                %td
+                  = mail_to deal.client.email
+                %td
+                  = deal.client.phone
+                %td
+                  = link_to deal_path(deal), class: 'delete-link', method: :delete, data: { confirm: 'Are you sure?' } do
+                    %i.fa.fa-trash-o
+      = link_to 'Add new deal', new_deal_path, class: 'button small'

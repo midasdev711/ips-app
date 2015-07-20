@@ -1,0 +1,36 @@
+.dealerships {
+  .dealership {
+    margin-bottom: rem-calc(20);
+
+    .status {
+      font-size: rem-calc(16);
+      vertical-align: middle;
+      color: $base;
+      border-bottom: none;
+
+      &[data-status="active"] {
+        color: $success-color;
+      }
+    }
+
+    th {
+      width: 10em;
+      color: $base;
+    }
+  }
+
+  .dealership-contacts, .principal-contacts {
+    margin-bottom: 1em;
+  }
+
+  .principal-contacts fieldset {
+    margin-top: 0;
+  }
+
+  .delete-link {
+    @media #{$medium-up} {
+      padding-top: 1rem;
+      text-align: right;
+    }
+  }
+}

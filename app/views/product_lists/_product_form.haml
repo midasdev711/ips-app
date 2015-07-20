@@ -1,0 +1,18 @@
+- autonumeric_options = { 'aPad': false }
+%tr
+  = f.fields_for :products, product do |pf|
+    = pf.hidden_field :category
+    = pf.hidden_field :_destroy
+    %td
+      = pf.text_field :name, label: false, class: 'name'
+    %td
+      = pf.select(:tax, taxes, label: false)
+    %td
+      = pf.text_field :retail_price, label: false, class: 'product-price-trigger product-retail-price', data: { autonumeric: autonumeric_options }
+    %td
+      = pf.text_field :dealer_cost, label: false, class: 'product-price-trigger product-dealer-cost', data: { autonumeric: autonumeric_options }
+    %td
+      %span.product-profit{date: {role: 'money'}}
+        = number_with_precision(product.retail_price.to_i - product.dealer_cost.to_i, precision: 2)
+    %td.delete-link
+      = link_to '', '#', class: 'destroy fa fa-trash-o'

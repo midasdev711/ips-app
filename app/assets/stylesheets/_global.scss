@@ -1,0 +1,177 @@
+body {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    flex: 0 0 auto;
+  }
+
+  &:not(.landing) {
+    header {
+      margin-top: rem-calc(15);
+      margin-bottom: rem-calc(15);
+
+      .button {
+        margin-bottom: 0;
+        vertical-align: top;
+
+        &.success {
+          margin-right: 2em;
+        }
+      }
+
+      .buttons {
+        white-space: nowrap;
+      }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: rem-calc(5) 0;
+      background-color: $smoke;
+      font-size: rem-calc(12);
+      color: $base;
+
+      .logo {
+        font-size: rem-calc(12);
+        color: $body-font-color;
+
+        @media #{$small-only} {
+          margin-bottom: 1em;
+        }
+      }
+
+      p {
+        margin-bottom: 0;
+        font-size: inherit;
+
+        span:not(:last-of-type) {
+          &:after {
+            content: " •";
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Logo
+
+.logo {
+  width: 6em;
+  margin: 0;
+  font-weight: 900;
+  line-height: 1em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+
+// Form elements
+
+button, .button, input[type="submit"] {
+  border-radius: $global-radius;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+label.error {
+  color: $body-font-color;
+}
+
+label small {
+  color: $base;
+  font-size: inherit;
+}
+
+input.error, textarea.error, select.error {
+  border-color: $alert-color;
+}
+
+span.error, small.error {
+  line-height: 1;
+}
+
+form table {
+  span.error, small.error {
+    margin-bottom: 0.25rem;
+  }
+}
+
+
+// Table Styles
+
+table {
+  th {
+    font-size: rem-calc(10);
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+
+    small {
+      color: $base;
+      font-size: inherit;
+      text-transform: none;
+    }
+  }
+
+  td {
+    input[type], select, .button {
+      margin-bottom: 0;
+    }
+
+    &.empty:before {
+      content: '';
+      display: block;
+      height: rem-calc(26);
+      background-color: $white-smoke;
+    }
+  }
+
+  &.basic-table {
+    margin-bottom: rem-calc(10);
+
+    th, td {
+      padding-left: rem-calc(10);
+      padding-right: rem-calc(10);
+    }
+
+    thead {
+      th {
+        border-bottom: 1px solid $smoke;
+      }
+    }
+
+    td {
+      padding-top: rem-calc(5);
+      padding-bottom: rem-calc(5);
+      vertical-align: baseline;
+    }
+
+    tr:nth-of-type(even) {
+      background-color: $white-smoke;
+    }
+
+    .delete-link {
+      color: $body-font-color;
+    }
+  }
+
+  &.complex-table {
+    margin-bottom: rem-calc(20);
+
+    td, th {
+      vertical-align: top;
+    }
+
+    td {
+      padding-bottom: rem-calc(3);
+
+      &:not(:last-of-type) {
+        padding-right: rem-calc(3);
+      }
+    }
+  }
+}

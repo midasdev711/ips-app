@@ -1,0 +1,25 @@
+= form_for(@dealership) do |f|
+  .row
+    .dealership-contacts.medium-7.large-6.columns
+      .row
+        .medium-9.columns
+          = f.text_field :name, label: 'Dealership Name'
+        .medium-3.columns
+          = f.select(:status, [['Active', :active], ['Inactive', :inactive], ['Deactivated', :deactivated]], selected: @dealership.status)
+      .row
+        .medium-6.columns
+          = f.collection_select(:province_id, provinces, :abbr, :abbr)
+      = f.text_field :address
+      = f.text_field :phone
+
+    .principal-contacts.medium-5.large-4.large-offset-2.columns
+      = f.fields_for :principal, legend: "Principal" do |pf|
+        = pf.text_field :name, label: 'Principal name'
+        = pf.text_field :phone
+        = pf.text_field :email
+  .row
+    .medium-6.columns
+      = f.submit "Save changes", class: 'button success'
+    - if @dealership.persisted?
+      .delete-link.medium-6.columns
+        = link_to 'Delete dealership', @dealership, method: :delete, data: { confirm: "Are you sure?" }

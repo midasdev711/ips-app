@@ -1,0 +1,6 @@
+= form_for [@dealership, @user] do |f|
+  = f.text_field :name
+  = f.text_field :email
+  = f.password_field :password
+  = f.password_field :password_confirmation
+  = f.submit "Save changes", class: 'button success'

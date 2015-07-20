@@ -1,0 +1,21 @@
+.deals {
+  .edit_deal {
+    table {
+      thead {
+        th {
+          text-transform: none;
+          letter-spacing: 0;
+        }
+      }
+
+      tbody {
+        th {
+          max-width: 14em;
+          padding-top: rem-calc(7);
+          padding-right: $column-gutter / 2;
+          line-height: 1;
+        }
+      }
+    }
+  }
+}

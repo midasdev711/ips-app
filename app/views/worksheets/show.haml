@@ -1,0 +1,10 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Deals', deals_path
+        %li= link_to @deal.client.name, deal_path(@deal)
+%main
+  .row
+    %h1 Worksheet
+    = render 'form'

@@ -1,0 +1,116 @@
+.product_lists {
+  th {
+    white-space: nowrap;
+  }
+
+  .default-category-profit {
+    label {
+      float: left;
+      margin-right: 0.5rem;
+    }
+
+    input {
+      width: 6.5em;
+      float: left;
+    }
+  }
+
+  .button {
+    margin-bottom: rem-calc(5);
+  }
+
+  table {
+    width: 100%;
+
+    td {
+      .name {
+        min-width: rem-calc(200);
+      }
+
+      select[id$="tax"] {
+        min-width: rem-calc(90);;
+      }
+
+      select[id$="residual"] {
+        min-width: rem-calc(100);
+      }
+
+      &.delete-link {
+        width: 2em;
+        text-align: center;
+        vertical-align: bottom;
+      }
+    }
+
+    .category {
+      border-top: 1px solid $smoke;
+
+      > tr:first-child td {
+        padding: rem-calc(8) 0 rem-calc(3);
+      }
+    }
+
+    .buttons {
+      padding-bottom: rem-calc(8);
+
+      &:last-of-type {
+        border-bottom: 1px solid $smoke;
+      }
+    }
+
+    table {
+      margin-bottom: 0;
+
+      tr td {
+        padding: 0;
+      }
+    }
+  }
+
+  .complex-table {
+    margin-bottom: rem-calc(3);
+
+    th {
+      border-bottom: 1px solid $smoke;
+    }
+
+    td {
+      padding-top: rem-calc(3);
+      padding-bottom: 0;
+      vertical-align: bottom;
+    }
+  }
+
+  .provincial-tax {
+    padding-top: rem-calc(23);
+    font-size: rem-calc(14);
+
+    #pst, #gst {
+      margin-right: 1em;
+
+      &:after {
+        content: '%'
+      }
+    }
+  }
+
+  .total {
+    margin-bottom: rem-calc(10);
+
+    #total-profit:before {
+      content: '$';
+    }
+  }
+
+  .finance {
+    .residual {
+      visibility: hidden;
+    }
+  }
+
+  .lease {
+    .insurance-rate-84, .insurance-rate-96 {
+      visibility: hidden;
+    }
+  }
+}

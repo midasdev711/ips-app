@@ -1,0 +1,31 @@
+%tr.insurance-policy-form{ class: insurance_policy.loan_type }
+  = f.fields_for :insurance_policies, insurance_policy do |pf|
+    = pf.hidden_field :_destroy
+    = pf.hidden_field :category
+
+    - if admin?
+      %td
+        = pf.text_field :name, label: false, class: 'name'
+      %td
+        = pf.select :loan_type, loan_types, { label: false }, class: 'loan-type'
+      %td
+        = pf.select :residual, { 'lease only' => false, 'with residual' => true }, { label: false }, class: 'residual'
+      %td
+        %table
+          = render 'insurance_rate_form', f: pf, rates: insurance_policy.insurance_rates
+    - else
+      - if insurance_policy.new_record?
+        - dealership_policies = current_user.dealership.product_list.insurance_policies
+        %td
+          = pf.select :prototype_id, dealership_policies.map { |p| [p.description, p.id] }, { include_blank: true, label: false }, class: 'name'
+        %td
+        %td
+      - else
+        %td
+          = pf.text_field :name, label: false, name: nil, disabled: true, class: 'name'
+        %td
+          = pf.text_field :loan_type, label: false, name: nil, disabled: true
+        %td
+          = pf.text_field :residual, label: false, name: nil, disabled: true, class: 'residual', value: (insurance_policy.residual ? 'with residual' : 'lease only')
+    %td.delete-link
+      = link_to '', '#', class: 'destroy fa fa-trash-o'

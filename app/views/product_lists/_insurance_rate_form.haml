@@ -1,0 +1,6 @@
+%tr
+  - rates.each do |r|
+    %td{ class: "insurance-rate-#{r.term}" }
+      = f.fields_for :insurance_rates, r do |rate_fields|
+        = rate_fields.hidden_field :term
+        = rate_fields.text_field :value, label: '%d months' % r.term

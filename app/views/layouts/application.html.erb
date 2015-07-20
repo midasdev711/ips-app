@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Innovative Pricing Solutions</title>
+
+    <%= stylesheet_link_tag    "application", media: 'all' %>
+    <%= javascript_include_tag "vendor/modernizr" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+    <%= include_gon %>
+  </head>
+
+  <body class="<%= controller.controller_name %>">
+    <%= display_flash_messages %>
+    <%= yield %>
+    <%= insert_paloma_hook %>
+    <footer>
+      <div class="row">
+        <div class="medium-2 columns">
+          <h1 class="logo">Innovative Pricing Solutions</h1>
+        </div>
+        <div class="medium-10 columns">
+          <p>Pocketbook Protection, Inc., Vancouver, BC, Canada</p>
+          <p>
+            <span>1-866-402-6760</span>
+            <span><%= mail_to 'info@pocketbookprotection.com' %></span>
+            <% if user_signed_in? %>
+              <span><%= link_to('Logout', destroy_user_session_path, :method => :delete) %></span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+.worksheets {
+  .amortization {
+    visibility: hidden;
+  }
+
+  .finance-to-finance {
+    .residual {
+      visibility: hidden;
+    }
+  }
+
+  .lease-to-finance {
+    .amortization {
+      visibility: visible;
+    }
+
+    .residual .lender-r {
+      visibility: hidden;
+    }
+  }
+
+  .finance-to-lease {
+    .residual .lender-l {
+      visibility: hidden;
+    }
+  }
+
+  .cross-copy {
+    height: rem-calc(20);
+    line-height: rem-calc(20);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .interest-rate {
+    margin-bottom: rem-calc(3);
+  }
+}

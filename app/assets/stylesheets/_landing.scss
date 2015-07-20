@@ -1,0 +1,130 @@
+$bg-color: #081226; 
+
+.landing {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  justify-content: space-between;
+  color: white;
+  background-color: $bg-color;
+
+  &:after {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background-image: image-url(landing-bg);
+    background-size: cover;
+    background-position: center center;
+    z-index: -1;
+    opacity: 0.45;
+  }
+
+  .logo, .sub-nav, footer {
+    padding: $column-gutter;
+
+    @media #{$small-only} {
+      padding-left: $column-gutter/2;
+    }
+  }
+
+  .logo {
+    font-size: rem-calc(30);
+  }
+
+  a {
+    color: inherit;
+    transition: all 0.3s ease-out;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+
+  .form {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: white;
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      height: rem-calc(50);
+      padding: 0 rem-calc(20);
+      color: inherit;
+      background-color: rgba($bg-color, 0.25);
+      border-color: white;
+      font-size: rem-calc(16);
+
+      &:focus {
+        background-color: rgba($bg-color, 0.5);
+      }
+
+      &::placeholder {
+        color: inherit;
+      }
+    }
+
+    label {
+      font-size: rem-calc(14);
+      color: inherit;
+    }
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  .remember {
+    margin-left: rem-calc(20);
+    margin-bottom: rem-calc(20);
+  }
+
+  .forgot {
+    display: block;
+    font-size: rem-calc(14);
+    text-align: center;
+  }
+
+  .sub-nav {
+    margin: 0;
+    //padding-top: 0;
+
+    li {
+      display: inline-block;
+      padding-left: 0;
+      list-style: none;
+      font-weight: bold;
+
+      &:not(:last-child):after {
+        content: " •";
+        opacity: 0.5;
+      }
+    }
+  }
+
+  footer {
+    padding-top: 0;
+    font-size: rem-calc(14);
+
+    .row {
+      width: auto;
+      max-width: none;
+      margin: 0;
+    }
+
+    .columns {
+      width: auto;
+      float: none !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .logo {
+      display: none;
+    }
+
+    p {
+      margin: 0;
+      font-size: inherit;
+    }
+  }
+}

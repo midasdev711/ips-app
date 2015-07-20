@@ -1,0 +1,83 @@
+.options {
+  .button {
+    margin-bottom: rem-calc(5);
+  }
+
+  .button-group {
+    .active {
+      .button.secondary {
+        background-color: scale-color($secondary-color, $lightness: $button-function-factor)
+      }
+    }
+  }
+
+  .options-form {
+    font-size: rem-calc(13);
+
+    table {
+      width: 100%;
+      margin-bottom: rem-calc(10);
+
+      tr {
+        th {
+          letter-spacing: 0;
+          padding-right: $column-gutter / 2;
+        }
+
+        td {
+          width: 35%;
+          padding-right: $column-gutter;
+        }
+      }
+    }
+
+    .payment {
+      select {
+        width: rem-calc(80);
+      }
+    }
+
+    .category {
+      margin-bottom: rem-calc(5);
+
+      .product {
+        line-height: rem-calc(20);
+        font-size: rem-calc(12);
+
+        .term {
+          min-width: rem-calc(45);
+        }
+
+        .residual {
+          min-width: rem-calc(100);
+        }
+
+        .right {
+          margin-left: rem-calc(8);
+        }
+      }
+
+      .rate {
+        border-top: 1px solid $smoke;
+      }
+
+      .payment {
+        border-bottom: 1px solid $smoke;
+      }
+
+      .rate, .payment {
+        font-style: bold;
+      }
+    }
+
+    .sku td {
+      padding-top: rem-calc(5);
+      border-top: 1px solid $smoke;
+      font-size: rem-calc(10);
+    }
+
+    .tier {
+      margin: 0;
+    }
+  }
+}

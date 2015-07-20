@@ -1,0 +1,125 @@
+!!!
+%html
+  %head
+    %meta(charset='utf-8')
+    = wicked_pdf_stylesheet_link_tag 'pdf'
+  %body
+    %header
+      .row
+        .small-12.columns.banks
+          - if params[:debug]
+            = image_tag '/images/banks/scotiabank.jpg'
+            = image_tag '/images/banks/td.jpg'
+            = image_tag '/images/banks/rbc.jpg'
+            = image_tag '/images/banks/conexus.jpg'
+            = image_tag '/images/banks/bmo.jpg'
+          - else
+            = wicked_pdf_image_tag '/images/banks/scotiabank.jpg'
+            = wicked_pdf_image_tag '/images/banks/td.jpg'
+            = wicked_pdf_image_tag '/images/banks/rbc.jpg'
+            = wicked_pdf_image_tag '/images/banks/conexus.jpg'
+            = wicked_pdf_image_tag '/images/banks/bmo.jpg'
+    %main
+      .row
+        .small-12.columns
+          %h1 Bank Option Sheet
+      .row
+        .small-6.columns
+          %table
+            %tr
+              %th
+                Client name
+              %td
+                = @deal.client.name
+        .small-5.small-offset-1.columns
+          %table
+            %tr
+              %th
+                FM
+              %td
+                = @deal.user.name
+      .row
+        - [@option_l, @option_r].each_with_index do |option, i|
+          - category = i.zero? ? option.categories.last : option.categories.first
+          .small-5.small-offset-1.columns
+            %h2 Option #{i + 1}
+            %table
+              %tr
+                %th
+                  Bank
+                %td
+                  = option.lender.bank
+            %table
+              %tr
+                %th
+                  Term
+                %td
+                  = '%d months' % option.term
+            %table
+              %tr
+                %th
+                  Rate
+                %td
+                  = '%.2f%' % category.interest_rate
+            %table
+              %tr
+                %th
+                  Payment
+                %td
+                  = category.payment.format
+            - option.categories.each_with_index do |c, j|
+              - next if c.products.visible.empty? && c.insurance_terms.empty?
+              %article.category
+                - unless i.zero? || j.zero?
+                  %table
+                    %tr
+                      %th
+                        Rate
+                      %td
+                        = '%.2f%' % c.interest_rate
+                  %table
+                    %tr
+                      %th
+                        Payment
+                      %td
+                        = c.payment.format
+                %h3
+                  = c.full_name
+                %ul.inline-list
+                  - c.products.visible.each do |p|
+                    %li
+                      = p.name
+                  - c.insurance_terms.each do |it|
+                    %li
+                      = it.insurance_policy.name
+                      = it.term
+            - if i.zero?
+              %table
+                %tr
+                  %th
+                    Cost of borrowing
+                  %td
+                    = option.cost_of_borrowing.format
+            - if option.lender.notes.present?
+              %table.bank-notes
+                %tr
+                  %th
+                    Bank notes
+                  %td
+                    = option.lender.notes
+    %footer
+      .row.disclaimer
+        .small-12.columns
+          By selecting Option 2, I acknowledge and agree that: (a) I have obtained a lower interest rate on the financing of my vehicle by purchasing additional products and services from or through the dealership and (b) should I cancel or terminate any of the additional products and services, the interest rate will revert back to the original interest rate as of the date my vehicle was purchased. Should such cancellation occur, I further acknowledge and agree that (a) my payments will increase because of the interest rate change and (b) I will be responsible to pay the dealership the difference in interest and financing costs between the two interest rates on payments made from the date of the vehicle purchase to the date of cancellation of such products and services.
+      .row.customer-signature
+        .small-6.columns.end
+          %table
+            %tr
+              %th
+                Customer signature
+              %td
+      .row.copyright
+        .small-12.columns
+          &copy;
+          = Time.now.year
+          Pocketbook Protection Inc. Unauthorized reproduction strictly prohibited.

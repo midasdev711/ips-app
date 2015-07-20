@@ -1,0 +1,32 @@
+.medium-6.columns{ class: ('end' if @dealerships.last == dealership) }
+  %article.dealership
+    %h2
+      = link_to(dealership.name, [:edit, dealership])
+      %i.status.has-tip.fa{ class: (dealership.deactivated? ? 'fa-ban' : 'fa-check'), data: { tooltip: '', status: dealership.status }, aria: { haspopup: true }, title: dealership.status }
+
+    %table.dealership-contacts
+      %tr
+        %th Address
+        %td
+          = dealership.address
+      %tr
+        %th Phone
+        %td
+          = dealership.phone
+    %table.principal-contacts
+      %tr
+        %th Principal
+        %td
+          = dealership.principal.name
+      %tr
+        %th Cell phone
+        %td
+          = dealership.principal.phone
+      %tr
+        %th Email
+        %td
+          = mail_to dealership.principal.email
+
+    .buttons
+      = link_to 'Product List', edit_dealership_product_list_path(dealership), class: 'button small'
+      = link_to 'Users', dealership_users_path(dealership), class: 'button small'

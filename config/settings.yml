@@ -1,0 +1,67 @@
+---
+provinces:
+  -
+    name: "Alberta"
+    abbr: "AB"
+    gst: 5
+    pst: 0
+  -
+    name: "British Columbia"
+    abbr: "BC"
+    gst: 5
+    pst: 7
+  -
+    name: "Manitoba"
+    abbr: "MB"
+    gst: 5
+    pst: 8
+  -
+    name: "New Brunswick"
+    abbr: "NB"
+    gst: 5
+    pst: 8
+  -
+    name: "Newfoundland"
+    abbr: "NL"
+    gst: 5
+    pst: 8
+  -
+    name: "Northwest Territories"
+    abbr: "NT"
+    gst: 5
+    pst: 0
+  -
+    name: "Nova Scotia"
+    abbr: "NS"
+    gst: 5
+    pst: 10
+  -
+    name: "Nunavut"
+    abbr: "NU"
+    gst: 5
+    pst: 0
+  -
+    name: "Ontario"
+    abbr: "ON"
+    gst: 5
+    pst: 8
+  -
+    name: "Prince Edward Island"
+    abbr: "PE"
+    gst: 5
+    pst: 9
+  -
+    name: "Quebec"
+    abbr: "QC"
+    gst: 5
+    pst: 9.975
+  -
+    name: "Saskatchewan"
+    abbr: "SK"
+    gst: 5
+    pst: 5
+  -
+    name: "Yukon Territory"
+    abbr: "YT"
+    gst: 5
+    pst: 0
