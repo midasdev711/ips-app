@@ -76,7 +76,8 @@ class Option < ActiveRecord::Base
         end
 
         ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
-        @current_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
+        normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
+        @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
       end
 
       category.interest_rate = @current_interest_rate
