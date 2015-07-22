@@ -12,6 +12,9 @@ OptionsController.prototype.show = () ->
       $input = $($select.data('target'))
       $input.val(0)
 
+    $document.on 'change', '.residual', (e) ->
+      e.stopPropagation()
+
     $document.on 'change', "#options-form", (e) ->
       $('#options-form').trigger('submit')
 
