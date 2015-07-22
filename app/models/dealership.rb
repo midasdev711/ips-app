@@ -5,7 +5,7 @@ class Dealership < ActiveRecord::Base
 
   has_one :principal, as: :contactable, class_name: 'Contact', dependent: :destroy
   has_one :product_list, as: :listable, autosave: true, dependent: :destroy
-  has_many :users
+  has_many :users, dependent: :destroy
 
   validates :province_id, :name, :address, :phone, :status, presence: true
 
