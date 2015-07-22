@@ -133,7 +133,10 @@ class Option < ActiveRecord::Base
 
     insurance_policies = deal.product_list.insurance_policies
     insurance_policies = insurance_policies.send(loan_type)
-    insurance_policies = insurance_policies.where(residual: residual > 0) if lease?
+
+    if lease? && insurance_policies.count > 1
+      insurance_policies = insurance_policies.where(residual: residual > 0)
+    end
 
     insurance_policies.each do |policy|
       insurance_terms << InsuranceTerm.new(term: _term, insurance_policy: policy, category: policy.category)
