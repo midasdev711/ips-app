@@ -19,7 +19,7 @@
         - policies.group_by(&:name).each do |name, policies|
           - insurance_rates = policies.map { |p| p.insurance_rates.map(&:term) }.inject(:&).select { |term| term <= option.term }
           - insurance_terms = option.insurance_terms
-          - insurance_term = insurance_terms.detect { |t| policies.include? t.insurance_policy } || InsuranceTerm.new
+          - insurance_term = insurance_terms.detect { |t| policies.include? t.insurance_policy } || InsuranceTerm.new(insurance_policy: policies.first)
           .row.product
             = of.fields_for :insurance_terms, insurance_term do |tf|
               .columns.clearfix
@@ -30,8 +30,11 @@
                   = tf.hidden_field :_destroy, value: insurance_terms.exclude?(insurance_term)
                 .right
                   = tf.select :term, options_for_select(insurance_rates, insurance_term.term || option.term), { label: false }, class: 'term'
-                .right
-                  = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
+                - if option.lease?
+                  .right
+                    = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
+                - else
+                  = tf.hidden_field :insurance_policy_id
               = tf.hidden_field :category, value: category.name
         - if lender.right? && !i.zero?
           .row.rate

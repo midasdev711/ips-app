@@ -13,7 +13,7 @@ OptionsController.prototype.show = () ->
       $input.val(0)
 
     $document.on 'change', '.residual', (e) ->
-      e.stopPropagation()
+      e.stopPropagation() if !$(e.target).parents('.product').find(':checkbox').is(':checked')
 
     $document.on 'change', "#options-form", (e) ->
       $('#options-form').trigger('submit')
