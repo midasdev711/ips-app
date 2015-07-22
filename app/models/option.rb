@@ -131,8 +131,16 @@ class Option < ActiveRecord::Base
 
     _term = term.to_i > 84 ? 84 : term
 
-    deal.product_list.insurance_policies.each do |policy|
-      insurance_terms << InsuranceTerm.new(term: _term, insurance_policy: policy, category: policy.category)
+    deal.product_list.insurance_policies.group_by(&:name).each do |name, policies|
+      policies = policies.select { |p| p.loan_type == loan_type }
+
+      if lease? && policies.size > 1
+        policies = policies.select { |p| p.residual == residual > 0 }
+      end
+
+      policies.each do |policy|
+        insurance_terms << InsuranceTerm.new(term: _term, insurance_policy: policy, category: policy.category)
+      end
     end
 
     self.insurance_terms = insurance_terms

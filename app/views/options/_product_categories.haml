@@ -30,11 +30,8 @@
                   = tf.hidden_field :_destroy, value: insurance_terms.exclude?(insurance_term)
                 .right
                   = tf.select :term, options_for_select(insurance_rates, insurance_term.term || option.term), { label: false }, class: 'term'
-                - if policies.size > 1
-                  .right
-                    = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
-                - else
-                  = tf.hidden_field :insurance_policy_id, value: policies.first.id
+                .right
+                  = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
               = tf.hidden_field :category, value: category.name
         - if lender.right? && !i.zero?
           .row.rate
