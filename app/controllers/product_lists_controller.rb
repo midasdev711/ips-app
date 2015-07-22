@@ -57,19 +57,21 @@ class ProductListsController < ApplicationController
   end
 
   def clone_insurance_policies
-    clones = product_list_params[:insurance_policies_attributes].reduce([]) do |acc, (index, attrs)|
-      params[:product_list][:insurance_policies_attributes].delete(index) if attrs[:id].nil?
-      acc << attrs if attrs[:prototype_id].present? && attrs[:_destroy] == 'false'
-      acc
-    end
+    if product_list_params[:insurance_policies_attributes].present?
+      clones = product_list_params[:insurance_policies_attributes].reduce([]) do |acc, (index, attrs)|
+        params[:product_list][:insurance_policies_attributes].delete(index) if attrs[:id].nil?
+        acc << attrs if attrs[:prototype_id].present? && attrs[:_destroy] == 'false'
+        acc
+      end
 
-    dealership_policies = current_user.dealership.product_list.insurance_policies
+      dealership_policies = current_user.dealership.product_list.insurance_policies
 
-    clones.each do |attrs|
-      prototype = dealership_policies.find(attrs[:prototype_id])
-      clone = prototype.deep_clone(include: :insurance_rates)
-      clone.category = attrs[:category]
-      @product_list.insurance_policies << clone
+      clones.each do |attrs|
+        prototype = dealership_policies.find(attrs[:prototype_id])
+        clone = prototype.deep_clone(include: :insurance_rates)
+        clone.category = attrs[:category]
+        @product_list.insurance_policies << clone
+      end
     end
   end
 

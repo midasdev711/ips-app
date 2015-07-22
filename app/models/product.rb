@@ -29,6 +29,10 @@ class Product < ActiveRecord::Base
     def profit
       all.reduce(Money.new(0)) { |acc, p| acc + p.profit }
     end
+
+    def tier
+      profit.to_i / 1000
+    end
   end
 
   private

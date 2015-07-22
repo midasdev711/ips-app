@@ -6,7 +6,7 @@
   .button-group {
     .active {
       .button.secondary {
-        background-color: scale-color($secondary-color, $lightness: $button-function-factor)
+        background-color: scale-color($secondary-color, $lightness: $button-function-factor);
       }
     }
   }
@@ -76,8 +76,16 @@
       font-size: rem-calc(10);
     }
 
-    .tier {
-      margin: 0;
+    .tiers {
+      .current {
+        button {
+          cursor: pointer;
+        }
+      }
+
+      .tier {
+        margin: 0;
+      }
     }
   }
 }

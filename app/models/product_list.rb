@@ -18,10 +18,6 @@ class ProductList < ActiveRecord::Base
     products.misc_fees.first
   end
 
-  def product_profit
-    products.reduce(0) { |memo, product| memo + product.profit }
-  end
-
   private
 
   def set_defaults

@@ -189,11 +189,12 @@
           = @option_r.sku
 
   %div.pagination-centered
-    %ul.tiers.pagination.button-group
+    %ul.pagination.tiers
       - (1..10).each do |tier|
-        - enabled = tier <= @option_r.tier
-        %li{ class: (@option_r.buydown_tier == tier && enabled) ? 'current' : 'secondary' }
-          %button{ class: 'btn tiny tier', disabled: !enabled, data: { tier: tier } }
+        - disabled = @available_tier < tier
+        - selected = @buydown_tier == tier
+        %li{ class: [('current' if selected), ('unavailable' if disabled && !selected)] }
+          %button{ class: 'tiny tier', disabled: disabled && !selected, data: { tier: tier } }
             = tier
 
   = f.fields_for :lenders, @lender_r do |lf|

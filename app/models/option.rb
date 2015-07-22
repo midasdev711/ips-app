@@ -32,7 +32,7 @@ class Option < ActiveRecord::Base
   end
 
   def tier
-    (categories.first.profit.to_f / 1000).ceil
+    products.pocketbook.tier
   end
 
   def car_amount
@@ -51,9 +51,9 @@ class Option < ActiveRecord::Base
 
   def calculate
     @current_interest_rate = interest_rate
-    @profit = 0
+    @profit = Money.new(0)
     amount = car_amount
-    buydown_amount = 0
+    buydown_amount = Money.new(0)
 
     categories.each do |category|
       amount += category.products.price + category.insurance_terms.fee(insurable_amount)
@@ -87,8 +87,6 @@ class Option < ActiveRecord::Base
     @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(amount) : Money.new(0)
     @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount, NumberOfPayments.execute(term, payment_frequency), effective_interest_rate, finance_payment(amount)) : Money.new(0)
 
-    normalize_buydown_tier
-
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
 
@@ -109,7 +107,7 @@ class Option < ActiveRecord::Base
   private
 
   def buydown?
-    lender.right? && lender.finance? && term.present? && buydown_tier.present? && buydown_tier < tier
+    lender.right? && lender.finance? && buydown_tier.present? && buydown_tier <= tier
   end
 
   def effective_interest_rate(nominal_interest_rate = nil)
@@ -192,10 +190,5 @@ class Option < ActiveRecord::Base
 
   def normalize_interest_rate
     self.interest_rate ||= interest_rate_was
-  end
-
-  def normalize_buydown_tier
-    self.buydown_tier ||= tier
-    self.buydown_tier = tier if buydown_tier > tier
   end
 end

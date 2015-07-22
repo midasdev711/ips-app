@@ -20,14 +20,9 @@ OptionsController.prototype.show = () ->
 
     $document.on 'click', '.tier', (e) ->
       e.preventDefault()
-
       $button = $(e.target)
-      $('#buydown-tier').val($button.data('tier'));
-
       $li = $button.parent('li')
-      $li.siblings().removeClass('current')
-      $li.addClass('current')
-
+      $('#buydown-tier').val(if $li.is('.current') then '' else $button.data('tier'));
       $('#options-form').trigger('submit')
 
     $document.on 'click', '.toggle-products', (e) ->
