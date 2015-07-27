@@ -19,7 +19,6 @@ class Option < ActiveRecord::Base
   validates :payment_frequency, presence: true
 
   before_create :set_products, :set_insurance_terms, if: -> { lender.right? }
-  before_create :add_misc_fees
   before_update :normalize_insurance_terms
   before_update :normalize_interest_rate, if: -> { lender.right? }
 
