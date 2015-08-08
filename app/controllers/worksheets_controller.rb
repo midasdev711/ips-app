@@ -2,7 +2,6 @@ class WorksheetsController < ApplicationController
   before_action :set_resources
 
   def show
-    gon.push(tax: @deal.provincial_tax)
   end
 
   def update
@@ -51,7 +50,7 @@ class WorksheetsController < ApplicationController
       :payment_frequency_min,
       :payment_max,
       :payment_frequency_max,
-      :indian,
+      :status_indian,
       :used,
       :tax,
       :province_id

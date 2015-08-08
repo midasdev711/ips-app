@@ -67,7 +67,7 @@ class Lender < ActiveRecord::Base
 
   def car_amount
     amount = cash_price - trade_in
-    tax = deal.taxable? ? amount * deal.provincial_tax : 0
+    tax = amount * deal.vehicle_tax
     amount = amount + lien - dci - rebate - cash_down + bank_reg_fee
     finance? ? amount + tax : amount
   end

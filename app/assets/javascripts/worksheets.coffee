@@ -30,10 +30,19 @@ WorksheetsController.prototype.show = ->
             $(left).focus() # see previous comment
           $(document).trigger('refresh_autonumeric')
 
-    $('#deal_client_attributes_indian').change (e) ->
-      if $(e.target).is(':checked')
-        $('#deal_tax').val('no')
-      $('#deal_tax').readonly()
+    $tax = $('.tax')
+
+    $('#deal_status_indian').change((e) ->
+      $tax.removeClass().addClass('tax')
+      $tax.addClass('status-indian') if $(e.target).is(':checked')
+    ).trigger('change')
+
+    $vehicle = $('.vehicle')
+
+    $('#deal_used').change((e) ->
+      $vehicle.removeClass().addClass('vehicle')
+      $vehicle.addClass('used') if $(e.target).is(':checked')
+    ).trigger('change')
 
     $('.add').on 'click', (e) ->
       e.preventDefault()

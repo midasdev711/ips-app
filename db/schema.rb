@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150720203712) do
+ActiveRecord::Schema.define(version: 20150808184920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20150720203712) do
     t.string   "province_id"
     t.string   "payment_frequency_max"
     t.string   "payment_frequency_min"
-    t.boolean  "indian"
+    t.boolean  "status_indian"
     t.integer  "scenario",              default: 1
     t.integer  "state"
   end

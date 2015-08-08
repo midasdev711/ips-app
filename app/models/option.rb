@@ -164,7 +164,7 @@ class Option < ActiveRecord::Base
 
   def lease_payment(amount, interest_rate = nil)
     lease_payment = LeasePayment.execute(amount, residual, number_of_payments, money_factor(interest_rate))
-    lease_payment * (1 + (taxable? ? deal.provincial_tax : 0))
+    lease_payment * (1 + deal.vehicle_tax)
   end
 
   def _cost_of_borrowing(*args)
@@ -181,10 +181,6 @@ class Option < ActiveRecord::Base
 
   def insurable_amount
     car_amount + products.price
-  end
-
-  def taxable?
-    deal.taxable?
   end
 
   def normalize_interest_rate

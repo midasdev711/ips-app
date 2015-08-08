@@ -50,18 +50,26 @@ class Deal < ActiveRecord::Base
     end
   end
 
-  def provincial_tax
-    (province.gst + province.pst).to_f / 100
+  def vehicle_tax
+    return 0 if status_indian
+
+    percentage = if used
+                   case tax
+                   when 'no'  then 0
+                   when 'one' then province.gst
+                   when 'two' then province.gst + province.pst
+                   end
+                 else
+                   province.gst + province.pst
+                 end
+
+    percentage.to_f / 100
   end
 
   def set_scenario
     lender_l, lender_r = lenders.order(:position)
     scenario = lender_r.finance? ? lender_l.finance? ? 1 : 2 : 3
     update_attribute(:scenario, scenario)
-  end
-
-  def taxable?
-    tax? && !indian
   end
 
   aasm column: :state, skip_validation_on_save: true do
