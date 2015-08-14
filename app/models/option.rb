@@ -94,7 +94,7 @@ class Option < ActiveRecord::Base
 
   def add_misc_fees
     misc_fees = deal.product_list.misc_fees
-    if misc_fees.present?
+    if misc_fees && products.exclude?(misc_fees)
       self.products << misc_fees
     end
   end
@@ -120,7 +120,7 @@ class Option < ActiveRecord::Base
   end
 
   def set_products
-    self.products = deal.product_list.products
+    self.products = deal.product_list.products.visible
   end
 
   def set_insurance_terms
