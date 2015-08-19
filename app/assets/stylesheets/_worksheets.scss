@@ -35,26 +35,4 @@
   .interest-rate {
     margin-bottom: rem-calc(3);
   }
-
-  .tax {
-
-    &.status-indian {
-      .vehicle {
-        display: none;
-      }
-    }
-
-    .vehicle {
-
-      &.used {
-        .fields {
-          visibility: visible;
-        }
-      }
-
-      .fields {
-        visibility: hidden;
-      }
-    }
-  }
 }

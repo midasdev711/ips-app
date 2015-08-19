@@ -217,13 +217,9 @@
       .small-6.columns
         = f.select :payment_frequency_max, payment_frequencies, label: '&nbsp;'
     %hr
-
-    %section.tax
       = f.check_box :status_indian, label: 'Status Indian'
-      .vehicle
-        = f.check_box :used, label: 'Used vehicle'
-        .fields
-          = f.select :tax, taxes, label: 'Used vehicle tax'
-          = f.collection_select(:province_id, provinces, :abbr, :abbr)
+      = f.check_box :used, label: 'Used vehicle'
+      = f.select :tax, taxes, label: 'Vehicle tax'
+      = f.collection_select(:province_id, provinces, :abbr, :abbr)
   .small-12.columns
     = f.submit value: 'Save and go to options', class: 'small success button'

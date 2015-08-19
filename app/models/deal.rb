@@ -51,16 +51,12 @@ class Deal < ActiveRecord::Base
   end
 
   def vehicle_tax
-    return 0 if status_indian
+    return 0.0 if status_indian
 
-    percentage = if used
-                   case tax
-                   when 'no'  then 0
-                   when 'one' then province.gst
-                   when 'two' then province.gst + province.pst
-                   end
-                 else
-                   province.gst + province.pst
+    percentage = case tax
+                 when 'no'  then 0
+                 when 'one' then province.gst
+                 when 'two' then province.gst + province.pst
                  end
 
     percentage.to_f / 100
