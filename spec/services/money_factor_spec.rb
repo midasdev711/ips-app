@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 RSpec.describe MoneyFactor, '.execute' do
-  let(:result) { described_class.execute(nominal_interest_rate, payment_frequency) }
+  let(:result) { described_class.execute interest_rate: interest_rate, payment_frequency: payment_frequency }
 
   context '0%' do
-    let(:nominal_interest_rate) { 0.0 }
+    let(:interest_rate) { 0.0 }
 
     context 'monthly' do
       let(:payment_frequency) { :monthly }
@@ -18,7 +18,7 @@ RSpec.describe MoneyFactor, '.execute' do
   end
 
   context '4.99%' do
-    let(:nominal_interest_rate) { 0.0499 }
+    let(:interest_rate) { 0.0499 }
 
     context 'monthly' do
       let(:payment_frequency) { :monthly }

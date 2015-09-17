@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 RSpec.describe FinanceCostOfBorrowing, '.execute' do
-  let(:result) { described_class.execute(amount, payments_number, payment) }
-  let(:payments_number) { PaymentsNumber.execute(months, payment_frequency) }
-  let(:effective_interest_rate) { EffectiveInterestRate.execute(nominal_interest_rate, payment_frequency) }
-  let(:payment) { FinancePayment.execute(amount, payments_number, effective_interest_rate) }
+  let(:result) { described_class.execute amount: amount, payment: payment, payments_number: payments_number }
+  let(:payments_number) { PaymentsNumber.execute months: months, payment_frequency: payment_frequency }
+  let(:effective_interest_rate) { EffectiveInterestRate.execute interest_rate: interest_rate, payment_frequency: payment_frequency }
+  let(:payment) { FinancePayment.execute amount: amount, interest_rate: effective_interest_rate, payments_number: payments_number }
   let(:amount) { 4100647 } # $41,006.47
   let(:months) { 72 }
 
   context '2.99%' do
-    let(:nominal_interest_rate) { 0.0299 }
+    let(:interest_rate) { 0.0299 }
 
     context 'monthly' do
       let(:payment_frequency) { :monthly }

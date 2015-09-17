@@ -84,7 +84,7 @@ class Option < ActiveRecord::Base
     end
 
     @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(amount) : Money.new(0)
-    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount, PaymentsNumber.execute(term, payment_frequency), effective_interest_rate, finance_payment(amount)) : Money.new(0)
+    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount: amount, interest_rate: effective_interest_rate, payment: finance_payment(amount), payments_number: PaymentsNumber.execute(months: term, payment_frequency: payment_frequency)) : Money.new(0)
 
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
@@ -109,14 +109,14 @@ class Option < ActiveRecord::Base
     lender.right? && lender.finance? && buydown_tier.present? && buydown_tier <= tier
   end
 
-  def effective_interest_rate(nominal_interest_rate = nil)
-    nominal_interest_rate ||= @current_interest_rate
-    EffectiveInterestRate.execute(nominal_interest_rate / 100, payment_frequency)
+  def effective_interest_rate(interest_rate = nil)
+    interest_rate ||= @current_interest_rate
+    EffectiveInterestRate.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
   end
 
-  def money_factor(nominal_interest_rate = nil)
-    nominal_interest_rate ||= @current_interest_rate
-    MoneyFactor.execute(nominal_interest_rate / 100, payment_frequency)
+  def money_factor(interest_rate = nil)
+    interest_rate ||= @current_interest_rate
+    MoneyFactor.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
   end
 
   def set_products
@@ -151,7 +151,7 @@ class Option < ActiveRecord::Base
   end
 
   def payments_number
-    PaymentsNumber.execute(amortization || term, payment_frequency)
+    PaymentsNumber.execute months: (amortization || term), payment_frequency: payment_frequency
   end
 
   def _payment(*args)
@@ -159,11 +159,11 @@ class Option < ActiveRecord::Base
   end
 
   def finance_payment(amount, interest_rate = nil)
-    FinancePayment.execute(amount, payments_number, effective_interest_rate(interest_rate))
+    FinancePayment.execute amount: amount, interest_rate: effective_interest_rate(interest_rate), payments_number: payments_number
   end
 
   def lease_payment(amount, interest_rate = nil)
-    lease_payment = LeasePayment.execute(amount, residual, payments_number, money_factor(interest_rate))
+    lease_payment = LeasePayment.execute amount: amount, residual: residual, money_factor: money_factor(interest_rate), payments_number: payments_number
     lease_payment * (1 + deal.vehicle_tax)
   end
 
@@ -172,11 +172,11 @@ class Option < ActiveRecord::Base
   end
 
   def finance_cost_of_borrowing(amount, interest_rate = nil)
-    FinanceCostOfBorrowing.execute(amount, payments_number, finance_payment(amount, interest_rate))
+    FinanceCostOfBorrowing.execute amount: amount, payment: finance_payment(amount, interest_rate), payments_number: payments_number
   end
 
   def lease_cost_of_borrowing(amount, interest_rate = nil)
-    LeaseCostOfBorrowing.execute(amount, residual, payments_number, money_factor(interest_rate))
+    LeaseCostOfBorrowing.execute amount: amount, residual: residual, money_factor: money_factor(interest_rate), payments_number: payments_number
   end
 
   def insurable_amount

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe PaymentsNumber, '.execute' do
-  let(:result) { described_class.execute(months, payment_frequency) }
+  let(:result) { described_class.execute months: months, payment_frequency: payment_frequency }
 
   context '1 year' do
     let(:months) { 12 }
