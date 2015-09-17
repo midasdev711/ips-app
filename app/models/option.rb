@@ -180,7 +180,7 @@ class Option < ActiveRecord::Base
   end
 
   def insurable_amount
-    car_amount + products.price
+    car_amount + products.price + _cost_of_borrowing(car_amount + products.price, interest_rate)
   end
 
   def normalize_interest_rate
