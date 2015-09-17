@@ -1,10 +1,10 @@
 class BalloonPayment
   class << self
-    def execute(amount, number_of_payments, effective_interest_rate, payment)
+    def execute(amount, payments_number, effective_interest_rate, payment)
       balloon_payment = if effective_interest_rate.zero?
-        amount - payment * number_of_payments
+        amount - payment * payments_number
       else
-        amount * ((1 + effective_interest_rate) ** number_of_payments) - payment * ((1 + effective_interest_rate) ** number_of_payments - 1) / effective_interest_rate
+        amount * ((1 + effective_interest_rate) ** payments_number) - payment * ((1 + effective_interest_rate) ** payments_number - 1) / effective_interest_rate
       end
       balloon_payment.round
     end

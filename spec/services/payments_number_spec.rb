@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe NumberOfPayments, '.execute' do
+RSpec.describe PaymentsNumber, '.execute' do
   let(:result) { described_class.execute(months, payment_frequency) }
 
   context '1 year' do

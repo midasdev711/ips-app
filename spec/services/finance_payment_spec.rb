@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe FinancePayment, '.execute' do
-  let(:result) { described_class.execute(amount, number_of_payments, effective_interest_rate) }
-  let(:number_of_payments) { NumberOfPayments.execute(months, payment_frequency) }
+  let(:result) { described_class.execute(amount, payments_number, effective_interest_rate) }
+  let(:payments_number) { PaymentsNumber.execute(months, payment_frequency) }
   let(:effective_interest_rate) { EffectiveInterestRate.execute(nominal_interest_rate, payment_frequency) }
   let(:amount) { 4100647 } # $41,006.47
   let(:months) { 72 }

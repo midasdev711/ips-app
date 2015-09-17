@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe LeaseCostOfBorrowing, '.execute' do
-  let(:result) { described_class.execute(amount, residual, number_of_payments, money_factor) }
-  let(:number_of_payments) { NumberOfPayments.execute(months, payment_frequency) }
+  let(:result) { described_class.execute(amount, residual, payments_number, money_factor) }
+  let(:payments_number) { PaymentsNumber.execute(months, payment_frequency) }
   let(:money_factor) { MoneyFactor.execute(nominal_interest_rate, payment_frequency) }
   let(:amount) { 3000000 } # $30,000.00
   let(:residual) { 1500000 } # $15,000.00

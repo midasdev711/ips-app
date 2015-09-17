@@ -1,4 +1,4 @@
-class NumberOfPayments
+class PaymentsNumber
   class << self
     def execute(months, payment_frequency)
       case payment_frequency.to_sym

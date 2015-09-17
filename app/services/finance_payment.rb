@@ -1,8 +1,8 @@
 class FinancePayment
   class << self
-    def execute(amount, number_of_payments, effective_interest_rate)
-      return amount / number_of_payments if effective_interest_rate.zero?
-      finance_payment = amount * (effective_interest_rate + effective_interest_rate / ((1 + effective_interest_rate) ** number_of_payments - 1))
+    def execute(amount, payments_number, effective_interest_rate)
+      return amount / payments_number if effective_interest_rate.zero?
+      finance_payment = amount * (effective_interest_rate + effective_interest_rate / ((1 + effective_interest_rate) ** payments_number - 1))
       finance_payment.round
     end
   end

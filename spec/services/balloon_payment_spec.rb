@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe BalloonPayment, '.execute' do
-  let(:result) { described_class.execute(amount, term_number_of_payments, effective_interest_rate, payment) }
-  let(:term_number_of_payments) { NumberOfPayments.execute(term, payment_frequency) }
-  let(:number_of_payments) { NumberOfPayments.execute(amortization, payment_frequency) }
+  let(:result) { described_class.execute(amount, term_payments_number, effective_interest_rate, payment) }
+  let(:term_payments_number) { PaymentsNumber.execute(term, payment_frequency) }
+  let(:payments_number) { PaymentsNumber.execute(amortization, payment_frequency) }
   let(:effective_interest_rate) { EffectiveInterestRate.execute(nominal_interest_rate, payment_frequency) }
-  let(:payment) { FinancePayment.execute(amount, number_of_payments, effective_interest_rate) }
+  let(:payment) { FinancePayment.execute(amount, payments_number, effective_interest_rate) }
 
   let(:amount) { 10000000 } # $100,000.00
   let(:term) { 60 }

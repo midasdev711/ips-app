@@ -84,7 +84,7 @@ class Option < ActiveRecord::Base
     end
 
     @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(amount) : Money.new(0)
-    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount, NumberOfPayments.execute(term, payment_frequency), effective_interest_rate, finance_payment(amount)) : Money.new(0)
+    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount, PaymentsNumber.execute(term, payment_frequency), effective_interest_rate, finance_payment(amount)) : Money.new(0)
 
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
@@ -150,8 +150,8 @@ class Option < ActiveRecord::Base
     end
   end
 
-  def number_of_payments
-    NumberOfPayments.execute(amortization || term, payment_frequency)
+  def payments_number
+    PaymentsNumber.execute(amortization || term, payment_frequency)
   end
 
   def _payment(*args)
@@ -159,11 +159,11 @@ class Option < ActiveRecord::Base
   end
 
   def finance_payment(amount, interest_rate = nil)
-    FinancePayment.execute(amount, number_of_payments, effective_interest_rate(interest_rate))
+    FinancePayment.execute(amount, payments_number, effective_interest_rate(interest_rate))
   end
 
   def lease_payment(amount, interest_rate = nil)
-    lease_payment = LeasePayment.execute(amount, residual, number_of_payments, money_factor(interest_rate))
+    lease_payment = LeasePayment.execute(amount, residual, payments_number, money_factor(interest_rate))
     lease_payment * (1 + deal.vehicle_tax)
   end
 
@@ -172,11 +172,11 @@ class Option < ActiveRecord::Base
   end
 
   def finance_cost_of_borrowing(amount, interest_rate = nil)
-    FinanceCostOfBorrowing.execute(amount, number_of_payments, finance_payment(amount, interest_rate))
+    FinanceCostOfBorrowing.execute(amount, payments_number, finance_payment(amount, interest_rate))
   end
 
   def lease_cost_of_borrowing(amount, interest_rate = nil)
-    LeaseCostOfBorrowing.execute(amount, residual, number_of_payments, money_factor(interest_rate))
+    LeaseCostOfBorrowing.execute(amount, residual, payments_number, money_factor(interest_rate))
   end
 
   def insurable_amount
