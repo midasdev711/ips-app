@@ -30,6 +30,14 @@ OptionsController.prototype.show = () ->
       $a = $(e.target)
       $($a.data('target')).toggle()
 
+    $document.on 'click', '.category h3', (e) ->
+      $category = $(e.target).parent()
+      $category.find('.premium').toggle()
+
+    $document.on 'keyup', '.premium', (e) ->
+      $input = $(e.target)
+      $input.siblings('.overridden').val(if $input.val() == '0' then false else true)
+
     handleProductChange = (e) ->
       $('#products_changed').val(true)
     $document.on 'change', '#option-l-products input', handleProductChange

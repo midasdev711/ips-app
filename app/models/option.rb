@@ -49,14 +49,16 @@ class Option < ActiveRecord::Base
   end
 
   def calculate
+    insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
+
     @current_interest_rate = interest_rate
     @profit = Money.new(0)
     amount = car_amount
     buydown_amount = Money.new(0)
 
     categories.each do |category|
-      amount += category.products.price + category.insurance_terms.fee(insurable_amount)
-      category.profit = category.products.profit + category.insurance_terms.fee(insurable_amount) * deal.product_list.insurance_profit / 100
+      amount += category.products.price + category.insurance_terms.premium
+      category.profit = category.products.profit + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
       if buydown?
@@ -88,8 +90,6 @@ class Option < ActiveRecord::Base
 
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
-
-    save
   end
 
   def add_misc_fees
@@ -107,16 +107,6 @@ class Option < ActiveRecord::Base
 
   def buydown?
     lender.right? && lender.finance? && buydown_tier.present? && buydown_tier <= tier
-  end
-
-  def effective_interest_rate(interest_rate = nil)
-    interest_rate ||= @current_interest_rate
-    EffectiveInterestRate.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
-  end
-
-  def money_factor(interest_rate = nil)
-    interest_rate ||= @current_interest_rate
-    MoneyFactor.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
   end
 
   def set_products
@@ -150,6 +140,24 @@ class Option < ActiveRecord::Base
     end
   end
 
+  def normalize_interest_rate
+    self.interest_rate ||= interest_rate_was
+  end
+
+  def insurable_value
+    car_amount + products.price + _cost_of_borrowing(car_amount + products.price, interest_rate)
+  end
+
+  def effective_interest_rate(interest_rate = nil)
+    interest_rate ||= @current_interest_rate
+    EffectiveInterestRate.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
+  end
+
+  def money_factor(interest_rate = nil)
+    interest_rate ||= @current_interest_rate
+    MoneyFactor.execute interest_rate: (interest_rate / 100), payment_frequency: payment_frequency
+  end
+
   def payments_number
     PaymentsNumber.execute months: (amortization || term), payment_frequency: payment_frequency
   end
@@ -177,13 +185,5 @@ class Option < ActiveRecord::Base
 
   def lease_cost_of_borrowing(amount, interest_rate = nil)
     LeaseCostOfBorrowing.execute amount: amount, residual: residual, money_factor: money_factor(interest_rate), payments_number: payments_number
-  end
-
-  def insurable_amount
-    car_amount + products.price + _cost_of_borrowing(car_amount + products.price, interest_rate)
-  end
-
-  def normalize_interest_rate
-    self.interest_rate ||= interest_rate_was
   end
 end

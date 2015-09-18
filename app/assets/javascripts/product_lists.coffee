@@ -24,6 +24,7 @@ ProductListsController.prototype.edit = () ->
       $target = $('#' + $button.data('target'))
 
       $target.append(template)
+      $target.find('select').trigger('change');
 
       $document.trigger('refresh_autonumeric');
 

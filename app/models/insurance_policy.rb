@@ -12,7 +12,7 @@ class InsurancePolicy < ActiveRecord::Base
   accepts_nested_attributes_for :insurance_rates
 
   validates :name, presence: true
-  
+
   after_initialize :set_insurance_rates, if: -> { insurance_rates.empty? }
 
   def description
@@ -21,11 +21,6 @@ class InsurancePolicy < ActiveRecord::Base
       result += '[with residual]'
     end
     result
-  end
-
-  def fee(amount, term)
-    period = insurance_rates.where(term: term).first
-    amount * (period.value / 100)
   end
 
   private

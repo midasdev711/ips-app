@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150808184920) do
+ActiveRecord::Schema.define(version: 20150922220520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(version: 20150808184920) do
     t.integer "term"
     t.integer "category"
     t.integer "insurance_policy_id"
+    t.integer "premium_cents",       default: 0
+    t.boolean "overridden",          default: false
   end
 
   create_table "interest_rates", force: :cascade do |t|

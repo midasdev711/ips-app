@@ -5,14 +5,21 @@ class InsuranceTerm < ActiveRecord::Base
   belongs_to :option
   belongs_to :insurance_policy
 
-  def fee(insurable_value)
-    insurance_rate = insurance_policy.insurance_rates.where(term: term).first.value / 100
-    insurable_value * insurance_rate
-  end
+  monetize :premium_cents, numericality: { greater_than_or_equal_to: 0 }
 
   class << self
-    def fee(insurable_value)
-      all.reduce(Money.new(0)) { |acc, t| acc + t.fee(insurable_value) }
+    def premium
+      all.reduce(Money.new(0)) { |acc, t| acc + t.premium }
     end
+  end
+
+  def calculate_premium(insurable_value)
+    update(premium: insurable_value * insurance_rate) unless overridden
+  end
+
+  private
+
+  def insurance_rate
+    insurance_policy.insurance_rates.find_by(term: term).value / 100
   end
 end

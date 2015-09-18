@@ -10,7 +10,7 @@ class Deal < ActiveRecord::Base
   belongs_to :user
   has_one :client, as: :contactable, class_name: 'Contact', dependent: :destroy
   has_one :product_list, as: :listable, dependent: :destroy
-  has_many :lenders, autosave: true, dependent: :destroy, inverse_of: :deal
+  has_many :lenders, dependent: :destroy, inverse_of: :deal
 
   accepts_nested_attributes_for :client
   accepts_nested_attributes_for :lenders

@@ -40,6 +40,10 @@
     .category {
       margin-bottom: rem-calc(5);
 
+      h3 {
+        cursor: pointer;
+      }
+
       .product {
         line-height: rem-calc(20);
         font-size: rem-calc(12);
@@ -50,6 +54,11 @@
 
         .residual {
           min-width: rem-calc(100);
+        }
+
+        .premium {
+          width: rem-calc(75);
+          display: none;
         }
 
         .right {

@@ -69,7 +69,7 @@ class OptionsController < ApplicationController
           :payment_frequency,
           :buydown_tier,
           product_ids: [],
-          insurance_terms_attributes: [:id, :insurance_policy_id, :category, :term, :_destroy]
+          insurance_terms_attributes: [:id, :insurance_policy_id, :category, :term, :premium, :overridden, :_destroy]
         ]
       ]
     )

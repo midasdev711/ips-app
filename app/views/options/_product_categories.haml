@@ -35,6 +35,9 @@
                     = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
                 - else
                   = tf.hidden_field :insurance_policy_id
+                .right
+                  = tf.text_field :premium, label: false, data: { autonumeric: autonumeric_options }, class: 'premium'
+                  = tf.hidden_field :overridden, class: 'overridden'
               = tf.hidden_field :category, value: category.name
         - if lender.right? && !i.zero?
           .row.rate

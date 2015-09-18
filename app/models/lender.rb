@@ -15,7 +15,7 @@ class Lender < ActiveRecord::Base
   validate :has_at_least_one_interest_rate
 
   accepts_nested_attributes_for :interest_rates, allow_destroy: true
-  accepts_nested_attributes_for :options, allow_destroy: true
+  accepts_nested_attributes_for :options
 
   default_scope { order(:position) }
 
