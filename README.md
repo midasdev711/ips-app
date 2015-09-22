@@ -11,8 +11,8 @@ In order to run the application locally the following software is required:
 ## Installation
 
 1. Install dependencies
-- Go to the project directory
-- Run `bundler install`
-- Run `rake db:setup`
-- Run `rails server`
-- Open `http://localhost:3000` in the browser
+2. Go to the project directory
+3. Run `bundler install`
+4. Run `rake db:setup`
+5. Run `rails server`
+6. Open `http://localhost:3000` in the browser
