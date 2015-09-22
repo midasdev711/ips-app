@@ -1,28 +1,18 @@
-== README
+# README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Dependencies
 
-Things you may want to cover:
+In order to run the application locally the following software is required:
 
-* Ruby version
+- Ruby 2.2.2
+- Bundler 1.10
+- PostgreSQL 9.4.4
 
-* System dependencies
+## Installation
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+1. Install dependencies
+- Go to the project directory
+- Run `bundler install`
+- Run `rake db:setup`
+- Run `rails server`
+- Open `http://localhost:3000` in the browser
