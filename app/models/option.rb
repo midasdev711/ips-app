@@ -8,10 +8,9 @@ class Option < ActiveRecord::Base
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
 
   belongs_to :lender
-  has_and_belongs_to_many :products
-
+  has_and_belongs_to_many :products, after_add: :evaluate_interest_rate, after_remove: :evaluate_interest_rate
   has_many :insurance_terms
-  has_many :insurance_policies, through: :insurance_terms
+  has_many :insurance_policies, after_add: :evaluate_interest_rate, after_remove: :evaluate_interest_rate, through: :insurance_terms
 
   accepts_nested_attributes_for :insurance_terms, allow_destroy: true
 
@@ -19,8 +18,8 @@ class Option < ActiveRecord::Base
   validates :payment_frequency, presence: true
 
   before_create :set_products, :set_insurance_terms, if: -> { lender.right? }
+
   before_update :normalize_insurance_terms
-  before_update :normalize_interest_rate, if: -> { lender.right? }
 
   def warnings
     @warnings ||= []
@@ -133,15 +132,16 @@ class Option < ActiveRecord::Base
     self.insurance_terms = insurance_terms
   end
 
+  def evaluate_interest_rate(_record)
+    min, max = interest_rates.minmax
+    update interest_rate: products.visible.empty? && insurance_policies.empty? ? max : min
+  end
+
   def normalize_insurance_terms
     insurance_terms.each do |it|
       next if it.term.nil?
       it.term = term if it.term > term
     end
-  end
-
-  def normalize_interest_rate
-    self.interest_rate ||= interest_rate_was
   end
 
   def insurable_value

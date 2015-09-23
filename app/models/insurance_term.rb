@@ -15,6 +15,7 @@ class InsuranceTerm < ActiveRecord::Base
 
   def calculate_premium(insurable_value)
     update(premium: insurable_value * insurance_rate) unless overridden
+    premium
   end
 
   private

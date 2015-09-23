@@ -47,10 +47,6 @@ OptionsController.prototype.show = () ->
       $span = $(e.target).hide()
       $($span.data('target')).show()
 
-    $document.on 'change', '#option-r-interest-rate', (e) ->
-      $input = $('#buydown-tier')
-      $input.val($input.data('tier'))
-
     $document.on 'change', '.insurance-term-checkbox', (e) ->
       $inputCheckbox = $(e.target)
       $inputHidden = $inputCheckbox.next(':hidden')

@@ -199,4 +199,4 @@
 
   = f.fields_for :lenders, @lender_r do |lf|
     = lf.fields_for :options, @option_r do |of|
-      = of.hidden_field :buydown_tier, id: 'buydown-tier', data: { tier: @option_r.tier }
+      = of.hidden_field :buydown_tier, id: 'buydown-tier'
