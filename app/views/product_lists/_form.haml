@@ -78,5 +78,5 @@
       .total
         Total profit:
         %span#total-profit
-          = @product_list.products.profit
+          = @product_list.products.reduce(0) { |sum, p| sum + p.profit }
       = f.submit value: 'Save product list', class: 'small success button'
