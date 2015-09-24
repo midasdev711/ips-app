@@ -8,9 +8,9 @@ class Option < ActiveRecord::Base
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
 
   belongs_to :lender
-  has_and_belongs_to_many :products, after_add: :evaluate_interest_rate, after_remove: :evaluate_interest_rate
+  has_and_belongs_to_many :products
   has_many :insurance_terms
-  has_many :insurance_policies, after_add: :evaluate_interest_rate, after_remove: :evaluate_interest_rate, through: :insurance_terms
+  has_many :insurance_policies, through: :insurance_terms
 
   accepts_nested_attributes_for :insurance_terms, allow_destroy: true
 
@@ -25,16 +25,9 @@ class Option < ActiveRecord::Base
     @warnings ||= []
   end
 
-  def deal
-    lender.deal
-  end
-
   def tier
-    products.pocketbook.tier
-  end
-
-  def car_amount
-    lender.car_amount
+    profit = (misc_fees.pocketbook + products.pocketbook).reduce(0) { |sum, p| sum + p.profit }
+    profit.to_i / 1000
   end
 
   def sku
@@ -43,7 +36,8 @@ class Option < ActiveRecord::Base
 
   def categories
     @categories ||= Product.categories.map do |k, v|
-      ProductCategory.new(name: k, products: products.where(category: v), insurance_terms: insurance_terms.where(category: v))
+      p, f = products.where(category: v), misc_fees.where(category: v)
+      ProductCategory.new(name: k, products: p, products_and_fees: p + f, insurance_terms: insurance_terms.where(category: v))
     end
   end
 
@@ -56,8 +50,8 @@ class Option < ActiveRecord::Base
     buydown_amount = Money.new(0)
 
     categories.each do |category|
-      amount += category.products.price + category.insurance_terms.premium
-      category.profit = category.products.profit + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
+      amount += category.products_and_fees.reduce(0) { |sum, p| sum + p.price } + category.insurance_terms.premium
+      category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
       if buydown?
@@ -89,13 +83,6 @@ class Option < ActiveRecord::Base
 
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
-  end
-
-  def add_misc_fees
-    misc_fees = deal.product_list.misc_fees
-    if misc_fees && products.exclude?(misc_fees)
-      self.products << misc_fees
-    end
   end
 
   def interest_rates
@@ -132,11 +119,6 @@ class Option < ActiveRecord::Base
     self.insurance_terms = insurance_terms
   end
 
-  def evaluate_interest_rate(_record)
-    min, max = interest_rates.minmax
-    update interest_rate: products.visible.empty? && insurance_policies.empty? ? max : min
-  end
-
   def normalize_insurance_terms
     insurance_terms.each do |it|
       next if it.term.nil?
@@ -144,8 +126,21 @@ class Option < ActiveRecord::Base
     end
   end
 
+  def misc_fees
+    deal.product_list.products.misc_fees
+  end
+
+  def deal
+    lender.deal
+  end
+
+  def car_amount
+    lender.car_amount
+  end
+
   def insurable_value
-    car_amount + products.price + _cost_of_borrowing(car_amount + products.price, interest_rate)
+    products_price = (products + misc_fees).reduce(0) {|sum, p| sum + p.price }
+    car_amount + products_price + _cost_of_borrowing(car_amount + products_price, interest_rate)
   end
 
   def effective_interest_rate(interest_rate = nil)

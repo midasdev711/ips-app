@@ -1,5 +1,5 @@
 class ProductCategory
-  attr_reader :name, :products, :insurance_terms
+  attr_reader :name, :products, :products_and_fees, :insurance_terms
   attr_accessor :interest_rate, :payment, :profit
 
   def initialize(args = {})
@@ -7,6 +7,7 @@ class ProductCategory
 
     @name = args[:name]
     @products = args[:products]
+    @products_and_fees = args[:products_and_fees]
     @insurance_terms = args[:insurance_terms]
   end
 

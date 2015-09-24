@@ -68,7 +68,7 @@
                 %td
                   = category.payment.format
             - option.categories.each_with_index do |c, j|
-              - next if c.products.visible.empty? && c.insurance_terms.empty?
+              - next if c.products.empty? && c.insurance_terms.empty?
               %article.category
                 - unless i.zero? || j.zero?
                   %table
@@ -86,7 +86,7 @@
                 %h3
                   = c.full_name
                 %ul.inline-list
-                  - c.products.visible.each do |p|
+                  - c.products.each do |p|
                     %li
                       = p.name
                   - c.insurance_terms.each do |it|

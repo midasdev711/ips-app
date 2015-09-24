@@ -6,10 +6,9 @@ class OptionsController < ApplicationController
     @lender_l, @lender_r = @deal.lenders
     @option_l, @option_r = [@lender_l, @lender_r].map(&:option)
 
-    [@option_l, @option_r].map(&:add_misc_fees)
     [@option_l, @option_r].map(&:calculate)
 
-    @available_tier = @option_r.products.pocketbook.tier
+    @available_tier = @option_r.tier
     @buydown_tier = @option_r.buydown_tier
 
     respond_to do |format|
@@ -26,10 +25,9 @@ class OptionsController < ApplicationController
     @lender_l, @lender_r = @deal.lenders
     @option_l, @option_r = [@lender_l, @lender_r].map(&:option)
 
-    [@option_l, @option_r].map(&:add_misc_fees)
     [@option_l, @option_r].map(&:calculate)
 
-    @available_tier = @option_r.products.pocketbook.tier
+    @available_tier = @option_r.tier
     @buydown_tier = @option_r.buydown_tier
 
     respond_to do |format|
@@ -47,8 +45,6 @@ class OptionsController < ApplicationController
 
     @products = @deal.product_list.products.visible
     @policies = @deal.product_list.insurance_policies
-
-    @default_tier = @deal.product_list.products.pocketbook.tier
   end
 
   def deal_params

@@ -14,10 +14,6 @@ class ProductList < ActiveRecord::Base
 
   monetize :car_profit_cents, :family_profit_cents
 
-  def misc_fees
-    products.misc_fees.first
-  end
-
   private
 
   def set_defaults

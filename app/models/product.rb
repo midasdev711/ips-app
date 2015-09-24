@@ -20,20 +20,6 @@ class Product < ActiveRecord::Base
     retail_price - dealer_cost
   end
 
-  class << self
-    def price
-      all.reduce(Money.new(0)) { |acc, p| acc + p.price }
-    end
-
-    def profit
-      all.reduce(Money.new(0)) { |acc, p| acc + p.profit }
-    end
-
-    def tier
-      profit.to_i / 1000
-    end
-  end
-
   private
 
   def product_tax
