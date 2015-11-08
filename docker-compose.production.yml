@@ -1,0 +1,12 @@
+proxy:
+  volumes:
+  - /var/log/nginx
+
+web:
+  environment:
+    RAILS_ENV: production
+    SECRET_KEY_BASE: 7130f4224803b56d9edc09df1b3cb6a30cacddb2eaae5d54c14edf4c9041cf764f1b47ef2b73b0bdf5599fea20e80f069062b0970e5b952cc1798eeeec97fac0
+    ASSET_HOST: cdn.innovativepricingsolutions.com
+  volumes:
+  - /app/user/log
+  - /app/user/public/assets
