@@ -21,6 +21,9 @@ gem 'autonumeric-rails'
 gem 'money-rails'
 gem 'aasm'
 
+# Error monitoring
+gem 'sentry-raven'
+
 # PDF generation
 gem 'wicked_pdf'
 
