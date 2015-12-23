@@ -8,7 +8,7 @@ class Option < ActiveRecord::Base
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
 
   belongs_to :lender
-  has_and_belongs_to_many :products, after_add: :decrease_interest_rate, after_remove: :increase_interest_rate
+  has_and_belongs_to_many :products
   has_many :insurance_terms
   has_many :insurance_policies, through: :insurance_terms
 
@@ -124,16 +124,6 @@ class Option < ActiveRecord::Base
       next if it.term.nil?
       it.term = term if it.term > term
     end
-  end
-
-  def decrease_interest_rate(record)
-    update_columns interest_rate: interest_rates.min if persisted? && lender.right? && record.pocketbook?
-    true
-  end
-
-  def increase_interest_rate(record)
-    update_columns interest_rate: interest_rates.max if persisted? && lender.right? && record.pocketbook? && products.pocketbook.empty?
-    true
   end
 
   def misc_fees
