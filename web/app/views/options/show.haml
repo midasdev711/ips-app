@@ -25,7 +25,7 @@
         %ul.button-group.radius
           %li= link_to 'Product List', edit_deal_product_list_path(@deal), class: 'tiny secondary button'
           %li= link_to 'Worksheet', deal_worksheet_path(@deal), class: 'tiny secondary button'
-          %li= link_to 'Print', deal_option_path(@deal, @deal.option, format: :pdf), class: 'tiny secondary button'
+          %li= link_to 'Print', deal_option_path(@deal, @deal.option, format: :pdf), class: 'tiny secondary button', target: :blank
 %main
   .row
     .columns

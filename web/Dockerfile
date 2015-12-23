@@ -12,15 +12,15 @@ RUN FILE=wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
   && dpkg -i $FILE \
   && rm $FILE
 
-ENV APP_HOME /app/user/
+ENV APP_PATH /app/user/
 
-RUN mkdir -p $APP_HOME
-WORKDIR $APP_HOME
+RUN mkdir -p $APP_PATH
+WORKDIR $APP_PATH
 
-ADD Gemfile* $APP_HOME
+ADD Gemfile* $APP_PATH
 RUN bundle install
 
-ADD . $APP_HOME
+ADD . $APP_PATH
 
 EXPOSE 8080
 

@@ -1,7 +1,3 @@
-proxy:
-  volumes:
-  - /var/log/nginx
-
 web:
   environment:
     RAILS_ENV: production
