@@ -44,7 +44,16 @@ class Option < ActiveRecord::Base
   def calculate
     insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
 
-    @current_interest_rate = interest_rate
+    if buydown?
+      @current_interest_rate = interest_rate
+    else
+      @current_interest_rate = interest_rates.max
+      @current_interest_rate_index = interest_rates.index @current_interest_rate
+
+      interest_rate_manually_selected = interest_rate != interest_rates.max
+      @min_interest_rate = interest_rate_manually_selected ? interest_rate : interest_rates.min
+    end
+
     @profit = Money.new(0)
     amount = car_amount
     buydown_amount = Money.new(0)
@@ -54,24 +63,33 @@ class Option < ActiveRecord::Base
       category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
-      if buydown?
-        category_buydown_amount = category.profit - case category.name
-        when 'pocketbook'
-          Money.new(buydown_tier * 100000)
-        when 'car'
-          deal.product_list.car_profit
-        when 'family'
-          deal.product_list.family_profit
-        end
+      if lender.right?
+        if buydown?
+          category_buydown_amount = category.profit - case category.name
+          when 'pocketbook'
+            Money.new(buydown_tier * 100000)
+          when 'car'
+            deal.product_list.car_profit
+          when 'family'
+            deal.product_list.family_profit
+          end
 
-        if category_buydown_amount > 0
-          buydown_amount += category_buydown_amount
-          @profit -= category_buydown_amount
-        end
+          if category_buydown_amount > 0
+            buydown_amount += category_buydown_amount
+            @profit -= category_buydown_amount
+          end
 
-        ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
-        normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
-        @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+          ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
+          normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
+          @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+        else
+          category.count.times do
+            break if @current_interest_rate == @min_interest_rate
+
+            @current_interest_rate_index -= 1
+            @current_interest_rate = interest_rates[@current_interest_rate_index]
+          end
+        end
       end
 
       category.interest_rate = @current_interest_rate

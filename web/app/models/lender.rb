@@ -61,8 +61,7 @@ class Lender < ActiveRecord::Base
   end
 
   def interest_rate
-    min, max = interest_rates.map(&:value).minmax
-    right? ? min : max
+    interest_rates.map(&:value).max
   end
 
   def car_amount
