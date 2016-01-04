@@ -17,9 +17,11 @@ class Option < ActiveRecord::Base
   validates :index, uniqueness: { scope: :lender }
   validates :payment_frequency, presence: true
 
-  before_create :set_products, :set_insurance_terms, if: -> { lender.right? }
+  before_create :set_products, :set_insurance_terms, if: :right?
 
   before_update :normalize_insurance_terms
+
+  delegate :left?, :right?, to: :lender
 
   def warnings
     @warnings ||= []
@@ -44,14 +46,15 @@ class Option < ActiveRecord::Base
   def calculate
     insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
 
-    if buydown?
+
+    if left? || (right? && buydown?)
       @current_interest_rate = interest_rate
     else
       @current_interest_rate = interest_rates.max
       @current_interest_rate_index = interest_rates.index @current_interest_rate
 
-      interest_rate_manually_selected = interest_rate != interest_rates.max
-      @min_interest_rate = interest_rate_manually_selected ? interest_rate : interest_rates.min
+      # When interest rate is set manually, it becomes the minimal interest rate available.
+      @min_interest_rate = interest_rate == interest_rates.max ? interest_rates.min : interest_rate
     end
 
     @profit = Money.new(0)
@@ -63,7 +66,7 @@ class Option < ActiveRecord::Base
       category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
-      if lender.right?
+      if right?
         if buydown?
           category_buydown_amount = category.profit - case category.name
           when 'pocketbook'
@@ -110,7 +113,7 @@ class Option < ActiveRecord::Base
   private
 
   def buydown?
-    lender.right? && lender.finance? && buydown_tier.present? && buydown_tier <= tier
+    lender.finance? && buydown_tier.present? && buydown_tier <= tier
   end
 
   def set_products
