@@ -8,7 +8,7 @@ class Option < ActiveRecord::Base
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
 
   belongs_to :lender
-  has_and_belongs_to_many :products
+  has_and_belongs_to_many :products, after_add: :set_interest_rate, after_remove: :set_interest_rate
   has_many :insurance_terms
   has_many :insurance_policies, through: :insurance_terms
 
@@ -18,6 +18,7 @@ class Option < ActiveRecord::Base
   validates :payment_frequency, presence: true
 
   before_create :set_products, :set_insurance_terms, if: :right?
+  after_create :set_interest_rate
 
   before_update :normalize_insurance_terms
 
@@ -79,6 +80,7 @@ class Option < ActiveRecord::Base
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
         else
           category.count.times do
+            next if category.name == 'pocketbook'
             break if @current_interest_rate_index.zero?
 
             @current_interest_rate_index -= 1
@@ -106,6 +108,21 @@ class Option < ActiveRecord::Base
 
   def buydown?
     lender.finance? && buydown_tier.present? && buydown_tier <= tier
+  end
+
+  def set_interest_rate(record = nil)
+    if persisted? && right?
+      base_interest_rate = lender.interest_rate
+      base_interest_rate_index = interest_rates.index(base_interest_rate)
+
+      products.pocketbook.count.times do
+        break if base_interest_rate_index.zero?
+        base_interest_rate_index -= 1
+      end
+
+      update_column :interest_rate, interest_rates[base_interest_rate_index]
+    end
+    true
   end
 
   def set_products
