@@ -46,16 +46,8 @@ class Option < ActiveRecord::Base
   def calculate
     insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
 
-
-    if left? || (right? && buydown?)
-      @current_interest_rate = interest_rate
-    else
-      @current_interest_rate = interest_rates.max
-      @current_interest_rate_index = interest_rates.index @current_interest_rate
-
-      # When interest rate is set manually, it becomes the minimal interest rate available.
-      @min_interest_rate = interest_rate == interest_rates.max ? interest_rates.min : interest_rate
-    end
+    @current_interest_rate = interest_rate
+    @current_interest_rate_index = interest_rates.index @current_interest_rate
 
     @profit = Money.new(0)
     amount = car_amount
@@ -87,7 +79,7 @@ class Option < ActiveRecord::Base
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
         else
           category.count.times do
-            break if @current_interest_rate == @min_interest_rate
+            break if @current_interest_rate_index.zero?
 
             @current_interest_rate_index -= 1
             @current_interest_rate = interest_rates[@current_interest_rate_index]
