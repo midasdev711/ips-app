@@ -5,4 +5,3 @@ web:
     ASSET_HOST: cdn.innovativepricingsolutions.staging.pieoneers.com
   volumes:
   - /app/user/log
-  - /app/user/public/assets

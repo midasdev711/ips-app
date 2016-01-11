@@ -6,4 +6,3 @@ web:
     SENTRY_DNS: https://26a8eaba421f41c0a993c4c730d7460e:1509937d09b34c098bda5edd7433153b@app.getsentry.com/58749
   volumes:
   - /app/user/log
-  - /app/user/public/assets
