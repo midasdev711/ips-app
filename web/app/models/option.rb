@@ -43,7 +43,7 @@ class Option < ActiveRecord::Base
 
       p, f, t = [products, misc_fees, insurance_terms].map { |e| e.where category: v }
 
-      cat = ProductCategory.new({
+      ProductCategory.new({
         name: k,
         products: p,
         products_and_fees: p + f,
@@ -51,10 +51,6 @@ class Option < ActiveRecord::Base
         available_count: available_count,
         count: p.count + t.count
       })
-
-      Rails.logger.debug cat.inspect.on_blue
-
-      cat
     end
   end
 
