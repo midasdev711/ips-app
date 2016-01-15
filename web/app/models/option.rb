@@ -8,7 +8,7 @@ class Option < ActiveRecord::Base
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
 
   belongs_to :lender
-  has_and_belongs_to_many :products, after_add: :set_interest_rate, after_remove: :set_interest_rate
+  has_and_belongs_to_many :products
   has_many :insurance_terms
   has_many :insurance_policies, through: :insurance_terms
 
@@ -18,7 +18,6 @@ class Option < ActiveRecord::Base
   validates :payment_frequency, presence: true
 
   before_create :set_products, :set_insurance_terms, if: :right?
-  after_create :set_interest_rate
 
   before_update :normalize_insurance_terms
 
@@ -39,14 +38,26 @@ class Option < ActiveRecord::Base
 
   def categories
     @categories ||= Product.categories.map do |k, v|
-      p, f = products.where(category: v), misc_fees.where(category: v)
-      ProductCategory.new(name: k, products: p, products_and_fees: p + f, insurance_terms: insurance_terms.where(category: v))
+      product_list = lender.deal.product_list
+      available_count = [product_list.products.visible, product_list.insurance_policies].map { |e| e.where category: v }.sum &:count
+
+      p, f, t = [products, misc_fees, insurance_terms].map { |e| e.where category: v }
+
+      ProductCategory.new({
+        name: k,
+        products: p,
+        products_and_fees: p + f,
+        insurance_terms: t,
+        available_count: available_count,
+        count: p.count + t.count
+      })
     end
   end
 
   def calculate
     insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
 
+    @max_interest_rate = interest_rates.max
     @current_interest_rate = interest_rate
     @current_interest_rate_index = interest_rates.index @current_interest_rate
 
@@ -79,11 +90,10 @@ class Option < ActiveRecord::Base
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
         else
-          category.count.times do
-            next if category.name == 'pocketbook'
-            break if @current_interest_rate_index.zero?
+          (category.available_count - category.count).times do
+            break if @current_interest_rate == @max_interest_rate
 
-            @current_interest_rate_index -= 1
+            @current_interest_rate_index += 1
             @current_interest_rate = interest_rates[@current_interest_rate_index]
           end
         end
@@ -108,21 +118,6 @@ class Option < ActiveRecord::Base
 
   def buydown?
     lender.finance? && buydown_tier.present? && buydown_tier <= tier
-  end
-
-  def set_interest_rate(record = nil)
-    if persisted? && right?
-      base_interest_rate = lender.interest_rate
-      base_interest_rate_index = interest_rates.index(base_interest_rate)
-
-      products.pocketbook.count.times do
-        break if base_interest_rate_index.zero?
-        base_interest_rate_index -= 1
-      end
-
-      update_column :interest_rate, interest_rates[base_interest_rate_index]
-    end
-    true
   end
 
   def set_products
