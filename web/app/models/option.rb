@@ -39,11 +39,11 @@ class Option < ActiveRecord::Base
   def categories
     @categories ||= Product.categories.map do |k, v|
       product_list = lender.deal.product_list
-      available_count = [product_list.products.visible, product_list.insurance_policies].map { |e| e.where category: v }.sum &:count
+      available_count = [product_list.products.visible, product_list.insurance_policies.where(loan_type: lender.loan_type)].map { |e| e.where category: v }.sum &:count
 
       p, f, t = [products, misc_fees, insurance_terms].map { |e| e.where category: v }
 
-      ProductCategory.new({
+      cat = ProductCategory.new({
         name: k,
         products: p,
         products_and_fees: p + f,
@@ -51,6 +51,10 @@ class Option < ActiveRecord::Base
         available_count: available_count,
         count: p.count + t.count
       })
+
+      Rails.logger.debug cat.inspect.on_blue
+
+      cat
     end
   end
 
