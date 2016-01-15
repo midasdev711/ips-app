@@ -90,11 +90,15 @@ class Option < ActiveRecord::Base
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
         else
-          (category.available_count - category.count).times do
-            break if @current_interest_rate == @max_interest_rate
+          unless products.any? || insurance_terms.any? # Interest rate is set to the highest available if no products selected.
+            @current_interest_rate = interest_rates.max
+          else
+            (category.available_count - category.count).times do # Interest rate is increased considering the number of products not selected.
+              break if @current_interest_rate == @max_interest_rate
 
-            @current_interest_rate_index += 1
-            @current_interest_rate = interest_rates[@current_interest_rate_index]
+              @current_interest_rate_index += 1
+              @current_interest_rate = interest_rates[@current_interest_rate_index]
+            end
           end
         end
       end
