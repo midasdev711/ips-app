@@ -17,7 +17,7 @@ class Option < ActiveRecord::Base
   validates :index, uniqueness: { scope: :lender }
   validates :payment_frequency, presence: true
 
-  before_create :set_products, :set_insurance_terms, if: :right?
+  before_save :set_products, :set_insurance_terms, if: ->(o) { o.right? && o.changes.has_key?(:interest_rate) }
 
   before_update :normalize_insurance_terms
 
