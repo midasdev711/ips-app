@@ -70,8 +70,8 @@ class Option < ActiveRecord::Base
       category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
-      if right?
-        if buydown?
+      if right? # All the magic happens for the option to the right.
+        if buydown? # Buydown
           category_buydown_amount = category.profit - case category.name
           when 'pocketbook'
             Money.new(buydown_tier * 100000)
@@ -89,15 +89,17 @@ class Option < ActiveRecord::Base
           ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
-        else
-          unless products.any? || insurance_terms.any? # Interest rate is set to the highest available if no products selected.
-            @current_interest_rate = interest_rates.max
-          else
-            (category.available_count - category.count).times do # Interest rate is increased considering the number of products not selected.
-              break if @current_interest_rate == @max_interest_rate
+        else # No buydown
+          if category.name == 'pocketbook' # Each deselected product/insurance policy from Pocketbook category changes the interest rate to the next highest rate available.
+            unless products.any? || insurance_terms.any? # Interest rate is set to the highest available if no products selected.
+              @current_interest_rate = interest_rates.max
+            else
+              (category.available_count - category.count).times do # Interest rate is increased considering the number of products not selected.
+                break if @current_interest_rate == @max_interest_rate
 
-              @current_interest_rate_index += 1
-              @current_interest_rate = interest_rates[@current_interest_rate_index]
+                @current_interest_rate_index += 1
+                @current_interest_rate = interest_rates[@current_interest_rate_index]
+              end
             end
           end
         end
