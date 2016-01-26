@@ -57,7 +57,8 @@ class Option < ActiveRecord::Base
   def calculate
     insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
 
-    @max_interest_rate = interest_rates.max
+    @min_interest_rate, @max_interest_rate = interest_rates.minmax
+
     @current_interest_rate = interest_rate
     @current_interest_rate_index = interest_rates.index @current_interest_rate
 
@@ -89,19 +90,23 @@ class Option < ActiveRecord::Base
           ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
-        else # No buydown
-          if category.name == 'pocketbook' # Each deselected product/insurance policy from Pocketbook category changes the interest rate to the next highest rate available.
-            unless products.any? || insurance_terms.any? # Interest rate is set to the highest available if no products selected.
-              @current_interest_rate = interest_rates.max
-            else
-              (category.available_count - category.count).times do # Interest rate is increased considering the number of products not selected.
-                break if @current_interest_rate == @max_interest_rate
-
-                @current_interest_rate_index += 1
-                @current_interest_rate = interest_rates[@current_interest_rate_index]
-              end
+        elsif products.any? || insurance_terms.any?
+          case category.name
+          when 'pocketbook' # Each deselected product/insurance policy from Pocketbook category changes the interest rate to the next highest rate available.
+            (category.available_count - category.count).times do
+              break if @current_interest_rate == @max_interest_rate
+              @current_interest_rate_index += 1
+              @current_interest_rate = interest_rates[@current_interest_rate_index]
+            end
+          else # Each selected product/insurance policy from other categories changes the interest rate to the next lowest rate available.
+            category.count.times do
+              break if @current_interest_rate == @min_interest_rate
+              @current_interest_rate_index -= 1
+              @current_interest_rate = interest_rates[@current_interest_rate_index]
             end
           end
+        else # Interest rate is set to the highest available if no products selected.
+          @current_interest_rate = @max_interest_rate
         end
       end
 
