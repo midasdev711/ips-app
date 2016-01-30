@@ -90,13 +90,18 @@ class Option < ActiveRecord::Base
           ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
-        elsif products.any? || insurance_terms.any?
+        else
           case category.name
           when 'pocketbook' # Each deselected product/insurance policy from Pocketbook category changes the interest rate to the next highest rate available.
-            (category.available_count - category.count).times do
-              break if @current_interest_rate == @max_interest_rate
-              @current_interest_rate_index += 1
-              @current_interest_rate = interest_rates[@current_interest_rate_index]
+            if category.count.zero? # If no Pocketbook products/insurance policies selected, the baseline interest rate is the maximum available.
+              @current_interest_rate = @max_interest_rate
+              @current_interest_rate_index = interest_rates.index @current_interest_rate
+            else
+              (category.available_count - category.count).times do
+                break if @current_interest_rate == @max_interest_rate
+                @current_interest_rate_index += 1
+                @current_interest_rate = interest_rates[@current_interest_rate_index]
+              end
             end
           else # Each selected product/insurance policy from other categories changes the interest rate to the next lowest rate available.
             category.count.times do
@@ -105,8 +110,6 @@ class Option < ActiveRecord::Base
               @current_interest_rate = interest_rates[@current_interest_rate_index]
             end
           end
-        else # Interest rate is set to the highest available if no products selected.
-          @current_interest_rate = @max_interest_rate
         end
       end
 
