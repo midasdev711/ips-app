@@ -1,14 +1,9 @@
 class ProductCategory
-  attr_reader :name, :products, :products_and_fees, :insurance_terms
+  attr_reader :name, :products, :products_and_fees, :insurance_terms, :count, :available_count
   attr_accessor :interest_rate, :payment, :profit
 
-  def initialize(args = {})
-    args.symbolize_keys!
-
-    @name = args[:name]
-    @products = args[:products]
-    @products_and_fees = args[:products_and_fees]
-    @insurance_terms = args[:insurance_terms]
+  def initialize(name:, products:, products_and_fees:, insurance_terms:, count:, available_count:)
+    @name, @products, @products_and_fees, @insurance_terms, @count, @available_count = name, products, products_and_fees, insurance_terms, count, available_count
   end
 
   def full_name
