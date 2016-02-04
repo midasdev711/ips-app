@@ -11,8 +11,8 @@ class DealershipsController < ApplicationController
   end
 
   def create
-    @dealership = Dealership.new(dealership_params)
-    if @dealership.save
+    @dealership = current_user.add_dealership dealership_params
+    if @dealership.persisted?
       redirect_to root_path, notice: 'Dealership was successfully created.'
     else
       render :new

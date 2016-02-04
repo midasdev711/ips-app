@@ -20,6 +20,7 @@ gem 'paloma'
 gem 'autonumeric-rails'
 gem 'money-rails'
 gem 'aasm'
+gem 'colorize'
 
 # Error monitoring
 gem 'sentry-raven'

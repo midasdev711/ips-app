@@ -76,6 +76,8 @@ class ProductListsController < ApplicationController
   end
 
   def redirect_path
+    return dealerships_path if @product_list.master?
+
     case @listable.class.to_s
     when 'Dealership'
       dealerships_path

@@ -20,9 +20,15 @@ class User < ActiveRecord::Base
     !admin?
   end
 
+  def add_dealership(params)
+    dealership = Dealership.create params
+    dealership.product_list = product_list.deep_clone include: [:products, insurance_policies: [:insurance_rates]]
+    dealership
+  end
+
   private
 
   def set_product_list
-    self.product_list = dealership.product_list.deep_clone(include: [:products, insurance_policies: [:insurance_rates]])
+    self.product_list = dealership.product_list.deep_clone include: [:products, insurance_policies: [:insurance_rates]]
   end
 end
