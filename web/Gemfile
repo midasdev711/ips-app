@@ -37,7 +37,6 @@ gem 'therubyracer'
 group :development do
   gem 'quiet_assets'
   gem 'letter_opener'
-  gem 'colorize'
 end
 
 group :development, :test do
@@ -47,5 +46,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'simplecov', require: false
   gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'faker'
 end
