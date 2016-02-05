@@ -11,8 +11,8 @@ class DealershipsController < ApplicationController
   end
 
   def create
-    @dealership = Dealership.new(dealership_params)
-    if @dealership.save
+    @dealership = current_user.add_dealership resource_params
+    if @dealership.persisted?
       redirect_to root_path, notice: 'Dealership was successfully created.'
     else
       render :new
@@ -23,7 +23,7 @@ class DealershipsController < ApplicationController
   end
 
   def update
-    if @dealership.update(dealership_params)
+    if @dealership.update resource_params
       redirect_to dealerships_path, notice: 'Dealership was successfully updated.'
     else
       render :edit
@@ -37,7 +37,7 @@ class DealershipsController < ApplicationController
 
   private
 
-  def dealership_params
+  def resource_params
       params.require(:dealership).permit(
         :name, :address, :province_id, :phone, :status,
         principal_attributes: [:id, :name, :phone, :email]

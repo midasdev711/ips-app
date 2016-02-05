@@ -1,9 +1,10 @@
-%nav
-  .row
-    .columns
-      %ul.breadcrumbs
-        %li= link_to 'Dealerdhips', dealerships_path
+%nav.row
+  .columns
+    %ul.breadcrumbs
+      %li= link_to 'Dealerdhips', dealerships_path
 
 %main
-  %h1 Edit Dealership
+  .row
+    .columns
+      %h1 Edit Dealership
   = render 'form'

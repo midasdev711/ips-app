@@ -1,5 +1,4 @@
 class ProductList < ActiveRecord::Base
-  belongs_to :deal
   belongs_to :listable, polymorphic: true
   has_many :products, autosave: true, dependent: :destroy
   has_many :insurance_policies, autosave: true, dependent: :destroy
@@ -8,11 +7,14 @@ class ProductList < ActiveRecord::Base
 
   accepts_nested_attributes_for :products, allow_destroy: true
   accepts_nested_attributes_for :insurance_policies, allow_destroy: true
-  accepts_nested_attributes_for :deal
 
   after_initialize :set_defaults
 
   monetize :car_profit_cents, :family_profit_cents
+
+  def master?
+    listable.is_a? User
+  end
 
   private
 
