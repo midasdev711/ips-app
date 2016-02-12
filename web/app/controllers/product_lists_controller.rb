@@ -76,15 +76,11 @@ class ProductListsController < ApplicationController
   end
 
   def redirect_path
-    return dealerships_path if @product_list.master?
-
-    case @listable.class.to_s
-    when 'Dealership'
-      dealerships_path
-    when 'Deal'
-      deal_path(@listable)
+    if @product_list.master?
+      return current_user.admin? ? dealerships_path : deals_path
     else
-      deals_path
+      return dealerships_path     if @listable.is_a? Dealership
+      return deal_path(@listable) if @listable.is_a? Deal
     end
   end
 end
