@@ -1,7 +1,9 @@
-db:
-  ports:
-    - "5432:5432"
+version: "2"
+services:
+  db:
+    ports:
+      - "5432:5432"
 
-web:
-  volumes:
-  - ./web:/app/user
+  web:
+    volumes:
+    - ./web:/app/user
