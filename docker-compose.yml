@@ -1,17 +1,19 @@
-db:
-  image: postgres:9.4
-  restart: always
+version: "2"
+services:
+  db:
+    image: postgres:9.4
+    restart: always
 
-proxy:
-  build: proxy
-  ports:
-    - "80:80"
-  links:
-    - web
-  restart: always
+  proxy:
+    build: proxy
+    ports:
+      - "80:80"
+    links:
+      - web
+    restart: always
 
-web:
-  build: web
-  links:
-    - db
-  restart: always
+  web:
+    build: web
+    links:
+      - db
+    restart: always
