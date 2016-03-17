@@ -1,12 +1,14 @@
 FROM ruby:2.2.3
 
-RUN apt-get update -q && apt-get install -y \
-  build-essential \
-  libpq-dev \
-  xfonts-base \
-  xfonts-75dpi
+RUN apt-get update -q && apt-get install -y build-essential
 
-# wkhtmltopdf installation
+# for postgresql
+RUN apt-get install -y libpq-dev
+
+# for wkhtmltopdf
+RUN apt-get install -y xfonts-base xfonts-75dpi
+
+# wkhtmltopdf
 RUN FILE=wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
   && wget -q http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/$FILE \
   && dpkg -i $FILE \
@@ -22,6 +24,6 @@ RUN bundle install
 
 ADD . $APP_PATH
 
-EXPOSE 8080
+CMD ["puma", "--config", "config/puma.rb"]
 
-CMD ["passenger", "start", "--port", "8080"]
+EXPOSE 9292
