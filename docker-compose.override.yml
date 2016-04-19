@@ -5,5 +5,7 @@ services:
       - "5432:5432"
 
   web:
+    environment:
+      DEBUG: "true"
     volumes:
-    - ./web:/app/user
+      - ./web:/app/user

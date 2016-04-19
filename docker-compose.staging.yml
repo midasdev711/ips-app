@@ -5,5 +5,6 @@ services:
       RAILS_ENV: production
       SECRET_KEY_BASE: 85a9cde3061b620ae21e80404ef51b067c0d024b6d144e6e25f4ff9ccd7cbb4e7ac3acf99027ece9e56fe1dd5a3598cc1fb81a89694b13d389b7dd01679b3a85
       ASSET_HOST: cdn.innovativepricingsolutions.staging.pieoneers.com
+      DEBUG: "true"
     volumes:
     - /app/user/log
