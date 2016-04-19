@@ -13,7 +13,7 @@ class Product < ActiveRecord::Base
   monetize :retail_price_cents, :dealer_cost_cents, numericality: { greater_than_or_equal_to: 0 }
 
   def price
-    retail_price * (1 + product_tax)
+    retail_price + tax_amount
   end
 
   def profit
@@ -22,7 +22,7 @@ class Product < ActiveRecord::Base
 
   private
 
-  def product_tax
+  def tax_percentage
     deal = product_list.listable
 
     return 0 if deal.status_indian
@@ -36,5 +36,9 @@ class Product < ActiveRecord::Base
                  end
 
     percentage.to_f / 100
+  end
+
+  def tax_amount
+    retail_price * tax_percentage
   end
 end

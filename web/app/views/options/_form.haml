@@ -187,7 +187,37 @@
         %th
         %td
           = @option_r.sku
-
+      - if Rails.application.config.debug
+        %tr
+          %th
+          %td
+          %th Payments number:
+          %td.debug-panel= @option_r.send :payments_number
+        %tr
+          %th
+          %td
+          %th Effective interest rate:
+          %td.debug-panel= @option_r.send :effective_interest_rate
+        %tr
+          %th
+          %td
+          %th Cost of borrowing:
+          %td.debug-panel= @option_r.cost_of_borrowing.format
+        %tr
+          %th
+          %td
+          %th Total amount:
+          %td.debug-panel= @option_r.amount.format
+        %tr
+          %th
+          %td
+          %th Total buydown amount:
+          %td.debug-panel= @option_r.buydown_amount.format
+        %tr
+          %th
+          %td
+          %th Insurable value:
+          %td.debug-panel= @option_r.send(:insurable_value).format
   %div.pagination-centered
     %ul.pagination.tiers
       - (1..10).each do |tier|

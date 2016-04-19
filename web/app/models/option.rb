@@ -6,6 +6,7 @@ class Option < ActiveRecord::Base
   enum payment_frequency: [:biweekly, :monthly]
 
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
+  attr_reader :amount, :buydown_amount # for debugging
 
   belongs_to :lender
   has_and_belongs_to_many :products
@@ -62,18 +63,22 @@ class Option < ActiveRecord::Base
     @current_interest_rate = interest_rate
     @current_interest_rate_index = interest_rates.index @current_interest_rate
 
+    @amount = car_amount
+    @buydown_amount = Money.new(0)
     @profit = Money.new(0)
-    amount = car_amount
-    buydown_amount = Money.new(0)
 
     categories.each do |category|
-      amount += category.products_and_fees.reduce(0) { |sum, p| sum + p.price } + category.insurance_terms.premium
+      category.amount = category.products_and_fees.reduce(0) { |sum, p| sum + p.price } + category.insurance_terms.premium
+      @amount += category.amount
+
       category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
       @profit += category.profit
 
+      category.buydown_amount = Money.new(0)
+
       if right? # All the magic happens for the option to the right.
         if buydown? # Buydown
-          category_buydown_amount = category.profit - case category.name
+          category.buydown_amount = category.profit - case category.name
           when 'pocketbook'
             Money.new(buydown_tier * 100000)
           when 'car'
@@ -82,12 +87,12 @@ class Option < ActiveRecord::Base
             deal.product_list.family_profit
           end
 
-          if category_buydown_amount > 0
-            buydown_amount += category_buydown_amount
-            @profit -= category_buydown_amount
+          if category.buydown_amount > 0
+            @buydown_amount += category.buydown_amount
+            @profit -= category.buydown_amount
           end
 
-          ratio = 1 - buydown_amount / _cost_of_borrowing(amount, interest_rate)
+          ratio = 1 - @buydown_amount / _cost_of_borrowing(@amount, interest_rate)
           normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
           @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
         else
@@ -114,14 +119,14 @@ class Option < ActiveRecord::Base
       end
 
       category.interest_rate = @current_interest_rate
-      category.payment = _payment(amount)
+      category.payment = _payment(@amount)
     end
 
-    @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(amount) : Money.new(0)
-    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount: amount, interest_rate: effective_interest_rate, payment: finance_payment(amount), payments_number: PaymentsNumber.execute(months: term, payment_frequency: payment_frequency)) : Money.new(0)
+    @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(@amount) : Money.new(0)
+    @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount: @amount, interest_rate: effective_interest_rate, payment: finance_payment(amount), payments_number: PaymentsNumber.execute(months: term, payment_frequency: payment_frequency)) : Money.new(0)
 
-    self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if amount > lender.approved_maximum
-    self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(amount) > deal.payment_max
+    self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if @amount > lender.approved_maximum
+    self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(@amount) > deal.payment_max
   end
 
   def interest_rates
