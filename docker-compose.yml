@@ -8,6 +8,7 @@ services:
   db:
     container_name: db
     image: postgres:9.4.5
+
     networks:
       - ips
 
