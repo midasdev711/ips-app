@@ -42,6 +42,7 @@ class WorksheetsController < ApplicationController
           :amortization,
           :residual_value,
           :residual_unit,
+          :kickback,
           :approved_maximum,
           interest_rates_attributes: [:id, :value, :_destroy, :lender_id],
         ]
