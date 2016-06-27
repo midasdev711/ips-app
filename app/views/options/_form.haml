@@ -191,11 +191,6 @@
         %tr
           %th
           %td
-          %th Payments number:
-          %td.debug-panel= @option_r.send :payments_number
-        %tr
-          %th
-          %td
           %th Effective interest rate:
           %td.debug-panel= @option_r.send :effective_interest_rate
         %tr
@@ -211,13 +206,8 @@
         %tr
           %th
           %td
-          %th Total buydown amount:
+          %th Total Buy Down amount:
           %td.debug-panel= @option_r.buydown_amount.format
-        %tr
-          %th
-          %td
-          %th Insurable value:
-          %td.debug-panel= @option_r.send(:insurable_value).format
   %div.pagination-centered
     %ul.pagination.tiers
       - (1..10).each do |tier|
