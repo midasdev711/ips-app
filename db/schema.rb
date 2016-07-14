@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160703033225) do
+ActiveRecord::Schema.define(version: 20160714195242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20160703033225) do
     t.integer  "residual_value",         default: 0
     t.integer  "residual_unit",          default: 0
     t.boolean  "kickback",               default: false
+    t.boolean  "rounding",               default: false
   end
 
   add_index "lenders", ["deal_id"], name: "index_lenders_on_deal_id", using: :btree

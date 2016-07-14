@@ -171,6 +171,15 @@
               = f.fields_for :lenders, @lender_r do |lf|
                 .small-12.columns
                   = lf.check_box :kickback
+        %tr.rounding
+          %th
+          %td.lender-l
+          %td
+          %td.lender-r
+            .row.collapse
+              = f.fields_for :lenders, @lender_r do |lf|
+                .small-12.columns
+                  = lf.check_box :rounding
         %tr
           %th
             Maximum Dollar Amount Approved
