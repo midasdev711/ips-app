@@ -22,7 +22,7 @@ class Option < ActiveRecord::Base
 
   before_update :normalize_insurance_terms
 
-  delegate :left?, :right?, :kickback, to: :lender
+  delegate :left?, :right?, :kickback, :rounding, to: :lender
 
   def warnings
     @warnings ||= []
@@ -92,13 +92,15 @@ class Option < ActiveRecord::Base
             category.buydown_amount = buydown_amount
             @buydown_amount += buydown_amount
 
-            interest_rate * (cost_of_borrowing - @buydown_amount) / cost_of_borrowing
             ratio = 1 - @buydown_amount / cost_of_borrowing
             ratio = 0 if ratio < 0
 
-            @current_interest_rate = (interest_rate * ratio).round(2)
-            # normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
-            # @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+            if rounding # Optional interest rate rounding
+              normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
+              @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+            else
+              @current_interest_rate = (interest_rate * ratio).round(2)
+            end
           end
         else
           case category.name
