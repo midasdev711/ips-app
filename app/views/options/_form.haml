@@ -179,7 +179,8 @@
           = link_to 'Cost of borrowing', '#', class: 'show-cost-of-borrowing', data: { target: '#option-r-cost-of-borrowing' }
         %td
           #option-r-cost-of-borrowing.hide
-            = @option_r.cost_of_borrowing.format
+            %span{ 'data-tooltip' => true, class: 'has-tip tip-right', title: "Cost of Buy Down: #{@option_r.buydown_amount.format}" }
+              = @option_r.cost_of_borrowing.format
       %tr.sku
         %th
         %td

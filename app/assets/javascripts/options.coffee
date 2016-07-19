@@ -5,6 +5,7 @@ OptionsController.prototype.show = () ->
   $document.ready ->
     $document.on 'ajax:complete', '#options-form', (e, xhr) ->
       $('#options-form-container').html(xhr.responseText)
+      $document.foundation();
 
     $document.on 'change', '.residual-unit-select', (e) ->
       e.stopPropagation()
