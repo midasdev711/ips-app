@@ -2,6 +2,7 @@ $bg-color: #081226;
 
 .landing {
   width: 100%;
+  min-width: auto;
   height: 100%;
   position: relative;
   justify-content: space-between;
@@ -29,7 +30,7 @@ $bg-color: #081226;
   }
 
   .logo {
-    font-size: rem-calc(30);
+    width: 18rem;
   }
 
   a {
