@@ -116,6 +116,12 @@ $bg-color: #081226;
       width: auto;
       margin: 0;
       padding: 0;
+
+      @media #{$small-only} {
+        width: 100%;
+
+        &:last-child {float: left;}
+      }
     }
 
     .logo {

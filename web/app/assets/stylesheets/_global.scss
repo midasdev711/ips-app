@@ -27,18 +27,14 @@ body {
 
     footer {
       margin-top: auto;
-      padding: rem-calc(5) 0;
+      padding: rem-calc(15) 0;
       background-color: $smoke;
       font-size: rem-calc(12);
       color: $base;
 
       .logo {
-        font-size: rem-calc(12);
-        color: $body-font-color;
+        width: 9em;
 
-        @media #{$small-only} {
-          margin-bottom: 1em;
-        }
       }
 
       p {
@@ -54,17 +50,20 @@ body {
       }
     }
   }
-}
 
-// Logo
+  footer {
+    .right {
+      @media #{$small-only} {
+        float: none !important;
+      }
+    }
 
-.logo {
-  width: 6em;
-  margin: 0;
-  font-weight: 900;
-  line-height: 1em;
-  text-transform: uppercase;
-  color: inherit;
+    .columns:not(:last-child) {
+      @media #{$small-only} {
+        margin-bottom: 1em;
+      }
+    }
+  }
 }
 
 
