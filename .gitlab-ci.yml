@@ -1,0 +1,10 @@
+stages:
+  - test
+
+test:
+  stage: test
+  script: >
+    docker-compose run --rm web rspec
+
+after_script:
+  - docker-compose down
