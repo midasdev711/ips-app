@@ -1,8 +1,8 @@
 .DS_Store
 
-/web/log
-/web/tmp
+/log
+/tmp
 
-/web/public/assets
+/public/assets
 
-/web/coverage
+/coverage

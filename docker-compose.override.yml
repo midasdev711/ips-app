@@ -4,8 +4,8 @@ services:
     ports:
       - "5432:5432"
 
-  web:
+  app:
     environment:
       DEBUG: "true"
     volumes:
-      - ./web:/app/user
+      - .:/app/user
