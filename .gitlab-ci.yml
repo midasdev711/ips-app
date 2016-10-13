@@ -4,6 +4,7 @@ stages:
 test:
   stage: test
   script:
+    - docker-compose build
     - docker-compose run --rb web rake db:create
     - docker-compose run --rm web rspec
 
