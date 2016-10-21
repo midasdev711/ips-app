@@ -45,3 +45,17 @@ staging:
     ips-ansible deploy:staging
   only:
     - develop
+
+production:
+  stage: deploy
+  environment: production
+  script: >
+    docker run --rm
+    --volume /home/ansible/.ssh/ips-staging.pem:/app/user/.ssh/ips-staging.pem:ro
+    --env ANSIBLE_VAULT_PASSWORD=$ANSIBLE_VAULT_PASSWORD
+    --env DO_API_TOKEN=$DO_API_TOKEN
+    --env DOCKER_LOGIN_USERNAME=$DOCKER_LOGIN_USERNAME
+    --env DOCKER_LOGIN_PASSWORD=$DOCKER_LOGIN_PASSWORD
+    ips-ansible deploy:production
+  only:
+    - master
