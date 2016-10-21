@@ -9,3 +9,5 @@ services:
       DEBUG: "true"
     volumes:
       - .:/app/user
+    ports:
+      - "80:9292"
