@@ -51,7 +51,7 @@ production:
   environment: production
   script: >
     docker run --rm
-    --volume /home/ansible/.ssh/ips-staging.pem:/app/user/.ssh/ips-staging.pem:ro
+    --volume /home/ansible/.ssh/ips-production.pem:/app/user/.ssh/ips-production.pem:ro
     --env ANSIBLE_VAULT_PASSWORD=$ANSIBLE_VAULT_PASSWORD
     --env DO_API_TOKEN=$DO_API_TOKEN
     --env DOCKER_LOGIN_USERNAME=$DOCKER_LOGIN_USERNAME
