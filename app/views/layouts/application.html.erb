@@ -22,7 +22,7 @@
           <%= image_tag 'ips-logo-orange', class: 'logo' %>
         </div>
         <div class="medium-8 columns">
-          <p>IPS Software, Ltd., Vancouver, BC, Canada</p>
+          <p><%= t :company_legal_name %>, Vancouver, BC, Canada</p>
           <p>
             <span><%= mail_to 'info@innovativepricingsolutions.com' %></span>
             <% if user_signed_in? %>

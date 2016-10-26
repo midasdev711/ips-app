@@ -20,7 +20,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
   dealership_mailer:
     deactivation_notification:
       subject: '[IPS] Account deactivated'
+  company_legal_name: IPS Software, Ltd.
