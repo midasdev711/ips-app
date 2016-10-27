@@ -129,7 +129,7 @@ class Option < ActiveRecord::Base
       category.payment = _payment(@amount)
     end
 
-    @cost_of_borrowing = _cost_of_borrowing(@amount)
+    @cost_of_borrowing = @current_interest_rate.zero? ? Money.new(0) : _cost_of_borrowing(@amount)
 
     # HACK
     if right? && buydown?
