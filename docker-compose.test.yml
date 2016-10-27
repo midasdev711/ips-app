@@ -12,12 +12,12 @@ services:
       - ips
 
   app:
-    container_name: app:latest
+    container_name: app
     build: .
     networks:
       - ips
     environment:
       RAILS_ENV: test
-      DATABASE_URL: postgresql://postgres:@db/ips
+      DATABASE_URL: postgresql://postgres:@db/ips-test
     depends_on:
       - db
