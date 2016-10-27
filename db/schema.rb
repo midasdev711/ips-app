@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204023325) do
+ActiveRecord::Schema.define(version: 20160714195242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,9 +74,9 @@ ActiveRecord::Schema.define(version: 20160204023325) do
 
   create_table "insurance_terms", force: :cascade do |t|
     t.integer "option_id"
+    t.integer "insurance_policy_id"
     t.integer "term"
     t.integer "category"
-    t.integer "insurance_policy_id"
     t.integer "premium_cents",       default: 0
     t.boolean "overridden",          default: false
   end
@@ -102,14 +102,16 @@ ActiveRecord::Schema.define(version: 20160204023325) do
     t.integer  "amortization"
     t.integer  "residual_cents",         default: 0
     t.integer  "approved_maximum_cents", default: 0
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.text     "notes"
     t.integer  "bank_reg_fee_cents",     default: 0
     t.integer  "loan_type"
     t.integer  "position"
     t.integer  "residual_value",         default: 0
     t.integer  "residual_unit",          default: 0
+    t.boolean  "kickback",               default: false
+    t.boolean  "rounding",               default: false
   end
 
   add_index "lenders", ["deal_id"], name: "index_lenders_on_deal_id", using: :btree
@@ -119,13 +121,16 @@ ActiveRecord::Schema.define(version: 20160204023325) do
     t.integer "index"
     t.integer "term"
     t.integer "buydown_tier"
+    t.float   "pocketbook_loan_rate"
+    t.float   "car_loan_rate"
+    t.float   "family_loan_rate"
     t.integer "loan_type"
     t.float   "interest_rate"
     t.integer "payment_frequency"
     t.integer "amortization"
-    t.integer "residual_cents",    default: 0
-    t.integer "residual_value",    default: 0
-    t.integer "residual_unit",     default: 0
+    t.integer "residual_cents",       default: 0
+    t.integer "residual_value",       default: 0
+    t.integer "residual_unit",        default: 0
   end
 
   create_table "options_products", id: false, force: :cascade do |t|

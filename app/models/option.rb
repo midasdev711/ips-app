@@ -22,7 +22,7 @@ class Option < ActiveRecord::Base
 
   before_update :normalize_insurance_terms
 
-  delegate :left?, :right?, to: :lender
+  delegate :left?, :right?, :kickback, :rounding, to: :lender
 
   def warnings
     @warnings ||= []
@@ -50,35 +50,36 @@ class Option < ActiveRecord::Base
         products_and_fees: p + f,
         insurance_terms: t,
         available_count: available_count,
-        count: p.count + t.count
+        count: p.count + t.count,
+
+        insurable_value: insurable_value,
+        insurance_profit: insurance_profit
       })
     end
   end
 
   def calculate
-    insurance_terms.map { |insurance_term| insurance_term.calculate_premium insurable_value }
-
     @min_interest_rate, @max_interest_rate = interest_rates.minmax
 
     @current_interest_rate = interest_rate
     @current_interest_rate_index = interest_rates.index @current_interest_rate
 
     @amount = car_amount
-    @buydown_amount = Money.new(0)
     @profit = Money.new(0)
 
+    @buydown_amount = Money.new(0)
+
     categories.each do |category|
-      category.amount = category.products_and_fees.reduce(0) { |sum, p| sum + p.price } + category.insurance_terms.premium
+      category_profit = category.profit
+
       @amount += category.amount
-
-      category.profit = category.products_and_fees.reduce(0) { |sum, p| sum + p.profit } + category.insurance_terms.premium * deal.product_list.insurance_profit / 100
-      @profit += category.profit
-
-      category.buydown_amount = Money.new(0)
+      @profit += category_profit
 
       if right? # All the magic happens for the option to the right.
-        if buydown? # Buydown
-          category.buydown_amount = category.profit - case category.name
+        if buydown? # Buy Down
+          cost_of_borrowing = _cost_of_borrowing(@amount, interest_rate)
+
+          buydown_amount = category_profit - case category.name
           when 'pocketbook'
             Money.new(buydown_tier * 100000)
           when 'car'
@@ -87,14 +88,20 @@ class Option < ActiveRecord::Base
             deal.product_list.family_profit
           end
 
-          if category.buydown_amount > 0
-            @buydown_amount += category.buydown_amount
-            @profit -= category.buydown_amount
-          end
+          if buydown_amount >= 0
+            category.buydown_amount = buydown_amount
+            @buydown_amount += buydown_amount
 
-          ratio = 1 - @buydown_amount / _cost_of_borrowing(@amount, interest_rate)
-          normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
-          @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+            ratio = 1 - @buydown_amount / cost_of_borrowing
+            ratio = 0 if ratio < 0
+
+            if rounding # Optional interest rate rounding
+              normalized_interest_rate = NormalizeInterestRate.execute(interest_rate * ratio)
+              @current_interest_rate = interest_rate < normalized_interest_rate ? interest_rate : normalized_interest_rate
+            else
+              @current_interest_rate = (interest_rate * ratio).round(2)
+            end
+          end
         else
           case category.name
           when 'pocketbook' # Each deselected product/insurance policy from Pocketbook category changes the interest rate to the next highest rate available.
@@ -118,15 +125,28 @@ class Option < ActiveRecord::Base
         end
       end
 
-      category.interest_rate = @current_interest_rate
+      category.interest_rate = @current_interest_rate.round(2)
       category.payment = _payment(@amount)
     end
 
-    @cost_of_borrowing = @current_interest_rate > 0 ? _cost_of_borrowing(@amount) : Money.new(0)
+    @cost_of_borrowing = @current_interest_rate.zero? ? Money.new(0) : _cost_of_borrowing(@amount)
+
+    # HACK
+    if right? && buydown?
+      @buydown_amount = _cost_of_borrowing(@amount, interest_rate) - @cost_of_borrowing
+
+      if kickback # Optional 15% bank kick-back.
+        @buydown_amount *= 0.85
+      end
+    end
+
+    @profit -= @buydown_amount
+
     @balloon_payment = amortization.to_i > term ? BalloonPayment.execute(amount: @amount, interest_rate: effective_interest_rate, payment: finance_payment(amount), payments_number: PaymentsNumber.execute(months: term, payment_frequency: payment_frequency)) : Money.new(0)
 
     self.warnings << "Loan amount exceeds #{lender.bank} approved maximum" if @amount > lender.approved_maximum
     self.warnings << "Payment exceeds #{lender.bank} maximum" if _payment(@amount) > deal.payment_max
+    self
   end
 
   def interest_rates
@@ -185,6 +205,10 @@ class Option < ActiveRecord::Base
   def insurable_value
     products_price = (products + misc_fees).reduce(0) {|sum, p| sum + p.price }
     car_amount + products_price + _cost_of_borrowing(car_amount + products_price, interest_rate)
+  end
+
+  def insurance_profit
+    deal.product_list.insurance_profit / 100.0
   end
 
   def effective_interest_rate(interest_rate = nil)

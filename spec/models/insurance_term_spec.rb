@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe InsuranceTerm, type: :model do
 
-  describe '#calculate_premium' do
+  describe '#calculate_premium!' do
 
     let(:insurable_value) { double :insurable_value }
     let(:insurance_rate)  { double :insurance_rate }
     let(:insurance_term)  { build :insurance_term }
 
-    let(:result) { insurance_term.calculate_premium insurable_value }
+    let(:result) { insurance_term.calculate_premium! insurable_value }
 
     before do
       allow(insurance_term).to receive(:insurance_rate).and_return insurance_rate

@@ -1,4 +1,5 @@
 version: "2"
+
 services:
   db:
     ports:
@@ -7,6 +8,8 @@ services:
   app:
     environment:
       DEBUG: "true"
+    ports:
+      - "80:9292"
     volumes:
       - .:/app/user
     ports:

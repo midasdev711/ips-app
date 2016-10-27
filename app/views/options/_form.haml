@@ -179,7 +179,8 @@
           = link_to 'Cost of borrowing', '#', class: 'show-cost-of-borrowing', data: { target: '#option-r-cost-of-borrowing' }
         %td
           #option-r-cost-of-borrowing.hide
-            = @option_r.cost_of_borrowing.format
+            %span{ 'data-tooltip' => true, class: 'has-tip tip-right', title: "Cost of Buy Down: #{@option_r.buydown_amount.format}" }
+              = @option_r.cost_of_borrowing.format
       %tr.sku
         %th
         %td
@@ -188,11 +189,6 @@
         %td
           = @option_r.sku
       - if Rails.application.config.debug
-        %tr
-          %th
-          %td
-          %th Payments number:
-          %td.debug-panel= @option_r.send :payments_number
         %tr
           %th
           %td
@@ -211,13 +207,8 @@
         %tr
           %th
           %td
-          %th Total buydown amount:
+          %th Total Buy Down amount:
           %td.debug-panel= @option_r.buydown_amount.format
-        %tr
-          %th
-          %td
-          %th Insurable value:
-          %td.debug-panel= @option_r.send(:insurable_value).format
   %div.pagination-centered
     %ul.pagination.tiers
       - (1..10).each do |tier|
