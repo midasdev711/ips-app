@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe BalloonPayment, '.execute' do
+RSpec.xdescribe BalloonPayment, '.execute' do
   let(:result) { described_class.execute amount: amount, interest_rate: effective_interest_rate, payment: payment, payments_number: term_payments_number }
   let(:term_payments_number) { PaymentsNumber.execute months: term, payment_frequency: payment_frequency }
   let(:payments_number) { PaymentsNumber.execute months: amortization, payment_frequency: payment_frequency }
