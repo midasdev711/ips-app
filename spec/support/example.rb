@@ -1,1 +1,1 @@
-  Example = Struct.new(:rate, :cost_of_borrowing, :payment)
+  Example = Struct.new(:rate, :payment, :cost_of_borrowing)

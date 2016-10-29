@@ -1,6 +1,6 @@
 class InsurancePolicy < ActiveRecord::Base
   include Category
-  include LoanType
+  include Loan
 
   attr_accessor :prototype_id
 
@@ -16,7 +16,7 @@ class InsurancePolicy < ActiveRecord::Base
   after_initialize :set_insurance_rates, if: -> { insurance_rates.empty? }
 
   def description
-    result = '%s [%s]' % [name, loan_type]
+    result = '%s [%s]' % [name, loan]
     if residual
       result += '[with residual]'
     end

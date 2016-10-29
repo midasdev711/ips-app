@@ -1,0 +1,193 @@
+= form_for @deal, remote: true, html: { class: 'deal-form', id: 'deal-form' } do |f|
+  = hidden_field_tag :products_changed
+  %table.complex-table
+    %thead
+      %tr
+        %th
+        %td
+          %h2 Lender 1
+        %th
+        %td
+          %h2 Lender 2
+      %tr
+        %th
+        %td
+          - @lender_l.warnings.each do |warning|
+            %span.label.warning= warning.message
+        %th
+        %td
+          - @lender_r.warnings.each do |warning|
+            %span.label.warning= warning.message
+    %tbody
+      %tr
+        %th Bank
+        %td= @lender_l.bank
+        %th Bank
+        %td= @lender_r.bank
+      %tr
+        %th
+          Term
+          %small (months)
+        %td
+          = f.fields_for :lenders, @lender_l do |lf|
+            = lf.select :term, terms, label: false
+        %th
+          Term
+          %small (months)
+        %td
+          = f.fields_for :lenders, @lender_r do |lf|
+            = lf.select :term, terms, label: false
+
+      - if @lender_l.lease? && @lender_r.finance?
+        %tr
+          %th
+          %td
+          %th
+            Amortization
+            %small (months)
+          %td
+            = f.fields_for :lenders, @lender_r do |lf|
+              = lf.select :amortization, terms.select { |t| t >= @lender_r.term.to_i }, label: false
+      %tr
+        %th
+          Rate
+          %small (%)
+        %td
+          %span.show-interest-rate{ data: { target: '#lender-l-interest-rate' } }
+            = @lender_l.product_categories.last.interest_rate.percent_value
+          = f.fields_for :lenders, @lender_l do |lf|
+            = lf.select :interest_rate_id, options_from_collection_for_select(@interest_rates_l, :id, :percent_value), { label: false }, id: 'lender-l-interest-rate', class: 'hide'
+        %th
+          Rate
+          %small (%)
+        %td
+          %span.show-interest-rate{ data: { target: '#lender-r-interest-rate' } }
+            = @lender_r.product_categories.first.interest_rate.percent_value
+          = f.fields_for :lenders, @lender_r do |lf|
+            = lf.select :interest_rate_id, options_from_collection_for_select(@interest_rates_r, :id, :percent_value), { label: false }, id: 'lender-r-interest-rate', class: 'hide'
+
+      %tr.payment
+        %th Payment
+        %td
+          = @lender_l.product_categories.last.payment.format
+          = f.fields_for :lenders, @lender_l do |lf|
+            = lf.select :frequency, compounding_frequencies, label: false
+        %th Payment
+        %td
+          = @lender_r.product_categories.first.payment.format
+          = f.fields_for :lenders, @lender_r do |lf|
+            = lf.select :frequency, compounding_frequencies, label: false
+
+      - if @lender_l.lease?
+        %tr
+          %th
+            Residual
+          %td
+            .row.collapse
+              = f.fields_for :lenders, @lender_l do |lf|
+                .small-9.columns
+                  = lf.text_field :residual_value, label: false, data: { autonumeric: autonumeric_options }, id: 'lender-l-residual'
+                .small-3.columns
+                  = lf.select :residual_unit, residual_units, { label: false }, data: { target: '#lender-l-residual' }, class: 'residual-unit-select'
+          %th
+            = @lender_r.finance? ? 'Balloon' : 'Residual'
+          %td
+            - if @lender_r.finance?
+              = @lender_r.balloon.format
+            - else
+              .row.collapse
+                = f.fields_for :lenders, @lender_r do |lf|
+                  .small-9.columns
+                    = lf.text_field :residual_value, label: false, data: { autonumeric: autonumeric_options }, id: 'lender-r-residual'
+                  .small-3.columns
+                    = lf.select :residual_unit, residual_units, { label: false }, data: { target: '#lender-r-residual' }, class: 'residual-unit-select'
+
+  %table.complex-table
+    %tbody
+      %tr
+        %th
+          = link_to 'Products', '#', class: 'toggle-products', data: { target: '#lender-l-products' }
+        %td
+          #lender-l-products{ class: ('hide' unless params[:products_changed] == 'true') }
+            = render 'product_categories', f: f, lender: @lender_l
+        %th
+          Products
+        %td
+          = render 'product_categories', f: f, lender: @lender_r
+      %tr
+        %th
+          Down payment
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_l do |lender|
+            = lender.text_field :cash_down, label: false, data: { autonumeric: autonumeric_options }
+        %th
+          Down payment
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_r do |lender|
+            = lender.text_field :cash_down, label: false, data: { autonumeric: autonumeric_options }
+      %tr
+        %th
+          Rebate
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_l do |lender|
+            = lender.text_field :rebate, label: false, data: { autonumeric: autonumeric_options }
+        %th
+          Rebate
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_r do |lender|
+            = lender.text_field :rebate, label: false, data: { autonumeric: autonumeric_options }
+      %tr
+        %th
+          DCI
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_l do |lender|
+            = lender.text_field :dci, label: false, data: { autonumeric: autonumeric_options }
+        %th
+          DCI
+          %small ($)
+        %td
+          = f.fields_for :lenders, @lender_r do |lender|
+            = lender.text_field :dci, label: false, data: { autonumeric: autonumeric_options }
+      %tr
+        %th Bank notes
+        %td
+          = f.fields_for :lenders, @lender_l do |lender|
+            = lender.text_field :notes, label: false
+        %th Bank notes
+        %td
+          = f.fields_for :lenders, @lender_r do |lender|
+            = lender.text_field :notes, label: false
+      %tr
+        %th Cost of borrowing
+        %td
+          = @lender_l.cost_of_borrowing.format
+        %th
+          = link_to 'Cost of borrowing', '#', class: 'show-cost-of-borrowing', data: { target: '#lender-r-cost-of-borrowing' }
+        %td
+          #lender-r-cost-of-borrowing.hide
+            %span{ 'data-tooltip' => true, class: 'has-tip tip-right', title: "Cost of Buy Down: #{@lender_r.buy_down_amount.format}" }
+              = @lender_r.cost_of_borrowing.format
+      %tr.sku
+        %th
+        %td
+          = @lender_l.sku
+        %th
+        %td
+          = @lender_r.sku
+
+  %div.pagination-centered
+    %ul.pagination.tiers
+      - (1..10).each do |i|
+        - disabled = i > @max_tier
+        - selected = i == @tier
+        %li{ class: [('current' if selected), ('unavailable' if disabled && !selected)] }
+          %button{ class: 'tiny tier', disabled: disabled && !selected, data: { tier: i } }
+            = i
+
+  = f.fields_for :lenders, @lender_r do |lf|
+    = lf.hidden_field :tier, id: 'tier'

@@ -8,8 +8,6 @@ services:
   app:
     environment:
       DEBUG: "true"
-    ports:
-      - "80:9292"
     volumes:
       - .:/app/user
     ports:

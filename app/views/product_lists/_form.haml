@@ -1,6 +1,6 @@
 = form_for @product_list, url: polymorphic_path([@listable, :product_list]) do |f|
   - autonumeric_options = { 'aPad': false }
-  - product_categories.each do |name, category|
+  - Product.categories.each do |name, category|
     .row.category
       .columns
         .row
@@ -10,9 +10,9 @@
           .small-9.columns.default-category-profit
             - case category
             - when 'car'
-              = f.text_field :car_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
+              = f.text_field :car_reserved_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
             - when 'family'
-              = f.text_field :family_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
+              = f.text_field :family_reserved_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
         %table.complex-table
           %thead
             %tr
@@ -78,5 +78,5 @@
       .total
         Total profit:
         %span#total-profit
-          = @product_list.products.reduce(0) { |sum, p| sum + p.profit }
+          = @product_list.products.profit
       = f.submit value: 'Save product list', class: 'small success button'

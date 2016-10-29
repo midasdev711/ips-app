@@ -1,4 +1,4 @@
-%tr.insurance-policy-form{ class: insurance_policy.loan_type }
+%tr.insurance-policy-form{ class: insurance_policy.loan }
   = f.fields_for :insurance_policies, insurance_policy do |pf|
     = pf.hidden_field :_destroy
     = pf.hidden_field :category
@@ -7,7 +7,7 @@
       %td
         = pf.text_field :name, label: false, class: 'name'
       %td
-        = pf.select :loan_type, loan_types, { label: false }, class: 'loan-type'
+        = pf.select :loan, loans, { label: false }, class: 'loan-type'
       %td
         = pf.select :residual, { 'lease only' => false, 'with residual' => true }, { label: false }, class: 'residual'
       %td
@@ -24,7 +24,7 @@
         %td
           = pf.text_field :name, label: false, name: nil, disabled: true, class: 'name'
         %td
-          = pf.text_field :loan_type, label: false, name: nil, disabled: true
+          = pf.text_field :loan, label: false, name: nil, disabled: true
         %td
           = pf.text_field :residual, label: false, name: nil, disabled: true, class: 'residual', value: (insurance_policy.residual ? 'with residual' : 'lease only')
     %td.delete-link

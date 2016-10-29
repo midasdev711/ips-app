@@ -24,3 +24,9 @@ en:
     deactivation_notification:
       subject: '[IPS] Account deactivated'
   company_legal_name: IPS Software, Ltd.
+
+  lender:
+    warnings:
+      messages:
+        amount: Loan amount exceeds %{bank} approved maximum.
+        payment: Payment exceeds %{bank} maximum.

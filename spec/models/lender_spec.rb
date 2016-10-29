@@ -1,0 +1,508 @@
+require 'rails_helper'
+
+RSpec.describe Lender, type: :model do
+
+  it { is_expected.to belong_to :deal }
+  it { is_expected.to have_one(:product_list).through :deal }
+
+  it { is_expected.to have_and_belong_to_many :products }
+  it { is_expected.to have_many :insurance_terms }
+  it { is_expected.to have_many(:insurance_policies).through :insurance_terms }
+
+  it { is_expected.to validate_numericality_of(:amortization).allow_nil }
+  it { is_expected.to validate_presence_of :bank }
+  it { is_expected.to validate_presence_of :frequency }
+  it { is_expected.to validate_presence_of :position }
+
+  it { is_expected.to callback(:set_residual).after :validation }
+
+
+  let(:lender) { build :lender }
+
+  describe '#calculate!' do
+    subject { lender.calculate! }
+
+    xit { is_expected.to eq lender }
+  end
+
+  describe '#buydown?' do
+    subject { lender.buydown? }
+
+    before do
+      allow(lender).to receive(:tier).and_return tier
+    end
+
+    context 'when no tier selected' do
+      let(:tier) { double :tier, present?: false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when tier selected' do
+      let(:tier) { double :tier, present?: true }
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#vehicle_amount' do
+    subject { lender.vehicle_amount }
+
+    let(:amount)           { double :amount }
+    let(:tax_rate)         { double :tax_rate }
+    let(:tax_amount)       { double :tax_amount }
+    let(:amount_after_tax) { double :amount_after_tax }
+
+    before do
+      allow(lender).to receive(:loan).and_return loan
+      allow(lender).to receive(:tax_rate).and_return tax_rate
+
+      allow(lender).to receive(:bank_reg_fee).and_return amount
+      allow(lender).to receive(:cash_down).and_return amount
+      allow(lender).to receive(:cash_price).and_return amount
+      allow(lender).to receive(:dci).and_return amount
+      allow(lender).to receive(:lien).and_return amount
+      allow(lender).to receive(:rebate).and_return amount
+      allow(lender).to receive(:trade_in).and_return amount
+
+      allow(amount).to receive(:+).with(amount).and_return amount
+      allow(amount).to receive(:-).with(amount).and_return amount
+
+      allow(amount).to receive(:*).with(tax_rate).and_return tax_amount
+      allow(amount).to receive(:+).with(tax_amount).and_return amount_after_tax
+    end
+
+    context 'loan is finance' do
+      let(:loan) { 'finance' }
+
+      it { is_expected.to eq amount_after_tax }
+    end
+
+    context 'loan is lease' do
+      let(:loan) { 'lease' }
+
+      it { is_expected.to eq amount }
+    end
+  end
+
+  describe '#products_amount' do
+    subject { lender.products_amount }
+
+    let(:products)           { [double(:product, retail_price: money)] }
+    let(:invisible_products) { [double(:product, retail_price: money)] }
+
+    let(:money_class) { class_double('Money').as_stubbed_const }
+    let(:money)       { double :money }
+
+    before do
+      allow(lender).to receive(:products).and_return products
+      allow(lender).to receive(:invisible_products).and_return invisible_products
+
+      allow(money_class).to receive(:new).and_return money
+      allow(money).to receive(:+).with(money).and_return money
+    end
+
+    it { is_expected.to eq money }
+  end
+
+  describe '#insurable_amount' do
+    subject { lender.insurable_amount }
+
+    let(:interest_rate)       { double :interest_rate, value: interest_rate_value }
+    let(:interest_rate_value) { double :interest_rate_value }
+
+    let(:amount) { double :amount }
+
+    let(:calculator) { double :calculator, cost_of_borrowing: cost_of_borrowing }
+    let(:cost_of_borrowing) { double :cost_of_borrowing }
+
+    let(:expected_amount) { double :expected_amount }
+
+    before do
+      allow(lender).to receive(:interest_rate).and_return interest_rate
+
+      allow(lender).to receive(:vehicle_amount).and_return amount
+      allow(lender).to receive(:products_amount).and_return amount
+
+      allow(lender).to receive(:calculator).and_return calculator
+
+      allow(amount).to receive(:+).with(amount).and_return amount
+
+      allow(calculator).to receive(:amount=).with amount
+      allow(calculator).to receive(:rate=).with interest_rate_value
+      allow(calculator).to receive(:calculate!)
+
+      allow(amount).to receive(:+).with(cost_of_borrowing).and_return expected_amount
+    end
+
+    it { is_expected.to eq expected_amount }
+  end
+
+  describe '#max_tier' do
+    subject { lender.max_tier }
+
+    let(:money) { double :money, cents: cents }
+    let(:cents) { double :cents }
+
+    let(:tier) { double :tier }
+
+    before do
+      allow(lender).to receive(:pocketbook_profit).and_return money
+      allow(cents).to receive(:/).with(1_000_00).and_return tier
+    end
+
+    it { is_expected.to eq tier }
+  end
+
+  describe '#reset_interest_rate' do
+    subject { lender.send :reset_interest_rate }
+
+    let(:min) { double :min }
+    let(:max) { double :max }
+
+    let(:rates) { [min, max] }
+
+    before do
+      allow(lender).to receive(:interest_rates_minmax).and_return rates
+      allow(lender).to receive(:position).and_return position
+    end
+
+    context 'left-side lender' do
+      let(:position) { 'left' }
+
+      before do
+        expect(lender).to receive(:interest_rate=).with max
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'right-side lender' do
+      let(:position) { 'right' }
+
+      before do
+        expect(lender).to receive(:interest_rate=).with min
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#interest_rates_minmax' do
+    subject { lender.send :interest_rates_minmax }
+
+    let(:interest_rates_collection) { double :interest_rates_collection }
+    let(:interest_rates_minmax) { double :interest_rates_minmax }
+
+    before do
+      allow(lender).to receive(:interest_rates).and_return interest_rates_collection
+      expect(interest_rates_collection).to receive(:minmax_by).and_return interest_rates_minmax
+    end
+
+    it { is_expected.to eq interest_rates_minmax }
+  end
+
+  describe '#reset!' do
+    subject { lender.reset! }
+
+    before do
+      expect(lender).to receive :reset_interest_rate
+      expect(lender).to receive :reset_insurance_terms
+      expect(lender).to receive :reset_products
+      expect(lender).to receive(:save!).and_return true
+    end
+
+    it { is_expected.to be_truthy }
+  end
+
+  describe '#reset_insurance_terms' do
+    subject { lender.send :reset_insurance_terms }
+
+    let(:insurance_terms) { double :insurance_terms }
+
+    before do
+      allow(lender).to receive(:position).and_return position
+      allow(lender).to receive(:insurance_terms).and_return insurance_terms
+    end
+
+    context 'left-side lender' do
+      let(:position) { 'left' }
+
+      before do
+        expect(insurance_terms).to receive(:destroy_all).once
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'right-side lender' do
+      let(:position) { 'right' }
+      let(:term) { double :term }
+
+      let(:insurance_policies_grouped_by_name) { { name: group } }
+
+      let(:insurance_policy_one)          { double :insurance_policy, category: insurance_policy_one_category, residual: false }
+      let(:insurance_policy_one_category) { double :insurance_policy_one_category }
+
+      before do
+        allow(lender).to receive(:insurance_policies_grouped_by_name).and_return insurance_policies_grouped_by_name
+        allow(lender).to receive(:term).and_return term
+      end
+
+      context 'when no residual variants available' do
+        let(:group) { [insurance_policy_one] }
+
+        before do
+          expect(insurance_terms).to receive(:create!).with(term: term, insurance_policy: insurance_policy_one, category: insurance_policy_one_category).once
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when residual variants available' do
+        let(:group) { [insurance_policy_one, insurance_policy_two] }
+
+        let(:insurance_policy_two)          { double :insurance_policy, category: insurance_policy_two_category, residual: true }
+        let(:insurance_policy_two_category) { double :insurance_policy_two_category }
+
+        before do
+          expect(insurance_terms).to receive(:create!).with(term: term, insurance_policy: insurance_policy_two, category: insurance_policy_two_category).once
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#reset_products' do
+    subject { lender.send :reset_products }
+
+    let(:products) { double :products }
+    let(:product_list) { double :product_list, products: products }
+
+    before do
+      allow(lender).to receive(:position).and_return position
+    end
+
+    context 'left-side lender' do
+      let(:position) { 'left' }
+
+      before do
+        expect(lender).to receive(:products=).with([]).once
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'right-side lender' do
+      let(:position) { 'right' }
+
+      before do
+        allow(lender).to receive(:product_list).and_return product_list
+        allow(products).to receive(:visible).and_return products
+
+        expect(lender).to receive(:products=).with(products).once
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#calculator' do
+
+    subject { lender.send :calculator }
+
+    let(:frequency) { double :frequency }
+    let(:rate)      { double :rate }
+    let(:tax)       { double :tax }
+    let(:term)      { double :term }
+
+    before do
+      allow(lender).to receive(:loan)
+        .and_return loan
+      allow(lender).to receive(:interest_rate).and_return rate
+      allow(rate).to receive(:value).and_return rate
+      allow(lender).to receive(:frequency)
+        .and_return frequency
+      allow(frequency).to receive(:to_sym)
+        .and_return frequency
+      allow(lender).to receive(:tax_rate)
+        .and_return tax
+      allow(lender).to receive(:term)
+        .and_return term
+    end
+
+    context 'when loan is finance' do
+      let(:loan) { 'finance' }
+      let(:amortization) { double :amortization }
+
+      let(:finance_calculator_klass) { class_double('Calculator::Finance').as_stubbed_const }
+      let(:finance_calculator)       { double :finance_calculator }
+
+      let(:expected_arguments) { { amortization: amortization, frequency: frequency, rate: rate, term: term } }
+
+      before do
+        allow(lender).to receive(:amortization)
+          .and_return amortization
+
+        allow(finance_calculator_klass).to receive(:new)
+          .with(expected_arguments)
+          .and_return finance_calculator
+      end
+
+      it { is_expected.to eq finance_calculator }
+    end
+
+    context 'when loan is lease' do
+      let(:loan) { 'lease' }
+      let(:residual) { double :residual }
+
+      let(:lease_calculator_klass) { class_double('Calculator::Lease').as_stubbed_const }
+      let(:lease_calculator)       { double :lease_calculator   }
+
+      let(:expected_arguments) { { frequency: frequency, rate: rate, residual: residual, tax: tax, term: term } }
+
+      before do
+        allow(lender).to receive(:residual)
+          .and_return residual
+
+        allow(lease_calculator_klass).to receive(:new)
+          .with(expected_arguments)
+          .and_return lease_calculator
+      end
+
+      it { is_expected.to eq lease_calculator }
+    end
+  end
+
+  describe '#invisible_products' do
+    subject { lender.send :invisible_products }
+
+    let(:product_list) { double :product_list, products: products }
+    let(:products) { double :products, invisible: invisible_products }
+    let(:invisible_products) { double :invisible_products }
+
+    before do
+      allow(lender).to receive(:product_list).and_return product_list
+    end
+
+    it { is_expected.to eq invisible_products }
+  end
+
+  describe '#pocketbook_profit' do
+    subject { lender.send :pocketbook_profit }
+
+    let(:product_collection) { double :product_collection }
+    let(:money) { double :money }
+
+    before do
+      allow(money).to receive(:+).with(money).and_return money
+
+      allow(product_collection).to receive(:pocketbook).and_return product_collection
+      allow(product_collection).to receive(:profit).and_return money
+
+      allow(lender).to receive(:invisible_products).and_return product_collection
+      allow(lender).to receive(:products).and_return product_collection
+    end
+
+    it { is_expected.to eq money }
+  end
+
+  describe '#warnings?' do
+    subject { lender.warnings? }
+
+    before do
+      allow(lender).to receive(:amount_warnings?).and_return amount_warnings
+      allow(lender).to receive(:payment_warnings?).and_return payment_warnings
+    end
+
+    context 'no warnings' do
+      let(:amount_warnings) { false }
+      let(:payment_warnings) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'amount warnings only' do
+      let(:amount_warnings) { true }
+      let(:payment_warnings) { false }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'payment warnings only' do
+      let(:amount_warnings) { false }
+      let(:payment_warnings) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'both amount and payment warnings' do
+      let(:amount_warnings) { true }
+      let(:payment_warnings) { true }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#amount_warnings?' do
+    subject { lender.send :amount_warnings? }
+
+        let(:amount) { double :money }
+    let(:max_amount) { double :money }
+
+    let!(:warnings) { lender.warnings }
+
+    before do
+      allow(lender).to receive(:amount).and_return amount
+      allow(lender).to receive(:max_amount).and_return max_amount
+
+      allow(amount).to receive(:>).with(max_amount).and_return comparison_result
+    end
+
+    context 'amount is below maximum amount' do
+      let(:comparison_result) { false }
+
+      it { is_expected.to be_falsey }
+      it { expect{subject}.not_to change{warnings.count}.from(0) }
+    end
+
+    context 'amount is above maximum amount' do
+      let(:comparison_result) { true }
+
+      it { is_expected.to be_truthy }
+      it { expect{subject}.to change{warnings.count}.from(0).to(1) }
+    end
+  end
+
+  describe '#payment_warnings?' do
+    subject { lender.send :payment_warnings? }
+
+        let(:payment) { double :money }
+    let(:max_payment) { double :money }
+
+    let(:deal) { double :deal, max_payment: max_payment }
+
+    let!(:warnings) { lender.warnings }
+
+    before do
+      allow(lender).to receive(:payment).and_return payment
+      allow(lender).to receive(:deal).and_return deal
+
+      allow(payment).to receive(:>).with(max_payment).and_return comparison_result
+    end
+
+    context 'payment is below maximum payment' do
+      let(:comparison_result) { false }
+
+      it { is_expected.to be_falsey }
+      it { expect{subject}.not_to change{warnings.count}.from(0) }
+    end
+
+    context 'payment is above maximum payment' do
+      let(:comparison_result) { true }
+
+      it { is_expected.to be_truthy }
+      it { expect{subject}.to change{warnings.count}.from(0).to(1) }
+    end
+  end
+end

@@ -1,23 +1,20 @@
 module ApplicationHelper
 
-  def taxes
-    [['One Tax', :one], ['Two Tax', :two], ['No Tax', :no]]
+  def autonumeric_options
+    { 'aPad' => 'false', 'wEmpty' => 'zero', 'lZer' => 'deny' }
   end
 
-  def product_categories
-    Product.categories.map { |k, _| [full_category_name(k), k] }
+  def compounding_frequencies
+    Deal::COMPOUNDING_FREQUENCIES
   end
 
-  def loan_types
-    Lender.loan_types.map { |k, v| [k.capitalize, k] }
+  def cross_copy(*properties)
+    icon = content_tag(:i, '', class: 'fa fa-exchange')
+    button_tag(icon, class: 'button tiny secondary cross-copy', data: { 'property-name' => properties.join(' ') })
   end
 
-  def payment_frequencies
-    Deal::PAYMENT_FREQUENCIES
-  end
-
-  def formalize_entity_name(name)
-    name.downcase.gsub(' ', '-')
+  def loans
+    Lender.loans.map { |k, v| [k.capitalize, k] }
   end
 
   def provinces
@@ -28,15 +25,15 @@ module ApplicationHelper
     provinces.map { |p| [p.abbr, { 'data-pst' => p.pst, 'data-gst' => p.gst }] }
   end
 
-  def autonumeric_options
-    { 'aPad' => 'false', 'wEmpty' => 'zero', 'lZer' => 'deny' }
+  def residual_units
+    [['$', :dollar], ['%', :percent]]
   end
 
-  def full_category_name(category)
-     if category.to_s.downcase == 'car'
-      'Car Protection Kit'
-    else
-      "#{category.to_s.downcase.capitalize} Protection"
-    end
+  def taxes
+    [['One Tax', :one], ['Two Tax', :two], ['No Tax', :no]]
+  end
+
+  def terms
+    [12, 24, 36, 48, 60, 72, 84, 96]
   end
 end

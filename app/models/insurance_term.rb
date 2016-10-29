@@ -2,19 +2,20 @@ class InsuranceTerm < ActiveRecord::Base
   include Term
   include Category
 
+  belongs_to :lender
   belongs_to :option
   belongs_to :insurance_policy
 
   monetize :premium_cents, numericality: { greater_than_or_equal_to: 0 }
 
-  class << self
-    def premium(insurable_value)
-      all.reduce(Money.new(0)) { |acc, t| acc + t.calculate_premium!(insurable_value) }
-    end
+  def self.amount(insurable_amount)
+    all.reduce(Money.new(0)) { |acc, item| acc + item.amount!(insurable_amount) }
   end
 
-  def calculate_premium!(insurable_value)
-    update(premium: insurable_value * insurance_rate) unless overridden
+  def amount!(insurable_amount)
+    unless overridden
+      update premium: insurable_amount * insurance_rate
+    end
     premium
   end
 

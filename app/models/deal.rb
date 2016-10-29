@@ -3,9 +3,12 @@ class Deal < ActiveRecord::Base
   include Province
   include Tax
 
-  enum state: [:product_list, :worksheet, :option]
+  enum min_frequency: [:biweekly, :monthly], _prefix: :min
+  enum max_frequency: [:biweekly, :monthly], _prefix: :max
 
-  PAYMENT_FREQUENCIES = [:biweekly, :monthly]
+  enum state: [:product_list, :worksheet, :active]
+
+  COMPOUNDING_FREQUENCIES = [:biweekly, :monthly]
 
   belongs_to :user
   has_one :client, as: :contactable, class_name: 'Contact', dependent: :destroy
@@ -22,63 +25,29 @@ class Deal < ActiveRecord::Base
 
   before_create :set_province, :set_tax, :set_product_list, :set_lenders
 
-  monetize :payment_min_cents, :payment_max_cents, numericality: { greater_than_or_equal_to: 0 }
+  monetize :min_payment_cents, :max_payment_cents, numericality: { greater_than_or_equal_to: 0 }
 
-  attr_writer :option
-
-  def setup_options
-    lenders.map(&:setup_options)
-  end
-
-  def option
-    @option || default_option
-  end
-
-  def default_option
-    case scenario
-    when 1 then 1
-    when 2 then 4
-    when 3 then 5
-    end
-  end
-
-  def options
-    case scenario
-    when 1 then [1, 2, 3]
-    when 2 then [1, 2, 3, 4]
-    when 3 then [4, 5]
-    end
-  end
-
-  def vehicle_tax
+  def tax_rate
     return 0.0 if status_indian
 
-    percentage = case tax
-                 when 'no'  then 0
-                 when 'one' then province.gst
-                 when 'two' then province.gst + province.pst
-                 end
-
-    percentage.to_f / 100
-  end
-
-  def set_scenario
-    lender_l, lender_r = lenders.order(:position)
-    scenario = lender_r.finance? ? lender_l.finance? ? 1 : 2 : 3
-    update_attribute(:scenario, scenario)
+    case tax
+    when 'no'  then 0.0
+    when 'one' then province.gst
+    when 'two' then province.gst + province.pst
+    end
   end
 
   aasm column: :state, skip_validation_on_save: true do
     state :product_list, initial: true
     state :worksheet
-    state :option
+    state :active
 
     event :product_list_done do
       transitions to: :worksheet
     end
 
     event :worksheet_done do
-      transitions to: :option
+      transitions to: :active
     end
   end
 
@@ -100,7 +69,7 @@ class Deal < ActiveRecord::Base
   end
 
   def set_lenders
-    lenders.build position: 'left', term: 60
-    lenders.build position: 'right', term: 72
+    lenders.build position: 'left'
+    lenders.build position: 'right'
   end
 end

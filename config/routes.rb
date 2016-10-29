@@ -3,19 +3,20 @@ Rails.application.routes.draw do
   devise_for :users
 
   authenticate :user do
-    resources :dealerships, except: :show do
-      resources :users
+    resource :product_list, only: [:edit, :update]
+
+    resource :profile, only: [:edit, :update]
+
+    resources :dealerships do
       resource :product_list, only: [:edit, :update]
+
+      resources :users
     end
 
     resources :deals do
       resource :product_list, only: [:edit, :update]
       resource :worksheet, only: [:show, :update]
-      resources :options, only: [:show, :update]
     end
-
-    resource :profile, only: [:edit, :update]
-    resource :product_list, only: [:edit, :update]
   end
 
   authenticated :user do

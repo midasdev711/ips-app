@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  before_filter :set_user
+  before_action :set_user
 
   def edit
   end
