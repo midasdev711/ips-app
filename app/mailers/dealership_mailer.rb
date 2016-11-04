@@ -1,6 +1,4 @@
 class DealershipMailer < ApplicationMailer
-  default from: "no-reply@ips.ca"
-
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
