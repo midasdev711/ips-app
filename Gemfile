@@ -49,3 +49,7 @@ group :test do
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'faker'
 end
+
+group :production do
+  gem 'postmark-rails', '~> 0.14.0'
+end

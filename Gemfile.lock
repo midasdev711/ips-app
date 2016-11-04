@@ -144,6 +144,12 @@ GEM
     paloma (4.2.0)
       jquery-rails
     pg (0.18.2)
+    postmark (1.9.1)
+      json
+      rake
+    postmark-rails (0.14.0)
+      actionmailer (>= 3.0.0)
+      postmark (~> 1.9.0)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -263,6 +269,7 @@ DEPENDENCIES
   ordinalize
   paloma
   pg
+  postmark-rails (~> 0.14.0)
   pry-byebug (~> 3.1.0)
   puma
   quiet_assets
