@@ -18,5 +18,6 @@ services:
       - ips
     environment:
       DATABASE_URL: postgresql://postgres:@db/ips-development
+      EMAIL_SENDER: noreply@innovativepricingsolutions.com
     depends_on:
       - db
