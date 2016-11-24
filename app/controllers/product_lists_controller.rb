@@ -80,8 +80,8 @@ class ProductListsController < ApplicationController
     if @product_list.master?
       return current_user.admin? ? dealerships_path : deals_path
     else
-      return dealerships_path     if @listable.is_a? Dealership
-      return deal_path(@listable) if @listable.is_a? Deal
+      return dealerships_path               if @listable.is_a? Dealership
+      return deal_worksheet_path(@listable) if @listable.is_a? Deal
     end
   end
 end
