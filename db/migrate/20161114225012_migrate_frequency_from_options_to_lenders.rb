@@ -1,10 +1,13 @@
 class MigrateFrequencyFromOptionsToLenders < ActiveRecord::Migration[5.0]
   def up
     Lender.all.each do |lender|
-      option = lender.options.first
-      next unless option
-      lender.frequency = option.payment_frequency
-      lender.save! validate: false
+      payment_frequency = lender.options.first.try :payment_frequency
+
+      if payment_frequency
+        lender.update_columns frequency: payment_frequency
+      else
+        lender.deal.update_columns state: 'worksheet'
+      end
     end
   end
 

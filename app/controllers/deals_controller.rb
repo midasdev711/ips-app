@@ -22,9 +22,9 @@ class DealsController < ApplicationController
   def show
     case @deal.state
     when 'product_list'
-      redirect_to edit_deal_product_list_path(@deal)
+      return redirect_to edit_deal_product_list_path @deal
     when 'worksheet'
-      redirect_to deal_worksheet_path(@deal)
+      return redirect_to deal_worksheet_path @deal
     end
 
     @client = @deal.client

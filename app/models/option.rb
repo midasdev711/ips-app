@@ -1,8 +1,6 @@
 class Option < ActiveRecord::Base
   include Loan
 
-  enum payment_frequency: [:biweekly, :monthly]
-
   attr_reader :balloon_payment, :cost_of_borrowing, :profit
   attr_reader :amount, :buydown_amount
 
