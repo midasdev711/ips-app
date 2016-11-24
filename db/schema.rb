@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 20161124004730) do
     t.integer  "tier"
     t.integer  "interest_rate_id"
     t.index ["deal_id"], name: "index_lenders_on_deal_id", using: :btree
+    t.index ["interest_rate_id"], name: "index_lenders_on_interest_rate_id", using: :btree
   end
 
   create_table "lenders_products", id: false, force: :cascade do |t|

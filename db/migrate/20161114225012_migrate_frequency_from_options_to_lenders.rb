@@ -1,4 +1,4 @@
-class MigrateFrequencyFromOptionsToLenders < ActiveRecord::Migration
+class MigrateFrequencyFromOptionsToLenders < ActiveRecord::Migration[5.0]
   def up
     Lender.all.each do |lender|
       option = lender.options.first

@@ -1,8 +1,7 @@
-class MigrateMiscFeesToInvisibleProducts < ActiveRecord::Migration
+class MigrateMiscFeesToInvisibleProducts < ActiveRecord::Migration[5.0]
   def up
     Product.where(name: 'Misc. fees').each do |product|
-      product.visible = false
-      product.save!
+      product.update_columns visible: false
     end
   end
 

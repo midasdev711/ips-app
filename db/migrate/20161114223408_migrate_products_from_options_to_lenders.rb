@@ -1,4 +1,4 @@
-class MigrateProductsFromOptionsToLenders < ActiveRecord::Migration
+class MigrateProductsFromOptionsToLenders < ActiveRecord::Migration[5.0]
   def up
     Lender.all.each do |lender|
       option = lender.options.first

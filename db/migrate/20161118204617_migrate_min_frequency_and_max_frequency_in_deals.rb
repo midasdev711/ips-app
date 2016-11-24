@@ -1,4 +1,4 @@
-class MigrateMinFrequencyAndMaxFrequencyInDeals < ActiveRecord::Migration
+class MigrateMinFrequencyAndMaxFrequencyInDeals < ActiveRecord::Migration[5.0]
   def up
     Deal.all.each do |deal|
       deal.min_frequency = deal.payment_frequency_min

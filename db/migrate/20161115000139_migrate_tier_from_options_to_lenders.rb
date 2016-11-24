@@ -1,4 +1,4 @@
-class MigrateTierFromOptionsToLenders < ActiveRecord::Migration
+class MigrateTierFromOptionsToLenders < ActiveRecord::Migration[5.0]
   def up
     Lender.all.each do |lender|
       option = lender.options.first

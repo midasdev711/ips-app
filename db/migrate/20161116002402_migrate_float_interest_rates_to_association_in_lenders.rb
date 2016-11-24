@@ -1,4 +1,4 @@
-class MigrateFloatInterestRatesToAssociationInLenders < ActiveRecord::Migration
+class MigrateFloatInterestRatesToAssociationInLenders < ActiveRecord::Migration[5.0]
   def up
     Lender.all.each do |lender|
       option = lender.options.first
