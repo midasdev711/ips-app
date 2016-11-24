@@ -1,12 +1,12 @@
 = form_for @product_list, url: polymorphic_path([@listable, :product_list]) do |f|
   - autonumeric_options = { 'aPad': false }
-  - Product.categories.each do |name, category|
+  - Product.categories.each do |category, _|
     .row.category
       .columns
         .row
           .small-3.columns
             %h3
-              = name
+              = category
           .small-9.columns.default-category-profit
             - case category
             - when 'car'
