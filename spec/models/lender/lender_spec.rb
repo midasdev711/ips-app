@@ -39,43 +39,15 @@ RSpec.describe Lender, type: :model do
   end
 
   describe '#vehicle_amount' do
-    subject { lender.vehicle_amount }
-
-    let(:amount)           { double :amount }
-    let(:tax_rate)         { double :tax_rate }
-    let(:tax_amount)       { double :tax_amount }
-    let(:amount_after_tax) { double :amount_after_tax }
+    let(:vehicle_amount) { double :vehicle_amount }
 
     before do
-      allow(lender).to receive(:loan).and_return loan
-      allow(lender).to receive(:tax_rate).and_return tax_rate
-
-      allow(lender).to receive(:bank_reg_fee).and_return amount
-      allow(lender).to receive(:cash_down).and_return amount
-      allow(lender).to receive(:cash_price).and_return amount
-      allow(lender).to receive(:dci).and_return amount
-      allow(lender).to receive(:lien).and_return amount
-      allow(lender).to receive(:rebate).and_return amount
-      allow(lender).to receive(:trade_in).and_return amount
-
-      allow(amount).to receive(:+).with(amount).and_return amount
-      allow(amount).to receive(:-).with(amount).and_return amount
-
-      allow(amount).to receive(:*).with(tax_rate).and_return tax_amount
-      allow(amount).to receive(:+).with(tax_amount).and_return amount_after_tax
+      allow(VehicleAmount).to receive(:calculate).with(lender).and_return(vehicle_amount)
     end
 
-    context 'loan is finance' do
-      let(:loan) { 'finance' }
+    subject{ lender.vehicle_amount }
 
-      it { is_expected.to eq amount_after_tax }
-    end
-
-    context 'loan is lease' do
-      let(:loan) { 'lease' }
-
-      it { is_expected.to eq amount }
-    end
+    it { is_expected.to eql(vehicle_amount) }
   end
 
   describe '#products_amount' do
