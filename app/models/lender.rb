@@ -61,9 +61,10 @@ class Lender < ActiveRecord::Base
     @buy_down_amount, @profit = Money.new(0), Money.new(0)
 
     product_categories.each do |category|
-      calculator.amount += category.amount
       @amount += category.amount
       @profit += category.profit
+
+      calculator.amount = @amount
 
       if right? # All the magic happens for the right-hand-side lender.
         if buydown? # Buy Down engaged.

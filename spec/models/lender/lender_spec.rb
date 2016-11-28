@@ -19,12 +19,6 @@ RSpec.describe Lender, type: :model do
 
   let(:lender) { build :lender }
 
-  describe '#calculate!' do
-    subject { lender.calculate! }
-
-    xit { is_expected.to eq lender }
-  end
-
   describe '#buydown?' do
     subject { lender.buydown? }
 
