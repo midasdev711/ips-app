@@ -139,14 +139,7 @@ class Lender < ActiveRecord::Base
   end
 
   def vehicle_amount
-    amount = cash_price - trade_in - dci
-    tax = amount * tax_rate
-    amount = amount + lien - rebate - cash_down + bank_reg_fee
-
-    case loan
-    when 'finance' then amount + tax
-    when 'lease'   then amount
-    end
+    @vehicle_amount ||= VehicleAmount.calculate(self)
   end
 
   def products_amount
