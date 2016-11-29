@@ -71,7 +71,6 @@ ActiveRecord::Schema.define(version: 20161126024510) do
   end
 
   create_table "insurance_terms", force: :cascade do |t|
-    t.integer "option_id"
     t.integer "insurance_policy_id"
     t.integer "term"
     t.integer "category"
@@ -120,28 +119,6 @@ ActiveRecord::Schema.define(version: 20161126024510) do
 
   create_table "lenders_products", id: false, force: :cascade do |t|
     t.integer "lender_id"
-    t.integer "product_id"
-  end
-
-  create_table "options", force: :cascade do |t|
-    t.integer "lender_id"
-    t.integer "index"
-    t.integer "term"
-    t.integer "buydown_tier"
-    t.float   "pocketbook_loan_rate"
-    t.float   "car_loan_rate"
-    t.float   "family_loan_rate"
-    t.integer "loan"
-    t.float   "interest_rate"
-    t.integer "payment_frequency"
-    t.integer "amortization"
-    t.integer "residual_cents",       default: 0
-    t.integer "residual_value",       default: 0
-    t.integer "residual_unit",        default: 0
-  end
-
-  create_table "options_products", id: false, force: :cascade do |t|
-    t.integer "option_id"
     t.integer "product_id"
   end
 
