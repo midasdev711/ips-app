@@ -12,7 +12,7 @@
         %p
           No users yet
       - else
-        %table.basic-table
+        %table.basic-table#dealership-users
           %thead
             %tr
               %th Name
@@ -26,6 +26,6 @@
                 %td
                   = mail_to user.email
                 %td
-                  = link_to dealership_user_path(@dealership, user), class: 'delete-link', method: :delete, data: { confirm: 'Are you sure?' } do
+                  = link_to dealership_user_path(@dealership, user), id: "btn-delete-user-#{user.id}", class: 'delete-link', method: :delete, data: { confirm: 'Are you sure?' } do
                     %i.fa.fa-trash-o
       = link_to 'Add a User', new_dealership_user_path(@dealership), class: 'button small'
