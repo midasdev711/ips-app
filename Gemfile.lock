@@ -58,6 +58,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    cliver (0.3.2)
     coderay (1.1.1)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -69,6 +70,7 @@ GEM
     colorize (0.8.1)
     columnize (0.9.0)
     concurrent-ruby (1.0.2)
+    database_cleaner (1.5.3)
     deep_cloneable (2.2.2)
       activerecord (>= 3.1.0, < 5.2.0)
     devise (4.2.0)
@@ -156,6 +158,10 @@ GEM
     orm_adapter (0.5.0)
     paloma (5.0.0)
     pg (0.19.0)
+    poltergeist (1.11.0)
+      capybara (~> 2.1)
+      cliver (~> 0.3.1)
+      websocket-driver (>= 0.2.0)
     postmark (1.9.1)
       json
       rake
@@ -276,6 +282,7 @@ DEPENDENCIES
   capybara (~> 2.10.1)
   coffee-rails
   colorize
+  database_cleaner (~> 1.5.3)
   deep_cloneable (~> 2.2.2)
   devise
   factory_girl_rails
@@ -290,6 +297,7 @@ DEPENDENCIES
   ordinalize
   paloma (~> 5.0.0)
   pg
+  poltergeist (~> 1.11.0)
   postmark-rails (~> 0.14.0)
   pry-byebug (~> 3.1.0)
   puma

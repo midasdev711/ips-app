@@ -53,4 +53,6 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'shoulda-callback-matchers', '~> 1.1.4'
   gem 'capybara', '~> 2.10.1'
+  gem 'poltergeist', '~> 1.11.0'
+  gem 'database_cleaner', '~> 1.5.3'
 end
