@@ -7,7 +7,7 @@ RSpec.describe Calculator::Finance, type: :model do
 
   subject { described_class.new attributes }
 
-  it { is_expected.to validate_numericality_of(:amortization).is_greater_than(subject.term).only_integer.allow_nil }
+  it { is_expected.to validate_numericality_of(:amortization).is_greater_than_or_equal_to(subject.term).only_integer.allow_nil }
 
   [:amortization, :balloon].each do |k|
     it { is_expected.to respond_to k }

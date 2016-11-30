@@ -52,7 +52,7 @@ module Calculator
   end
 
   class Finance < Base
-    validates :amortization, numericality: { only_integer: true, greater_than: :term }, allow_nil: true
+    validates :amortization, numericality: { only_integer: true, greater_than_or_equal_to: :term }, allow_nil: true
 
     attr_accessor :amortization
     attr_reader :balloon
