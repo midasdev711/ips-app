@@ -2,7 +2,7 @@ class DealershipsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @dealerships = @dealerships.includes(:principal)
+    @dealerships = @dealerships.includes(:principal).order(name: 'ASC')
   end
 
   def new
