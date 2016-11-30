@@ -21,6 +21,7 @@ test:
   script:
     - docker-compose -f docker-compose.test.yml run --rm app rspec
   after_script:
+    - docker-compose -f docker-compose.test.yml run --rm app rake assets:clobber
     - docker-compose -f docker-compose.test.yml down
 
 release:
