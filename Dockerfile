@@ -16,10 +16,10 @@ RUN FILE=wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
 
 # phantomjs
 RUN mkdir drivers
-RUN wget -q -P drivers https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2
-RUN tar -C drivers -xjf /drivers/phantomjs-1.9.8-linux-x86_64.tar.bz2
-RUN rm -Rf /drivers/phantomjs-1.9.8-linux-x86_64.tar.bz2
-RUN ln -s /drivers/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+RUN wget -q -P drivers https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+RUN tar -C drivers -xjf /drivers/phantomjs-2.1.1-linux-x86_64.tar.bz2
+RUN rm -Rf /drivers/phantomjs-2.1.1-linux-x86_64.tar.bz2
+RUN ln -s /drivers/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 RUN chmod 755 /usr/bin/phantomjs
 
 ENV APP_PATH /app/user/
