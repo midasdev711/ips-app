@@ -16,6 +16,7 @@
 //= require jquery.readonly
 //= require paloma
 //= require autonumeric
+//= require autoclear
 //= require_tree .
 
 $(function(){

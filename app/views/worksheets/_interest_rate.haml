@@ -4,7 +4,7 @@
       = rf.hidden_field :lender_id
       = rf.hidden_field :_destroy
       .small-10.columns
-        = rf.text_field :percent_value, label: false, data: { autonumeric: true }
+        = rf.text_field :percent_value, label: false, data: { autonumeric: true }, class: 'clearonfocus'
       .small-2.columns
         %span.postfix
           = link_to '', '#', class: 'destroy fa fa-trash-o'
