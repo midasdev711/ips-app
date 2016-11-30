@@ -34,6 +34,9 @@ gem 'puma'
 # V8 JavaScript interpreter for asset compilcation
 gem 'therubyracer'
 
+# Postmark for email delivery
+gem 'postmark-rails', '~> 0.14.0'
+
 group :development do
   gem 'letter_opener'
 end
@@ -49,8 +52,4 @@ group :test do
   gem 'faker'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'shoulda-callback-matchers', '~> 1.1.4'
-end
-
-group :production do
-  gem 'postmark-rails', '~> 0.14.0'
 end
