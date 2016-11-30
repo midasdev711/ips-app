@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160714195242) do
+ActiveRecord::Schema.define(version: 20161126024510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,16 +40,17 @@ ActiveRecord::Schema.define(version: 20160714195242) do
     t.integer  "user_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.integer  "payment_max_cents",     default: 0
-    t.integer  "payment_min_cents",     default: 0
+    t.integer  "max_payment_cents",     default: 0
+    t.integer  "min_payment_cents",     default: 0
     t.integer  "tax",                   default: 0
     t.boolean  "used",                  default: false
     t.string   "province_id"
     t.string   "payment_frequency_max"
     t.string   "payment_frequency_min"
     t.boolean  "status_indian"
-    t.integer  "scenario",              default: 1
     t.integer  "state"
+    t.integer  "min_frequency"
+    t.integer  "max_frequency"
     t.index ["user_id"], name: "index_deals_on_user_id", using: :btree
   end
 
@@ -60,7 +61,7 @@ ActiveRecord::Schema.define(version: 20160714195242) do
     t.datetime "updated_at",      null: false
     t.integer  "category"
     t.integer  "product_list_id"
-    t.integer  "loan_type"
+    t.integer  "loan"
   end
 
   create_table "insurance_rates", force: :cascade do |t|
@@ -76,6 +77,7 @@ ActiveRecord::Schema.define(version: 20160714195242) do
     t.integer "category"
     t.integer "premium_cents",       default: 0
     t.boolean "overridden",          default: false
+    t.integer "lender_id"
   end
 
   create_table "interest_rates", force: :cascade do |t|
@@ -88,28 +90,37 @@ ActiveRecord::Schema.define(version: 20160714195242) do
   create_table "lenders", force: :cascade do |t|
     t.integer  "deal_id"
     t.string   "bank"
-    t.integer  "msrp_cents",             default: 0
-    t.integer  "cash_price_cents",       default: 0
-    t.integer  "trade_in_cents",         default: 0
-    t.integer  "lien_cents",             default: 0
-    t.integer  "cash_down_cents",        default: 0
-    t.integer  "rebate_cents",           default: 0
-    t.integer  "dci_cents",              default: 0
+    t.integer  "msrp_cents",         default: 0
+    t.integer  "cash_price_cents",   default: 0
+    t.integer  "trade_in_cents",     default: 0
+    t.integer  "lien_cents",         default: 0
+    t.integer  "cash_down_cents",    default: 0
+    t.integer  "rebate_cents",       default: 0
+    t.integer  "dci_cents",          default: 0
     t.integer  "term"
     t.integer  "amortization"
-    t.integer  "residual_cents",         default: 0
-    t.integer  "approved_maximum_cents", default: 0
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.integer  "residual_cents",     default: 0
+    t.integer  "max_amount_cents",   default: 0
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.text     "notes"
-    t.integer  "bank_reg_fee_cents",     default: 0
-    t.integer  "loan_type"
+    t.integer  "bank_reg_fee_cents", default: 0
+    t.integer  "loan"
     t.integer  "position"
-    t.integer  "residual_value",         default: 0
-    t.integer  "residual_unit",          default: 0
-    t.boolean  "kickback",               default: false
-    t.boolean  "rounding",               default: false
+    t.integer  "residual_value",     default: 0
+    t.integer  "residual_unit",      default: 0
+    t.boolean  "kickback",           default: false
+    t.boolean  "rounding",           default: false
+    t.integer  "frequency"
+    t.integer  "tier"
+    t.integer  "interest_rate_id"
     t.index ["deal_id"], name: "index_lenders_on_deal_id", using: :btree
+    t.index ["interest_rate_id"], name: "index_lenders_on_interest_rate_id", using: :btree
+  end
+
+  create_table "lenders_products", id: false, force: :cascade do |t|
+    t.integer "lender_id"
+    t.integer "product_id"
   end
 
   create_table "options", force: :cascade do |t|
@@ -120,7 +131,7 @@ ActiveRecord::Schema.define(version: 20160714195242) do
     t.float   "pocketbook_loan_rate"
     t.float   "car_loan_rate"
     t.float   "family_loan_rate"
-    t.integer "loan_type"
+    t.integer "loan"
     t.float   "interest_rate"
     t.integer "payment_frequency"
     t.integer "amortization"
@@ -137,11 +148,11 @@ ActiveRecord::Schema.define(version: 20160714195242) do
   create_table "product_lists", force: :cascade do |t|
     t.integer  "listable_id"
     t.string   "listable_type"
-    t.integer  "insurance_profit"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "car_profit_cents",    default: 0
-    t.integer  "family_profit_cents", default: 0
+    t.float    "insurance_profit_rate"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "car_reserved_profit_cents",    default: 0
+    t.integer  "family_reserved_profit_cents", default: 0
     t.index ["listable_type", "listable_id"], name: "index_product_lists_on_listable_type_and_listable_id", using: :btree
   end
 
@@ -151,9 +162,10 @@ ActiveRecord::Schema.define(version: 20160714195242) do
     t.integer  "dealer_cost_cents",  default: 0
     t.integer  "tax",                default: 0
     t.integer  "product_list_id"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.integer  "category"
+    t.boolean  "visible",            default: true
     t.index ["product_list_id"], name: "index_products_on_product_list_id", using: :btree
   end
 
