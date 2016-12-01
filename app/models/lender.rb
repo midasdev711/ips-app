@@ -2,7 +2,7 @@ class Lender < ActiveRecord::Base
   include Loan
   include Term
 
-  enum frequency: [:biweekly, :monthly]
+  enum frequency: [:biweekly, :monthly, :semimonthly, :weekly]
   enum position: [:left, :right]
   enum residual_unit: [:dollar, :percent]
 

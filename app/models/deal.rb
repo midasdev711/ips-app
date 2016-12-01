@@ -3,12 +3,12 @@ class Deal < ActiveRecord::Base
   include Province
   include Tax
 
-  enum min_frequency: [:biweekly, :monthly], _prefix: :min
-  enum max_frequency: [:biweekly, :monthly], _prefix: :max
+  COMPOUNDING_FREQUENCIES = [:biweekly, :monthly, :semimonthly, :weekly]
+
+  enum min_frequency: COMPOUNDING_FREQUENCIES, _prefix: :min
+  enum max_frequency: COMPOUNDING_FREQUENCIES, _prefix: :max
 
   enum state: [:product_list, :worksheet, :active]
-
-  COMPOUNDING_FREQUENCIES = [:biweekly, :monthly]
 
   belongs_to :user
   has_one :client, as: :contactable, class_name: 'Contact', dependent: :destroy

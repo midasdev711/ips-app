@@ -12,12 +12,24 @@ RSpec.describe Calculator::Base, '#compounding_frequency', type: :model do
   context 'when biweekly payments' do
     let(:frequency) { :biweekly }
 
-    it { expect(result).to eq Calculator::FREQUENCY_BIWEEKLY }
+    it { expect(result).to eq Calculator::FREQUENCIES[:biweekly] }
   end
 
   context 'when monthly payments' do
     let(:frequency) { :monthly }
 
-    it { expect(result).to eq Calculator::FREQUENCY_MONTHLY }
+    it { expect(result).to eq Calculator::FREQUENCIES[:monthly] }
+  end
+
+  context 'when semimonthly payments' do
+    let(:frequency) { :semimonthly }
+
+    it { expect(result).to eq Calculator::FREQUENCIES[:semimonthly] }
+  end
+
+  context 'when weekly payments' do
+    let(:frequency) { :weekly }
+
+    it { expect(result).to eq Calculator::FREQUENCIES[:weekly] }
   end
 end
