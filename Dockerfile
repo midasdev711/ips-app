@@ -1,26 +1,30 @@
 FROM ruby:2.2.3
 
-RUN apt-get update -q && apt-get install -y build-essential
+RUN apt-get update -q && apt-get install -y build-essential \
 
-# for postgresql
-RUN apt-get install -y libpq-dev
+  # postgresql dependencies
+  libpq-dev \
 
-# for wkhtmltopdf
-RUN apt-get install -y xfonts-base xfonts-75dpi
+  # wkhtmltopdf dependencies
+  xfonts-base xfonts-75dpi \
+
+  # phantomjs dependencies
+  fontconfig
+
+WORKDIR /tmp/
 
 # wkhtmltopdf
 RUN FILE=wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
-  && wget -q http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/$FILE \
+  && wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/$FILE \
   && dpkg -i $FILE \
   && rm $FILE
 
 # phantomjs
-RUN mkdir drivers
-RUN wget -q -P drivers https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
-RUN tar -C drivers -xjf /drivers/phantomjs-2.1.1-linux-x86_64.tar.bz2
-RUN rm -Rf /drivers/phantomjs-2.1.1-linux-x86_64.tar.bz2
-RUN ln -s /drivers/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
-RUN chmod 755 /usr/bin/phantomjs
+RUN FILE=phantomjs-2.1.1-linux-x86_64 \
+  && wget -U "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0" https://bitbucket.org/ariya/phantomjs/downloads/$FILE.tar.bz2 \
+  && tar -xjf $FILE.tar.bz2 \
+  && mv $FILE/bin/phantomjs /usr/bin/ \
+  && rm -r $FILE $FILE.tar.bz2
 
 ENV APP_PATH /app/user/
 
