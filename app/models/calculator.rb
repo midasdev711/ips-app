@@ -1,12 +1,16 @@
 module Calculator
-  FREQUENCY_BIWEEKLY = 26
-  FREQUENCY_MONTHLY  = 12
+  FREQUENCIES = {
+    monthly:     12,
+    semimonthly: 24,
+    biweekly:    26,
+    weekly:      52
+  }
 
   class Base
     include ActiveModel::Validations
 
     validates :amount, presence: true
-    validates :frequency, inclusion: { in: [:biweekly, :monthly] }
+    validates :frequency, inclusion: { in: FREQUENCIES.keys }
     validates :rate, numericality: { greater_than_or_equal_to: 0 }
     validates :term, numericality: { only_integer: true, greater_than: 0 }
 
@@ -29,21 +33,13 @@ module Calculator
     private
 
     def compounding_frequency
-      case frequency
-      when :biweekly
-        FREQUENCY_BIWEEKLY
-      when :monthly
-        FREQUENCY_MONTHLY
-      end
+      FREQUENCIES[frequency]
     end
 
     def compounding_periods(months)
-      case frequency
-      when :biweekly
-        months / FREQUENCY_MONTHLY * FREQUENCY_BIWEEKLY
-      when :monthly
-        months
-      end
+      return months if frequency == :monthly
+
+      months / FREQUENCIES[:monthly] * compounding_frequency
     end
 
     def effective_rate
