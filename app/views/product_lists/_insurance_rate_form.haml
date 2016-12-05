@@ -1,6 +1,12 @@
-%tr
-  - rates.each do |r|
-    %td{ class: "insurance-rate-#{r.term}" }
-      = f.fields_for :insurance_rates, r do |rate_fields|
-        = rate_fields.hidden_field :term
-        = rate_fields.text_field :value, label: '%d months' % r.term
+= f.fields_for :insurance_rates, insurance_rate do |rf|
+  .row.insurance-rate
+    = rf.hidden_field :_destroy
+    = rf.hidden_field :loan
+    = rf.hidden_field :residual
+
+    .small-5.columns
+      = rf.select :term, InsuranceRate::TERMS, include_blank: true, label: false
+    .small-6.columns
+      = rf.text_field :value, label: false
+    .small-1.columns
+      %a.fa.fa-trash-o.remove-insurance-rate

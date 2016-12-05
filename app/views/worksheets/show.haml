@@ -149,11 +149,11 @@
                 %small (month)
               %td
                 =f.fields_for :lenders, @lender_l do |lf|
-                  = lf.select :term, terms, label: false
+                  = lf.select :term, Lender::TERMS, include_blank: true, label: false
               %td
               %td
                 = f.fields_for :lenders, @lender_r do |lf|
-                  = lf.select :term, terms, label: false
+                  = lf.select :term, Lender::TERMS, include_blank: true, label: false
             %tr.amortization
               %th
                 Amortization
@@ -162,7 +162,7 @@
               %td
               %td.lender-r
                 = f.fields_for :lenders, @lender_r do |lf|
-                  = lf.select :amortization, terms, include_blank: true, label: false
+                  = lf.select :amortization, Lender::TERMS, include_blank: true, label: false
             %tr.residual
               %th Residual
               %td.lender-l
@@ -218,7 +218,7 @@
                 #left-interest-rates
                   = f.fields_for :lenders, @lender_l do |lf|
                     = render partial: 'interest_rate', locals: { f: lf, interest_rates: @interest_rates_l }
-                    %script{ id: 'left-interest-rates-template', type: 'text/template' }
+                    %template{ id: 'left-interest-rates-template' }
                       = render partial: 'interest_rate', locals: { f: lf, interest_rates: @new_interest_rate_l }
                 .buttons
                   %a.add.button.tiny{ data: { template: 'left-interest-rates-template', target: 'left-interest-rates' } }
@@ -232,7 +232,7 @@
                   = f.fields_for :lenders, @lender_r do |lf|
                     .row.collapse
                       = render partial: 'interest_rate', locals: { f: lf, interest_rates: @interest_rates_r }
-                    %script{ id: 'right-interest-rates-template', type: 'text/template' }
+                    %template{ id: 'right-interest-rates-template' }
                       = render partial: 'interest_rate', locals: { f: lf, interest_rates: @new_interest_rate_r }
                 .buttons
                   %a.add.button.tiny{ data: { template: 'right-interest-rates-template', target: 'right-interest-rates' } }

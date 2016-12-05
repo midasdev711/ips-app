@@ -202,39 +202,28 @@ RSpec.describe Lender, type: :model do
 
     context 'right-side lender' do
       let(:position) { 'right' }
+      let(:loan) { double :loan }
       let(:term) { double :term }
+      let(:product_list) { double :product_list }
 
-      let(:insurance_policies_grouped_by_name) { { name: group } }
-
-      let(:insurance_policy_one)          { double :insurance_policy, category: insurance_policy_one_category, residual: false }
-      let(:insurance_policy_one_category) { double :insurance_policy_one_category }
-
+      let(:insurance_policies_collection) { double :insurance_policies_collection }
+      let(:insurance_policies) { [insurance_policy] }
+      let(:insurance_policy) { double :insurance_policy, category: insurance_policy_category }
+      let(:insurance_policy_category) { double :insurance_policy_category }
+      
       before do
-        allow(lender).to receive(:insurance_policies_grouped_by_name).and_return insurance_policies_grouped_by_name
+        expect(insurance_terms).to receive(:destroy_all).once
+
+        allow(lender).to receive(:loan).and_return loan
         allow(lender).to receive(:term).and_return term
-      end
+        allow(lender).to receive(:product_list).and_return product_list
 
-      context 'when no residual variants available' do
-        let(:group) { [insurance_policy_one] }
+        allow(product_list).to receive(:insurance_policies).and_return insurance_policies_collection
+        allow(insurance_policies_collection).to receive(:includes).with(:insurance_rates).and_return insurance_policies_collection
+        allow(insurance_policies_collection).to receive(:where).with('insurance_rates.loan' => loan).and_return insurance_policies_collection
+        allow(insurance_policies_collection).to receive(:references).with(:insurance_rates).and_return insurance_policies
 
-        before do
-          expect(insurance_terms).to receive(:create!).with(term: term, insurance_policy: insurance_policy_one, category: insurance_policy_one_category).once
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when residual variants available' do
-        let(:group) { [insurance_policy_one, insurance_policy_two] }
-
-        let(:insurance_policy_two)          { double :insurance_policy, category: insurance_policy_two_category, residual: true }
-        let(:insurance_policy_two_category) { double :insurance_policy_two_category }
-
-        before do
-          expect(insurance_terms).to receive(:create!).with(term: term, insurance_policy: insurance_policy_two, category: insurance_policy_two_category).once
-        end
-
-        it { is_expected.to be_truthy }
+        expect(insurance_terms).to receive(:create!).with(category: insurance_policy_category, insurance_policy: insurance_policy, term: term)
       end
     end
   end

@@ -15,8 +15,6 @@ RSpec.describe ProductCategory, type: :model do
   let(:insurance_policies_collection) { double :insurance_policies_collection }
   let(:insurance_terms_collection)    { double :insurance_terms_collection }
 
-  let(:insurance_policies_collection_grouped_by_name) { double :insurance_policies_collection_grouped_by_name }
-
   describe '#display_name' do
     subject { category.display_name }
 
@@ -157,22 +155,14 @@ RSpec.describe ProductCategory, type: :model do
 
     before do
       allow(product_list).to receive(:insurance_policies).and_return insurance_policies_collection
-      allow(lender).to receive(:loan).and_return loan
-      expect(insurance_policies_collection).to receive(:where).with(category: name, loan: loan).and_return insurance_policies_collection
+      allow(insurance_policies_collection).to receive(:includes).with(:insurance_rates).and_return insurance_policies_collection
+      allow(insurance_policies_collection).to receive(:where).with('category' => name, 'insurance_rates.loan' => loan).and_return insurance_policies_collection
+      allow(insurance_policies_collection).to receive(:references).with(:insurance_rates).and_return insurance_policies_collection
+      
+      allow(lender).to receive(:loan).and_return loan      
     end
 
     it { is_expected.to eq insurance_policies_collection }
-  end
-
-  describe '#available_insurance_policies_grouped_by_name' do
-    subject { category.available_insurance_policies_grouped_by_name }
-
-    before do
-      allow(category).to receive(:available_insurance_policies).and_return insurance_policies_collection
-      expect(insurance_policies_collection).to receive(:group_by).and_return insurance_policies_collection_grouped_by_name
-    end
-
-    it { is_expected.to eq insurance_policies_collection_grouped_by_name }
   end
 
   describe '#reserved_profit' do
@@ -290,8 +280,8 @@ RSpec.describe ProductCategory, type: :model do
     let(:count) { double :count }
 
     before do
-      allow(category).to receive(:available_insurance_policies_grouped_by_name).and_return insurance_policies_collection_grouped_by_name
-      expect(insurance_policies_collection_grouped_by_name).to receive(:count).and_return count
+      allow(category).to receive(:available_insurance_policies).and_return insurance_policies_collection
+      expect(insurance_policies_collection).to receive(:count).and_return count
     end
 
     it { is_expected.to eq count }

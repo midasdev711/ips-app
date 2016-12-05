@@ -112,6 +112,7 @@ class DealsController < ApplicationController
           :overridden,
           :premium,
           :term,
+          :residual,
 
           :_destroy
         ]

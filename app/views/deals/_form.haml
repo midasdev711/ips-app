@@ -30,13 +30,13 @@
           %small (months)
         %td
           = f.fields_for :lenders, @lender_l do |lf|
-            = lf.select :term, terms, label: false
+            = lf.select :term, Lender::TERMS, include_blank: true, label: false
         %th
           Term
           %small (months)
         %td
           = f.fields_for :lenders, @lender_r do |lf|
-            = lf.select :term, terms, label: false
+            = lf.select :term, Lender::TERMS, include_blank: true, label: false
 
       - if @lender_l.lease? && @lender_r.finance?
         %tr
@@ -47,7 +47,7 @@
             %small (months)
           %td
             = f.fields_for :lenders, @lender_r do |lf|
-              = lf.select :amortization, terms.select { |t| t >= @lender_r.term.to_i }, label: false
+              = lf.select :amortization, Lender::TERMS, include_blank: true, label: false
       %tr
         %th
           Rate

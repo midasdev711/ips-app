@@ -1,6 +1,8 @@
 class Lender < ActiveRecord::Base
   include Loan
   include Term
+  
+  TERMS = [12, 24, 36, 48, 60, 72, 84, 96]
 
   enum frequency: [:biweekly, :monthly, :semimonthly, :weekly]
   enum position: [:left, :right]
@@ -216,20 +218,14 @@ class Lender < ActiveRecord::Base
   end
 
   def reset_insurance_terms
-    case position
-    when 'left'
-     insurance_terms.destroy_all
-    when 'right'
-     insurance_policies_grouped_by_name.each do |_, group|
-        if group.size > 1
-          group.select! &:residual
-        end
+    insurance_terms.destroy_all
 
-        group.each do |insurance_policy|
-          insurance_terms.create! term: term, insurance_policy: insurance_policy, category: insurance_policy.category
-        end
+    if right?
+      product_list.insurance_policies.includes(:insurance_rates).where('insurance_rates.loan' => loan).references(:insurance_rates).each do |insurance_policy|
+        insurance_terms.create! category: insurance_policy.category, insurance_policy: insurance_policy, term: term
       end
     end
+
     true
   end
 

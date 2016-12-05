@@ -27,8 +27,15 @@ class ProductListsController < ApplicationController
   def product_list_params
     if admin?
       insurance_policies_attributes = [
-        :id, :name, :category, :loan, :residual, :_destroy,
-        insurance_rates_attributes: [:id, :term, :value]
+        :id, :name, :category, :_destroy,
+        insurance_rates_attributes: [
+          :id, 
+          :loan,
+          :residual,
+          :term,
+          :value,
+          :_destroy
+        ]
       ]
     end
 

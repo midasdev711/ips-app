@@ -52,11 +52,7 @@ class ProductCategory
   end
 
   def available_insurance_policies
-    product_list.insurance_policies.where category: name, loan: lender.loan
-  end
-
-  def available_insurance_policies_grouped_by_name
-    available_insurance_policies.group_by(&:name)
+    product_list.insurance_policies.includes(:insurance_rates).where('category' => name, 'insurance_rates.loan' => lender.loan).references(:insurance_rates)
   end
 
 private
@@ -93,6 +89,6 @@ private
   end
 
   def available_insurance_policies_count
-    available_insurance_policies_grouped_by_name.count
+    available_insurance_policies.count
   end
 end

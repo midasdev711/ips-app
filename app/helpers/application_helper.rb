@@ -32,8 +32,4 @@ module ApplicationHelper
   def taxes
     [['One Tax', :one], ['Two Tax', :two], ['No Tax', :no]]
   end
-
-  def terms
-    [12, 24, 36, 48, 60, 72, 84, 96]
-  end
 end

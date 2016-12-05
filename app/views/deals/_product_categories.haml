@@ -13,33 +13,30 @@
             .right
               = cb.check_box
 
-      - category.available_insurance_policies_grouped_by_name.each do |name, policies|
-        - insurance_rates = policies.map { |p| p.insurance_rates.map(&:term) }.inject(:&).select { |term| term <= lender.term }
-
-        - insurance_terms = lender.insurance_terms
-        - insurance_term = insurance_terms.detect { |t| policies.include? t.insurance_policy } || InsuranceTerm.new(insurance_policy: policies.first)
+      - category.available_insurance_policies.each do |policy|
+        - insurance_term = lender.insurance_terms.where(insurance_policy: policy).first || InsuranceTerm.new(insurance_policy: policy, category: category.name)
 
         = lf.fields_for :insurance_terms, insurance_term do |tf|
           .row.product
             .columns.clearfix
               .left
-                = tf.label :insurance_policy_id, name
+                = tf.label :insurance_policy_id, policy.name
               .right
-                = tf.check_box :insurance_policy_id, { checked: insurance_terms.include?(insurance_term), label: false, name: nil, class: 'insurance-term-checkbox' }
-                = tf.hidden_field :_destroy, value: insurance_terms.exclude?(insurance_term)
+                = tf.check_box :insurance_policy_id, { checked: lender.insurance_terms.include?(insurance_term), label: false, name: nil, class: 'insurance-term-checkbox' }
+                = tf.hidden_field :_destroy, value: lender.insurance_terms.exclude?(insurance_term)
               .right
-                = tf.select :term, options_for_select(insurance_rates, insurance_term.term || lender.term), { label: false }, class: 'term'
+                = tf.select :term, options_for_select(InsuranceRate::TERMS.select { |term| term <= lender.term }, insurance_term.term || lender.term), { label: false }, class: 'term'
 
-              - if lender.lease?
+              - if lender.lease? && policy.has_lease_coverage_options?
                 .right
-                  = tf.select :insurance_policy_id, options_for_select(policies.map { |p| [{ false => 'lease only', true => 'with residual' }[p.residual], p.id] }, insurance_term.insurance_policy_id), { label: false }, class: 'residual'
-              - else
-                = tf.hidden_field :insurance_policy_id
+                  = tf.select :residual, { 'lease' => false, 'lease + residual' => true }, { label: false }, class: 'residual'
 
               .right
                 = tf.text_field :premium, label: false, data: { autonumeric: autonumeric_options }, class: 'premium'
                 = tf.hidden_field :overridden, class: 'overridden'
-            = tf.hidden_field :category, value: category.name
+
+            = tf.hidden_field :insurance_policy_id
+            = tf.hidden_field :category
 
       - if lender.right? && !i.zero?
         .row.rate
