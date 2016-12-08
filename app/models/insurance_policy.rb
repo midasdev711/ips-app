@@ -1,6 +1,6 @@
 class InsurancePolicy < ActiveRecord::Base
   include Category
-  # include Loan
+  include Loan
 
   attr_accessor :prototype_id
 
