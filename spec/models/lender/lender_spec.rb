@@ -16,6 +16,8 @@ RSpec.describe Lender, type: :model do
 
   it { is_expected.to callback(:set_residual).after :validation }
 
+  it { is_expected.to allow_value(0).for(:kickback_percent) }
+  it { is_expected.to_not allow_value(-1).for(:kickback_percent) }
 
   let(:lender) { build :lender }
 

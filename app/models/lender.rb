@@ -22,6 +22,8 @@ class Lender < ActiveRecord::Base
   validates :amortization, numericality: { greater_than_or_equal_to: :term, allow_nil: true }
   validates :bank, :frequency, :position, presence: true
   validates :position, uniqueness: { scope: :deal }
+  validates :kickback_percent, numericality: { greater_than_or_equal_to: 0 }
+
   validate :has_at_least_one_interest_rate
 
   accepts_nested_attributes_for :interest_rates, :insurance_terms, allow_destroy: true
@@ -88,7 +90,7 @@ class Lender < ActiveRecord::Base
 
           @buy_down_amount += category.buy_down_amount
 
-          ratio = 1 - @buy_down_amount * (1 + kickback_rate.value) / calculator.cost_of_borrowing
+          ratio = 1 - @buy_down_amount * (1 + kickback_rate) / calculator.cost_of_borrowing
           ratio = 0 if ratio < 0
 
           @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
@@ -155,13 +157,6 @@ class Lender < ActiveRecord::Base
     @insurable_amount ||= InsurableAmount.calculate(self)
   end
 
-  KickbackRate = Struct.new(:value)
-
-  def kickback_rate
-    value = kickback ? 0.15 : 0.0 # Optional 15% bank kickback.
-    @kickback_rate ||= KickbackRate.new(value)
-  end
-
   def max_tier
     pocketbook_profit.cents / 1_000_00
   end
@@ -180,6 +175,14 @@ class Lender < ActiveRecord::Base
 
   def invisible_products
     product_list.products.invisible
+  end
+
+  def kickback_percent
+    (kickback_rate * 100).round 4
+  end
+
+  def kickback_percent=(new_percent)
+    self.kickback_rate = (new_percent.to_d / 100).round(4)
   end
 
   private

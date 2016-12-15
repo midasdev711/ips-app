@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161205231445) do
+ActiveRecord::Schema.define(version: 20161215140644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -112,11 +112,11 @@ ActiveRecord::Schema.define(version: 20161205231445) do
     t.integer  "position"
     t.integer  "residual_value",     default: 0
     t.integer  "residual_unit",      default: 0
-    t.boolean  "kickback",           default: false
     t.boolean  "rounding",           default: false
     t.integer  "frequency"
     t.integer  "tier"
     t.integer  "interest_rate_id"
+    t.decimal  "kickback_rate",      default: "0.0", null: false
     t.index ["deal_id"], name: "index_lenders_on_deal_id", using: :btree
     t.index ["interest_rate_id"], name: "index_lenders_on_interest_rate_id", using: :btree
   end
