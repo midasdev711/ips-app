@@ -34,16 +34,14 @@ class Product < ActiveRecord::Base
   def tax_rate
     deal = product_list.listable
 
-    return 0 if deal.status_indian
+    return 0.0 if deal.status_indian
 
     province = deal.province
 
-    percentage = case tax
-                 when 'no'  then 0
-                 when 'one' then province.gst
-                 when 'two' then province.gst + province.pst
-                 end
-
-    percentage.to_f / 100
+    case tax
+    when 'no'  then 0.0
+    when 'one' then province.gst
+    when 'two' then province.gst + province.pst
+    end
   end
 end
