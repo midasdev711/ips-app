@@ -27,8 +27,15 @@ class ProductListsController < ApplicationController
   def product_list_params
     if admin?
       insurance_policies_attributes = [
-        :id, :name, :category, :loan_type, :residual, :_destroy,
-        insurance_rates_attributes: [:id, :term, :value]
+        :id, :name, :category, :_destroy,
+        insurance_rates_attributes: [
+          :id, 
+          :loan,
+          :residual,
+          :term,
+          :value,
+          :_destroy
+        ]
       ]
     end
 
@@ -39,8 +46,8 @@ class ProductListsController < ApplicationController
     end
 
     params.require(:product_list).permit(
-      :car_profit,
-      :family_profit,
+      :car_reserved_profit,
+      :family_reserved_profit,
       :insurance_profit,
       products_attributes: [
         :id,
@@ -49,6 +56,7 @@ class ProductListsController < ApplicationController
         :retail_price,
         :dealer_cost,
         :category,
+        :visible,
         :_destroy
       ],
       insurance_policies_attributes: insurance_policies_attributes,
@@ -79,8 +87,8 @@ class ProductListsController < ApplicationController
     if @product_list.master?
       return current_user.admin? ? dealerships_path : deals_path
     else
-      return dealerships_path     if @listable.is_a? Dealership
-      return deal_path(@listable) if @listable.is_a? Deal
+      return dealerships_path               if @listable.is_a? Dealership
+      return deal_worksheet_path(@listable) if @listable.is_a? Deal
     end
   end
 end

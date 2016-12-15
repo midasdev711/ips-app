@@ -1,4 +1,3 @@
 FactoryGirl.define do
-  factory :insurance_term do
-  end
+  factory :insurance_term
 end

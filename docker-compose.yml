@@ -10,6 +10,8 @@ services:
     image: postgres:9.4.5
     networks:
       - ips
+    ports:
+      - "5432:5432"
 
   app:
     container_name: app
@@ -17,7 +19,12 @@ services:
     networks:
       - ips
     environment:
+      RAILS_ENV: staging
       DATABASE_URL: postgresql://postgres:@db/ips-development
-      EMAIL_SENDER: noreply@innovativepricingsolutions.com
+      EMAIL_SENDER: ips@pieoneers.com
+    volumes:
+      - .:/app/user
+    ports:
+      - "80:9292"
     depends_on:
       - db

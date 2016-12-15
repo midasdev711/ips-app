@@ -1,18 +1,19 @@
 = form_for @product_list, url: polymorphic_path([@listable, :product_list]) do |f|
   - autonumeric_options = { 'aPad': false }
-  - product_categories.each do |name, category|
+  - Product.categories.each do |category, _|
     .row.category
       .columns
         .row
           .small-3.columns
             %h3
-              = name
+              = category
           .small-9.columns.default-category-profit
             - case category
             - when 'car'
-              = f.text_field :car_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
+              = f.text_field :car_reserved_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
             - when 'family'
-              = f.text_field :family_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
+              = f.text_field :family_reserved_profit, label: 'Default profit setting <small>($)</small>', data: { autonumeric: autonumeric_options }
+        
         %table.complex-table
           %thead
             %tr
@@ -32,21 +33,21 @@
             - @product_list.products.sort_by { |p| p.created_at || Time.now }.each do |product|
               - if product.category == category
                 = render 'product_form', f: f, product: product
+        
         %table.complex-table
           %thead
             %tr
               %th
                 Insurance name
-                %th Financing Type
+              - if admin?
                 %th
-                - if admin?
-                  %th
-                    Rates
-                    %small (%)
+                  Rates
+                  %small (%)
           %tbody{ id: "#{category}-insurance-policies" }
             - @product_list.insurance_policies.each do |insurance_policy|
               - if insurance_policy.category == category
                 = render 'insurance_policy_form', f: f, insurance_policy: insurance_policy
+        
         %ul.button-group.radius
           %li
             %a.add.button.tiny{ data: { template: "#{category}-product-template", target: "#{category}-products" } }
@@ -54,10 +55,13 @@
           %li
             %a.add.button.tiny{ data: { template: "#{category}-insurance-policy-template", target: "#{category}-insurance-policies" } }
               Add Insurance
-        %script{ id: "#{category}-product-template", type: 'text/template' }
+
+        %template{ id: "#{category}-product-template" }
           = render 'product_form', f: f, product: Product.new(category: category)
-        %script{ id: "#{category}-insurance-policy-template", type: 'text/template' }
+        
+        %template{ id: "#{category}-insurance-policy-template" }
           = render 'insurance_policy_form', f: f, insurance_policy: InsurancePolicy.new(category: category)
+
   .row
     - if current_user.admin?
       .medium-3.columns
@@ -78,5 +82,5 @@
       .total
         Total profit:
         %span#total-profit
-          = @product_list.products.reduce(0) { |sum, p| sum + p.profit }
+          = @product_list.products.profit
       = f.submit value: 'Save product list', class: 'small success button'

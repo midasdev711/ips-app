@@ -38,7 +38,6 @@
       &.delete-link {
         width: 2em;
         text-align: center;
-        vertical-align: bottom;
       }
     }
 
@@ -77,8 +76,11 @@
     td {
       padding-top: rem-calc(3);
       padding-bottom: 0;
-      vertical-align: bottom;
     }
+  }
+
+  .insurance-rate-variation {
+    padding-left: rem-calc(15) !important;
   }
 
   .provincial-tax {
@@ -99,18 +101,6 @@
 
     #total-profit:before {
       content: '$';
-    }
-  }
-
-  .finance {
-    .residual {
-      visibility: hidden;
-    }
-  }
-
-  .lease {
-    .insurance-rate-84, .insurance-rate-96 {
-      visibility: hidden;
     }
   }
 }

@@ -5,9 +5,10 @@ class WorksheetsController < ApplicationController
   end
 
   def update
-    if @deal.update(deal_params) && @deal.set_scenario && @deal.setup_options
+    if @deal.update update_params
       @deal.worksheet_done!
-      redirect_to deal_option_path(@deal, @deal.default_option)
+      [@lender_l, @lender_r].map &:reset!
+      redirect_to @deal
     else
       js :show
       render :show
@@ -17,45 +18,59 @@ class WorksheetsController < ApplicationController
   private
 
   def set_resources
-    @deal = Deal.find(params[:deal_id])
+    @deal = Deal.find params[:deal_id]
     authorize! :update, @deal
 
+    @client = @deal.client
+
     @lender_l, @lender_r = @deal.lenders
+    @interest_rates_l, @interest_rates_r = [@lender_l, @lender_r].map &:interest_rates
+    @new_interest_rate_l, @new_interest_rate_r = InterestRate.new(lender: @lender_l), InterestRate.new(lender: @lender_r)
   end
 
-  def deal_params
+  def update_params
     params.require(:deal).permit(
-      {
-        lenders_attributes: [
-          :id,
-          :bank,
-          :loan_type,
-          :msrp,
-          :bank_reg_fee,
-          :cash_price,
-          :trade_in,
-          :lien,
-          :cash_down,
-          :rebate,
-          :dci,
-          :term,
-          :amortization,
-          :residual_value,
-          :residual_unit,
-          :kickback,
-          :rounding,
-          :approved_maximum,
-          interest_rates_attributes: [:id, :value, :_destroy, :lender_id],
-        ]
-      },
-      :payment_min,
-      :payment_frequency_min,
-      :payment_max,
-      :payment_frequency_max,
+      :province_id,
+
+      :max_frequency,
+      :max_payment,
+      :min_frequency,
+      :min_payment,
       :status_indian,
-      :used,
       :tax,
-      :province_id
+      :used,
+
+      lenders_attributes: [
+        :id,
+
+        :amortization,
+        :bank,
+        :bank_reg_fee,
+        :cash_down,
+        :cash_price,
+        :dci,
+        :frequency,
+        :kickback,
+        :lien,
+        :loan,
+        :max_amount,
+        :msrp,
+        :rebate,
+        :residual_value,
+        :residual_unit,
+        :rounding,
+        :term,
+        :trade_in,
+
+        interest_rates_attributes: [
+          :id,
+          :lender_id,
+
+          :percent_value,
+
+          :_destroy
+        ]
+      ]
     )
   end
 end

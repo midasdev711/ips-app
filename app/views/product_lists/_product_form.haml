@@ -13,6 +13,8 @@
       = pf.text_field :dealer_cost, label: false, class: 'product-price-trigger product-dealer-cost', data: { autonumeric: autonumeric_options }
     %td
       %span.product-profit{date: {role: 'money'}}
-        = number_with_precision(product.retail_price.to_i - product.dealer_cost.to_i, precision: 2)
+        = number_with_precision(product.profit.to_i, precision: 2)
+    %td
+      = pf.check_box :visible
     %td.delete-link
       = link_to '', '#', class: 'destroy fa fa-trash-o'

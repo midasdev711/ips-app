@@ -19,5 +19,7 @@ services:
     environment:
       RAILS_ENV: test
       DATABASE_URL: postgresql://postgres:@db/ips-test
+    volumes:
+      - .:/app/user
     depends_on:
       - db

@@ -1,0 +1,18 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Deals', deals_path
+        %li.current= @client.name
+%section
+  .row
+    .columns
+      .button-bar
+        %ul.button-group.radius
+          %li= link_to 'Product List', edit_deal_product_list_path(@deal), class: 'tiny secondary button'
+          %li= link_to 'Worksheet', deal_worksheet_path(@deal), class: 'tiny secondary button'
+          %li= link_to 'Print', deal_path(@deal, format: :pdf), class: 'tiny secondary button', target: :blank
+%main
+  .row
+    .columns#deal-form-container
+      = render 'form'

@@ -3,17 +3,26 @@ class Product < ActiveRecord::Base
   include Tax
 
   belongs_to :product_list
+  has_and_belongs_to_many :lenders
   has_and_belongs_to_many :options
 
   validates :name, presence: true
 
-  scope :misc_fees, -> { where(name: 'Misc. fees') }
-  scope :visible, -> { where.not(name: 'Misc. fees') }
+  scope :visible,   -> { where visible: true  }
+  scope :invisible, -> { where visible: false }
 
   monetize :retail_price_cents, :dealer_cost_cents, numericality: { greater_than_or_equal_to: 0 }
 
-  def price
-    retail_price + tax_amount
+  def self.amount
+    all.reduce(Money.new(0)) { |acc, item| acc + item.amount }
+  end
+
+  def self.profit
+    all.reduce(Money.new(0)) { |acc, item| acc + item.profit }
+  end
+
+  def amount
+    retail_price + retail_price * tax_rate
   end
 
   def profit
@@ -22,7 +31,7 @@ class Product < ActiveRecord::Base
 
   private
 
-  def tax_percentage
+  def tax_rate
     deal = product_list.listable
 
     return 0 if deal.status_indian
@@ -36,9 +45,5 @@ class Product < ActiveRecord::Base
                  end
 
     percentage.to_f / 100
-  end
-
-  def tax_amount
-    retail_price * tax_percentage
   end
 end

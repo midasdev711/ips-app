@@ -3,9 +3,20 @@ ProductListsController.prototype.edit = () ->
   $document = $(document);
 
   $document.on 'ready page:load', ->
-    $document.on 'change', '.loan-type', (e) ->
-      $select = $(e.target);
-      $select.parents('.insurance-policy-form').removeClass().addClass('insurance-policy-form ' + $select.val());
+
+    $document.on 'click', '.add', (e) ->
+      e.preventDefault()
+      $element = $(e.target)
+
+      template = $('#' + $element.data('template')).html()
+      template = template.replace(/(\w+\[[\w_]+_attributes\])(\[\d+\])/g, '$1' + '[' + new Date().getTime() + ']')
+
+      $target = $('#' + $element.data('target'))
+
+      $target.append(template)
+      $target.find('select').trigger('change');
+
+      $document.trigger('refresh_autonumeric');
 
     $document.on 'click', 'a.destroy', (e) ->
       e.preventDefault()
@@ -14,20 +25,31 @@ ProductListsController.prototype.edit = () ->
       $input = $tr.find('input[name$="[_destroy]"]')
       $input.val(true)
 
-    $('.add').on 'click', (e) ->
+
+    $document.on 'click', '.insurance-rate-variation .add-insurance-rate', (e) ->
       e.preventDefault()
-      $button = $(e.target)
+      
+      $element = $(e.target)
+      
+      $insuranceRateVariation = $element.parents('.insurance-rate-variation')
+      $insuranceRateVariationInsuranceRates = $insuranceRateVariation.find('.insurance-rates')
 
-      template = $('#' + $button.data('template')).html()
-      template = template.replace(/(\w+\[[\w_]+_attributes\])(\[\d+\])/g, '$1' + '[' + new Date().getTime() + ']')
+      template = $insuranceRateVariation.find('.insurance-rate-template').html()
+      template = template.replace(/(product_list\[insurance_policies_attributes\]\[\d+\]\[insurance_rates_attributes\])(\[\d+\])/g, '$1' + '[' + new Date().getTime() + ']')
+      
+      $insuranceRateVariationInsuranceRates.prepend(template)
 
-      $target = $('#' + $button.data('target'))
+    $document.on 'click', '.insurance-rate-variation .remove-insurance-rate', (e) ->
+      e.preventDefault()
+      
+      $element = $(e.target)
 
-      $target.append(template)
-      $target.find('select').trigger('change');
+      $insuranceRate = $element.parents('.insurance-rate')
+      $insuranceRate.hide()
 
-      $document.trigger('refresh_autonumeric');
-
+      $insuranceRateDestroyInput = $insuranceRate.find('input[name$="[_destroy]"]')
+      $insuranceRateDestroyInput.val(true)
+      
 
     $('#province').on 'change', (e) ->
       selected = $('option:selected', e.target)

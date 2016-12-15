@@ -1,0 +1,49 @@
+= f.fields_for :lenders, lender do |lf|
+  - lender.product_categories.each_with_index do |category, i|
+    .category
+      %h3
+        = category.display_name
+
+      = lf.collection_check_boxes :product_ids, category.available_products, :id, :name do |cb|
+        .row.product
+          .columns.clearfix
+            .left
+              = cb.label do
+                = cb.object.name
+            .right
+              = cb.check_box
+
+      - category.available_insurance_policies.each do |policy|
+        - insurance_term = lender.insurance_terms.where(insurance_policy: policy).first || InsuranceTerm.new(insurance_policy: policy, category: category.name)
+
+        = lf.fields_for :insurance_terms, insurance_term do |tf|
+          .row.product
+            .columns.clearfix
+              .left
+                = tf.label :insurance_policy_id, policy.name
+              .right
+                = tf.check_box :insurance_policy_id, { checked: lender.insurance_terms.include?(insurance_term), label: false, name: nil, class: 'insurance-term-checkbox' }
+                = tf.hidden_field :_destroy, value: lender.insurance_terms.exclude?(insurance_term)
+              .right
+                = tf.select :term, options_for_select(InsuranceRate::TERMS.select { |term| term <= lender.term }, insurance_term.term || lender.term), { label: false }, class: 'term'
+
+              - if lender.lease? && policy.has_lease_coverage_options?
+                .right
+                  = tf.select :residual, { 'lease' => false, 'lease + residual' => true }, { label: false }, class: 'residual'
+
+              .right
+                = tf.text_field :premium, label: false, data: { autonumeric: autonumeric_options }, class: 'premium'
+                = tf.hidden_field :overridden, class: 'overridden'
+
+            = tf.hidden_field :insurance_policy_id
+            = tf.hidden_field :category
+
+      - if lender.right? && !i.zero?
+        .row.rate
+          .columns.clearfix
+            .left Rate
+            .right= category.interest_rate.percent_value
+        .row.payment
+          .columns.clearfix
+            .left Payment
+            .right= category.payment.format
