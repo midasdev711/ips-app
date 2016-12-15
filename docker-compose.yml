@@ -19,7 +19,6 @@ services:
     networks:
       - ips
     environment:
-      RAILS_ENV: staging
       DATABASE_URL: postgresql://postgres:@db/ips-development
       EMAIL_SENDER: ips@pieoneers.com
     volumes:
