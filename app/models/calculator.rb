@@ -93,8 +93,7 @@ module Calculator
       if rate.zero?
         amount / compounding_periods
       else
-        cents = amount.cents * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
-        Money.new(cents)
+        amount * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
       end
     end
 

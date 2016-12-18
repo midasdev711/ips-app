@@ -24,7 +24,8 @@ class ProductCategory
   end
 
   def buy_down_amount
-    profit - reserved_profit
+    amnt = profit - reserved_profit
+    amnt > 0 ? amnt : Money.new(0)
   end
 
   def count

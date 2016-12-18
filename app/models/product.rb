@@ -22,7 +22,7 @@ class Product < ActiveRecord::Base
   end
 
   def amount
-    retail_price + retail_price * tax_rate
+    retail_price * (tax_rate + 1)
   end
 
   def profit

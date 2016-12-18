@@ -57,8 +57,7 @@ RSpec.describe Product, type: :model do
       before do
         allow(product).to receive(:retail_price).and_return money
         allow(product).to receive(:tax_rate).and_return tax_rate
-
-        allow(money).to receive(:+).with(money).and_return money
+        allow(tax_rate).to receive(:+).with(1).and_return tax_rate
         allow(money).to receive(:*).with(tax_rate).and_return money
       end
 

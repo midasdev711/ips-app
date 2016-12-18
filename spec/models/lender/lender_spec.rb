@@ -53,8 +53,8 @@ RSpec.describe Lender, type: :model do
   describe '#products_amount' do
     subject { lender.products_amount }
 
-    let(:products)           { [double(:product, retail_price: money)] }
-    let(:invisible_products) { [double(:product, retail_price: money)] }
+    let(:products)           { [double(:product, amount: money)] }
+    let(:invisible_products) { [double(:product, amount: money)] }
 
     let(:money_class) { class_double('Money').as_stubbed_const }
     let(:money)       { double :money }
@@ -73,31 +73,11 @@ RSpec.describe Lender, type: :model do
   describe '#insurable_amount' do
     subject { lender.insurable_amount }
 
-    let(:interest_rate)       { double :interest_rate, value: interest_rate_value }
-    let(:interest_rate_value) { double :interest_rate_value }
-
-    let(:amount) { double :amount }
-
-    let(:calculator) { double :calculator, cost_of_borrowing: cost_of_borrowing }
-    let(:cost_of_borrowing) { double :cost_of_borrowing }
-
+    let(:insurable_amount_class) { class_double('InsurableAmount').as_stubbed_const }
     let(:expected_amount) { double :expected_amount }
 
     before do
-      allow(lender).to receive(:interest_rate).and_return interest_rate
-
-      allow(lender).to receive(:vehicle_amount).and_return amount
-      allow(lender).to receive(:products_amount).and_return amount
-
-      allow(lender).to receive(:calculator).and_return calculator
-
-      allow(amount).to receive(:+).with(amount).and_return amount
-
-      allow(calculator).to receive(:amount=).with amount
-      allow(calculator).to receive(:rate=).with interest_rate_value
-      allow(calculator).to receive(:calculate!)
-
-      allow(amount).to receive(:+).with(cost_of_borrowing).and_return expected_amount
+      expect(insurable_amount_class).to receive(:calculate).with(lender).and_return expected_amount
     end
 
     it { is_expected.to eq expected_amount }
@@ -210,7 +190,7 @@ RSpec.describe Lender, type: :model do
       let(:insurance_policies) { [insurance_policy] }
       let(:insurance_policy) { double :insurance_policy, category: insurance_policy_category }
       let(:insurance_policy_category) { double :insurance_policy_category }
-      
+
       before do
         expect(insurance_terms).to receive(:destroy_all).once
 

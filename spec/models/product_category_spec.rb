@@ -58,8 +58,22 @@ RSpec.describe ProductCategory, type: :model do
       allow(category).to receive(:profit).and_return money
       allow(category).to receive(:reserved_profit).and_return money
       allow(money).to receive(:-).with(money).and_return money
+
+      allow(money).to receive(:>).with(0).and_return comparison_result
     end
-    it { is_expected.to eq money }
+
+    context 'buy down amount is positive' do
+      let(:comparison_result) { true }
+
+      it { is_expected.to eq money }
+    end
+
+    context 'buy down amount is negative' do
+      let(:comparison_result) { false }
+      let(:zero) { Money.new(0) }
+
+      it { is_expected.to eq zero }
+    end
   end
 
   describe '#count' do
@@ -158,8 +172,8 @@ RSpec.describe ProductCategory, type: :model do
       allow(insurance_policies_collection).to receive(:includes).with(:insurance_rates).and_return insurance_policies_collection
       allow(insurance_policies_collection).to receive(:where).with('category' => name, 'insurance_rates.loan' => loan).and_return insurance_policies_collection
       allow(insurance_policies_collection).to receive(:references).with(:insurance_rates).and_return insurance_policies_collection
-      
-      allow(lender).to receive(:loan).and_return loan      
+
+      allow(lender).to receive(:loan).and_return loan
     end
 
     it { is_expected.to eq insurance_policies_collection }
