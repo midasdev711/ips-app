@@ -56,7 +56,7 @@
           %span.show-interest-rate{ data: { target: '#lender-l-interest-rate' } }
             = @lender_l.product_categories.last.interest_rate.percent_value
           = f.fields_for :lenders, @lender_l do |lf|
-            = lf.select :interest_rate_id, options_from_collection_for_select(@interest_rates_l, :id, :percent_value), { label: false }, id: 'lender-l-interest-rate', class: 'hide'
+            = lf.select :interest_rate_id, @interest_rates_l.collect { |r| [r.percent_value, r.id] }, { label: false }, id: 'lender-l-interest-rate', class: 'hide'
         %th
           Rate
           %small (%)
@@ -64,7 +64,7 @@
           %span.show-interest-rate{ data: { target: '#lender-r-interest-rate' } }
             = @lender_r.product_categories.first.interest_rate.percent_value
           = f.fields_for :lenders, @lender_r do |lf|
-            = lf.select :interest_rate_id, options_from_collection_for_select(@interest_rates_r, :id, :percent_value), { label: false }, id: 'lender-r-interest-rate', class: 'hide'
+            = lf.select :interest_rate_id, @interest_rates_r.collect { |r| [r.percent_value, r.id] }, { label: false }, id: 'lender-r-interest-rate', class: 'hide'
 
       %tr.payment
         %th Payment
