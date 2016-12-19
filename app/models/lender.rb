@@ -83,14 +83,12 @@ class Lender < ActiveRecord::Base
 
       if right? # All the magic happens for the right-hand-side lender.
         if buydown? # Buy Down engaged.
-          @buy_down_amount += category.buy_down_amount
-
           calculator.rate = interest_rate.value
           calculator.calculate!
 
-          cost_of_borrowing = calculator.cost_of_borrowing
+          @buy_down_amount += category.buy_down_amount
 
-          ratio = 1 - @buy_down_amount / cost_of_borrowing
+          ratio = 1 - @buy_down_amount * (1 + kickback_rate.value) / calculator.cost_of_borrowing
           ratio = 0 if ratio < 0
 
           @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
@@ -130,9 +128,6 @@ class Lender < ActiveRecord::Base
     @balloon = calculator.balloon if finance?
     @cost_of_borrowing = calculator.cost_of_borrowing
 
-
-    @buy_down_amount *= 0.85 if kickback # Optional 15% bank kick-back.
-
     @profit -= @buy_down_amount
 
     self
@@ -158,6 +153,13 @@ class Lender < ActiveRecord::Base
 
   def insurable_amount
     @insurable_amount ||= InsurableAmount.calculate(self)
+  end
+
+  KickbackRate = Struct.new(:value)
+
+  def kickback_rate
+    value = kickback ? 0.15 : 0.0 # Optional 15% bank kickback.
+    @kickback_rate ||= KickbackRate.new(value)
   end
 
   def max_tier
