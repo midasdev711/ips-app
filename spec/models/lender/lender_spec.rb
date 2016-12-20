@@ -24,19 +24,37 @@ RSpec.describe Lender, type: :model do
   describe '#buydown?' do
     subject { lender.buydown? }
 
+    let(:tier) { double :tier, present?: true }
+
     before do
       allow(lender).to receive(:tier).and_return tier
+    end
+
+    context 'when tier selected' do
+      let(:max_tier) { double :max_tier }
+
+      before do
+        allow(lender).to receive(:max_tier).and_return max_tier
+        allow(tier).to   receive(:<=).with(max_tier).and_return enough
+      end
+
+      context 'and there is enough pocketbook profit for buy down' do
+        let(:enough) { true }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and there is not enough pocketbook profit for buy down' do
+        let(:enough) { false }
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'when no tier selected' do
       let(:tier) { double :tier, present?: false }
 
       it { is_expected.to be_falsey }
-    end
-
-    context 'when tier selected' do
-      let(:tier) { double :tier, present?: true }
-      it { is_expected.to be_truthy }
     end
   end
 

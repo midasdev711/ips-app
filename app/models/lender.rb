@@ -45,7 +45,7 @@ class Lender < ActiveRecord::Base
   end
 
   def buydown?
-    tier.present?
+    tier.present? && tier <= max_tier
   end
 
   def build_calculator
