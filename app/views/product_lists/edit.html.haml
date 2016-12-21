@@ -8,9 +8,11 @@
           %li.current
             = @product_list.master? ? 'Master Product List' : @listable.name
 
-        - if financial_manager? && @product_list.listable_type == "Deal"
+        - if financial_manager?
           %li= link_to 'Deals', deals_path
-          %li= link_to @listable.client.name, deal_path(@listable)
+
+          - if @product_list.listable_type == "Deal"
+            %li= link_to @listable.client.name, deal_path(@listable)
 %main
   .row
     .columns
