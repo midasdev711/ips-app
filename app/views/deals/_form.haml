@@ -30,13 +30,13 @@
           %small (months)
         %td
           = f.fields_for :lenders, @lender_l do |lf|
-            = lf.select :term, Lender::TERMS, include_blank: true, label: false
+            = lf.select :term, Lender::TERMS, include_blank: !@deal.persisted?, label: false
         %th
           Term
           %small (months)
         %td
           = f.fields_for :lenders, @lender_r do |lf|
-            = lf.select :term, Lender::TERMS, include_blank: true, label: false
+            = lf.select :term, Lender::TERMS, include_blank: !@deal.persisted?, label: false
 
       - if @lender_l.lease? && @lender_r.finance?
         %tr
