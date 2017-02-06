@@ -4,7 +4,7 @@ RSpec.describe VehicleAmount, '#apply', type: :model do
   let(:lender) { double :lender }
   let(:vehicle_amount) { described_class.new(lender) }
 
-  let(:base_amount) { double :base_amount, negative?: base_amount_negative? }
+  let(:base_amount) { double :base_amount }
 
   let(:strategy) { lambda{ 'boom' } }
   let(:strategy_result) { double :strategy_result }
@@ -16,15 +16,5 @@ RSpec.describe VehicleAmount, '#apply', type: :model do
 
   subject{ vehicle_amount.apply(strategy) }
 
-  context 'when base_amount is positive' do
-    let(:base_amount_negative?) { false }
-
-    it { is_expected.to eql(strategy_result) }
-  end
-
-  context 'when base_amount is negative' do
-    let(:base_amount_negative?) { true }
-
-    it { is_expected.to eql(Money.new(0)) }
-  end
+  it { is_expected.to eql(strategy_result) }
 end
