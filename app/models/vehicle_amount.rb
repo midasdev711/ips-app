@@ -15,8 +15,6 @@ class VehicleAmount
   end
 
   def apply(strategy)
-    return zero_amount if base_amount.negative?
-
     instance_eval(&strategy)
   end
 
@@ -37,8 +35,4 @@ class VehicleAmount
   attr_reader :lender
 
   delegate :cash_price, :trade_in, :dci, :tax_rate, :lien, :rebate, :cash_down, :bank_reg_fee, :loan, to: :lender
-
-  def zero_amount
-    Money.new(0)
-  end
 end
