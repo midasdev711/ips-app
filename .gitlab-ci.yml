@@ -11,6 +11,7 @@ build:
   stage: build
   script:
     - docker-compose -f docker-compose.ci.yml build
+    - docker build --build-arg ASSETS_PRECOMPILE=please -t ips-app .
 
 test:
   stage: test

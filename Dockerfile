@@ -36,6 +36,8 @@ RUN bundle install
 
 ADD . $APP_PATH
 
+ARG ASSETS_PRECOMPILE
+RUN if [ -n "$ASSETS_PRECOMPILE" ]; then RAILS_ENV=production rake assets:precompile; else exit 0; fi
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["start"]
