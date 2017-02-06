@@ -36,6 +36,7 @@ RUN bundle install
 
 ADD . $APP_PATH
 
-CMD ["puma", "--config", "config/puma.rb"]
 
 EXPOSE 9292
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["start"]
