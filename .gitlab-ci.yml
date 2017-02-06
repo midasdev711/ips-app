@@ -17,8 +17,6 @@ build:
   stage: build
   script:
     - docker build --build-arg ASSETS_PRECOMPILE=please -t ips-app .
-  after_script:
-    - docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
 
 test:
   stage: test
