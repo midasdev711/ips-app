@@ -1,7 +1,8 @@
 module ApplicationHelper
 
   def autonumeric_options
-    { 'aPad' => 'false', 'wEmpty' => 'zero', 'lZer' => 'deny' }
+    # { 'aPad' => 'false', 'wEmpty' => 'zero', 'lZer' => 'deny' }
+    { 'aPad' => 'false', 'lZer' => 'deny' }
   end
 
   def compounding_frequencies

@@ -4,7 +4,6 @@ WorksheetsController.prototype.show = ->
   $document = $(document)
 
   $document.on "ready page:change page:load", ->
-
     $('.cross-copy').on 'click', (e) ->
       copyValue = (src, dst) ->
         $src = $(src)
@@ -40,6 +39,8 @@ WorksheetsController.prototype.show = ->
       $target = $('#' + $button.data('target'))
 
       $target.append(template)
+
+      $('[data-autonumeric]', $target).autoNumeric('init')
 
     $document.on 'change', '.residual-unit-select', (e) ->
       $select = $(e.target)
