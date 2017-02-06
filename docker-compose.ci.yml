@@ -11,4 +11,4 @@ services:
     image: jwilder/dockerize
     command: dockerize -wait tcp://db:5432 -timeout 60s
     networks:
-      - ipds
+      - ips
