@@ -1,6 +1,6 @@
 require 'feature_helper'
 
-RSpec.feature 'Edit master product list', type: :feature, js: true do
+RSpec.xfeature 'Edit master product list', type: :feature, js: true do
   let(:admin) { create :admin }
   let!(:product_list) { create :blank_master_product_list, listable: admin }
 
