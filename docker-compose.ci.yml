@@ -3,7 +3,6 @@ version: "2"
 services:
   app:
     image: ips-app
-    command: test
     environment:
       DATABASE_URL: postgresql://postgres:@db/ips-test
 
