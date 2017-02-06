@@ -1,0 +1,15 @@
+version: "2"
+
+services:
+  app:
+    environment:
+      DATABASE_URL: postgresql://postgres:@db/ips-development
+      EMAIL_SENDER: ips@pieoneers.com
+    volumes:
+      - .:/app/user
+    ports:
+      - "80:8000"
+
+  db:
+    ports:
+      - "5432:5432"

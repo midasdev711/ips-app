@@ -10,21 +10,12 @@ services:
     image: postgres:9.4.5
     networks:
       - ips
-    ports:
-      - "5432:5432"
 
   app:
     container_name: app
     build: .
     networks:
       - ips
-    environment:
-      DATABASE_URL: postgresql://postgres:@db/ips-development
-      EMAIL_SENDER: ips@pieoneers.com
-    volumes:
-      - .:/app/user
-    ports:
-      - "80:9292"
     depends_on:
       - db
     tty: true

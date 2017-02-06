@@ -1,23 +1,14 @@
 version: "2"
 
-networks:
-  ips:
-    driver: bridge
-
 services:
-  db:
-    container_name: db
-    image: postgres:9.4.5
-    networks:
-      - ips
-
   app:
-    container_name: app
-    build: .
-    networks:
-      - ips
+    image: ips-app
+    command: test
     environment:
-      RAILS_ENV: test
       DATABASE_URL: postgresql://postgres:@db/ips-test
-    depends_on:
-      - db
+
+  wait_for:
+    image: jwilder/dockerize
+    command: dockerize -wait tcp://db:5432 -timeout 60s
+    networks:
+      - ipds
