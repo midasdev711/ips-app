@@ -37,6 +37,5 @@ RUN bundle install
 ADD . $APP_PATH
 
 
-EXPOSE 9292
 ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["start"]
