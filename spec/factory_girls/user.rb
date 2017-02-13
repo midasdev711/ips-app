@@ -7,5 +7,10 @@ FactoryGirl.define do
     factory :admin do
       admin true
     end
+
+    factory :manager do
+      admin false
+      association :dealership, factory: :dealership
+    end
   end
 end
