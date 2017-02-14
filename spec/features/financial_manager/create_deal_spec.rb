@@ -10,9 +10,6 @@ RSpec.feature 'Creating deal', type: :feature do
   scenario 'Manager creates new deal' do
     visit '/deals'
 
-    puts manager.dealership
-    puts manager.product_list
-
     click_link 'Add new deal'
 
     fill_in 'Name', with: 'Joe Doe'
