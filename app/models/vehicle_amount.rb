@@ -15,7 +15,6 @@ class VehicleAmount
   end
 
   def apply(strategy)
-    return zero_amount if base_amount.negative?
     instance_eval(&strategy)
   end
 
@@ -24,7 +23,7 @@ class VehicleAmount
   end
 
   def tax
-    @tax ||= base_amount * tax_rate
+    @tax ||= base_amount.positive? ? base_amount * tax_rate : zero_amount
   end
 
   def amount
