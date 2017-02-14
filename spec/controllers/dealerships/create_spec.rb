@@ -15,7 +15,7 @@ RSpec.describe DealershipsController, type: :controller do
 
     def send_request
       sign_in admin
-      post :create, params
+      post :create, params: params
     end
 
     subject { send_request; response }
