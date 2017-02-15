@@ -150,7 +150,9 @@ class Lender < ActiveRecord::Base
   end
 
   def products_amount
-    (invisible_products + products).reduce(Money.new(0)) { |acc, item| acc + item.amount }
+    @products_amount ||= (invisible_products + products).reduce(Money.new(0)) do |acc, item|
+      acc + ProductAmount.calculate(deal: deal, lender: self, product: item)
+    end
   end
 
   def insurable_amount
@@ -162,7 +164,7 @@ class Lender < ActiveRecord::Base
   end
 
   def product_categories
-    @product_categories ||= Product.categories.map { |k, _| ProductCategory.new name: k, product_list: product_list, lender: self }
+    @product_categories ||= Product.categories.map { |k, _| ProductCategory.new name: k, product_list: product_list, deal: deal, lender: self }
   end
 
   def warnings
