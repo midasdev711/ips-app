@@ -31,12 +31,14 @@ class Product < ActiveRecord::Base
 
   private
 
+  delegate :status_indian, :province, to: :deal
+
+  def deal
+    product_list.listable
+  end
+
   def tax_rate
-    deal = product_list.listable
-
-    return 0.0 if deal.status_indian
-
-    province = deal.province
+    return 0.0 if status_indian
 
     case tax
     when 'no'  then 0.0

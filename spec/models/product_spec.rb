@@ -79,10 +79,22 @@ RSpec.describe Product, type: :model do
       it { is_expected.to eq money }
     end
 
+    describe '#deal' do
+      subject { product.send :deal }
+
+      let(:deal)         { double :deal }
+      let(:product_list) { double :product_list, listable: deal }
+
+      before do
+        allow(product).to receive(:product_list).and_return product_list
+      end
+
+      it { is_expected.to eq deal }
+    end
+
     describe '#tax_rate' do
       subject { product.send :tax_rate }
 
-      let(:product_list)  { double :product_list, listable: deal }
       let(:deal)          { double :deal, province: province, status_indian: status_indian }
       let(:province)      { double :province, gst: gst, pst: pst }
       let(:gst)           { 0.05 }
@@ -95,7 +107,7 @@ RSpec.describe Product, type: :model do
       let(:two_tax)       { gst + pst }
 
       before do
-        allow(product).to receive(:product_list).and_return product_list
+        allow(product).to receive(:deal).and_return deal
       end
 
       context 'status indian' do
