@@ -60,17 +60,14 @@ ProductListsController.prototype.edit = () ->
 
     $('.product-profit, #total-profit').autoNumeric('init', autoNumericOptions).autoNumeric('update')
 
-    recalculateProfit = ($target) ->
+    $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
+      $target = $(e.target)
+
       $retailPriceInput = $target.closest('tr').find('.product-retail-price')
       $dealerCostInput  = $target.closest('tr').find('.product-dealer-cost')
 
-      retailPrice = $retailPriceInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
-      dealerCost  = $dealerCostInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
-
-      if $target.val() == '' && $target.get(0) == $retailPriceInput.get(0)
-        retailPrice = $retailPriceInput.data('raw-value')
-      else if $target.val() == '' && $target.get(0) == $dealerCostInput.get(0)
-        dealerCost = $dealerCostInput.data('raw-value')
+      retailPrice = $retailPriceInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $retailPriceInput.data('raw-value')
+      dealerCost  = $dealerCostInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $dealerCostInput.data('raw-value')
 
       profit = retailPrice - dealerCost
 
@@ -81,11 +78,3 @@ ProductListsController.prototype.edit = () ->
       ), 0
 
       $('#total-profit').autoNumeric('set', total)
-
-    $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
-      isWordCharacter = String.fromCharCode(e.which).match(/\w/)
-      isBackspaceOrDelete = (event.keyCode == 8 || event.keyCode == 46)
-
-      return unless isWordCharacter || isBackspaceOrDelete
-
-      recalculateProfit($(e.target))
