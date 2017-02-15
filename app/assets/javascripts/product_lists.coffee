@@ -60,16 +60,21 @@ ProductListsController.prototype.edit = () ->
 
     $('.product-profit, #total-profit').autoNumeric('init', autoNumericOptions).autoNumeric('update')
 
-    # $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
-    #   retailPrice = $(e.target).closest('tr').find('.product-retail-price').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
-    #   dealerCost = $(e.target).closest('tr').find('.product-dealer-cost').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
+    $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
+      $target = $(e.target)
 
-    #   profit = retailPrice - dealerCost
+      $retailPriceInput = $target.closest('tr').find('.product-retail-price')
+      $dealerCostInput  = $target.closest('tr').find('.product-dealer-cost')
 
-    #   $(e.target).closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
+      retailPrice = $retailPriceInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $retailPriceInput.data('raw-value')
+      dealerCost  = $dealerCostInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $dealerCostInput.data('raw-value')
 
-    #   total = $.makeArray($('.product-profit')).reduce ((memo, node) ->
-    #     memo + parseInt $(node).autoNumeric('get')
-    #   ), 0
+      profit = retailPrice - dealerCost
 
-    #   $('#total-profit').autoNumeric('set', total)
+      $target.closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
+
+      total = $.makeArray($('.product-profit')).reduce ((memo, node) ->
+        memo + parseInt $(node).autoNumeric('get')
+      ), 0
+
+      $('#total-profit').autoNumeric('set', total)
