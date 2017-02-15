@@ -60,16 +60,32 @@ ProductListsController.prototype.edit = () ->
 
     $('.product-profit, #total-profit').autoNumeric('init', autoNumericOptions).autoNumeric('update')
 
-    # $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
-    #   retailPrice = $(e.target).closest('tr').find('.product-retail-price').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
-    #   dealerCost = $(e.target).closest('tr').find('.product-dealer-cost').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
+    recalculateProfit = ($target) ->
+      $retailPriceInput = $target.closest('tr').find('.product-retail-price')
+      $dealerCostInput  = $target.closest('tr').find('.product-dealer-cost')
 
-    #   profit = retailPrice - dealerCost
+      retailPrice = $retailPriceInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
+      dealerCost  = $dealerCostInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
 
-    #   $(e.target).closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
+      if $target.val() == '' && $target.get(0) == $retailPriceInput.get(0)
+        retailPrice = $retailPriceInput.data('raw-value')
+      else if $target.val() == '' && $target.get(0) == $dealerCostInput.get(0)
+        dealerCost = $dealerCostInput.data('raw-value')
 
-    #   total = $.makeArray($('.product-profit')).reduce ((memo, node) ->
-    #     memo + parseInt $(node).autoNumeric('get')
-    #   ), 0
+      profit = retailPrice - dealerCost
 
-    #   $('#total-profit').autoNumeric('set', total)
+      $target.closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
+
+      total = $.makeArray($('.product-profit')).reduce ((memo, node) ->
+        memo + parseInt $(node).autoNumeric('get')
+      ), 0
+
+      $('#total-profit').autoNumeric('set', total)
+
+    $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
+      isWordCharacter = String.fromCharCode(e.which).match(/\w/)
+      isBackspaceOrDelete = (event.keyCode == 8 || event.keyCode == 46)
+
+      return unless isWordCharacter || isBackspaceOrDelete
+
+      recalculateProfit($(e.target))
