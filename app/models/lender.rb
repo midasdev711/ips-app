@@ -150,7 +150,7 @@ class Lender < ActiveRecord::Base
   end
 
   def products_amount
-    (invisible_products + products).reduce(Money.new(0)) { |acc, item| acc + item.amount }
+    products.amount + invisible_products.amount
   end
 
   def insurable_amount

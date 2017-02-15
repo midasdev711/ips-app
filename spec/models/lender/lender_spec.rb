@@ -73,17 +73,13 @@ RSpec.describe Lender, type: :model do
   describe '#products_amount' do
     subject { lender.products_amount }
 
-    let(:products)           { [double(:product, amount: money)] }
-    let(:invisible_products) { [double(:product, amount: money)] }
-
-    let(:money_class) { class_double('Money').as_stubbed_const }
-    let(:money)       { double :money }
+    let(:products) { double :products, amount: money }
+    let(:money)    { double :money }
 
     before do
       allow(lender).to receive(:products).and_return products
-      allow(lender).to receive(:invisible_products).and_return invisible_products
+      allow(lender).to receive(:invisible_products).and_return products
 
-      allow(money_class).to receive(:new).and_return money
       allow(money).to receive(:+).with(money).and_return money
     end
 
