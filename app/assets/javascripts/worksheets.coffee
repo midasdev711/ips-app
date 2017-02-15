@@ -15,7 +15,6 @@ WorksheetsController.prototype.show = ->
 
         if $src.data('auto-numeric')?
           $dst.autoNumeric 'set', $src.autoNumeric('get')
-          $dst.trigger('blur')
         else
           $dst.val($src.val())
 
@@ -29,8 +28,10 @@ WorksheetsController.prototype.show = ->
         if left? and right?
           if left.value? and (right.value.length is 0 or parseInt(right.value) is 0)
             copyValue(left, right)
+            $(right).focus()
           else if right.value? and (left.value.length is 0  or parseInt(left.value) is 0)
             copyValue(right, left)
+            $(left).focus()
           $(document).trigger('refresh_autonumeric')
 
     $('.add').on 'click', (e) ->
