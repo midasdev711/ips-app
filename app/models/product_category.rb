@@ -1,10 +1,10 @@
 class ProductCategory
-  attr_reader :name, :product_list, :lender
+  attr_reader :name, :deal, :product_list, :lender
 
   attr_accessor :interest_rate, :payment
 
-  def initialize(name:, product_list:, lender:)
-    @name, @product_list, @lender = name, product_list, lender
+  def initialize(name:, product_list:, deal:, lender:)
+    @name, @product_list, @deal, @lender = name, product_list, deal, lender
   end
 
   def display_name
@@ -70,7 +70,9 @@ private
   end
 
   def products_amount
-    products.amount + invisible_products.amount
+    @products_amount ||= (invisible_products + products).reduce(Money.new(0)) do |acc, item|
+      acc + ProductAmount.calculate(deal: deal, lender: lender, product: item)
+    end
   end
 
   def products_profit
