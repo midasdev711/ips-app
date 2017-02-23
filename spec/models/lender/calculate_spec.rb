@@ -159,6 +159,23 @@ RSpec.describe Lender, '#calculate!', type: :model do
         it { expect{ subject }.to change{family.interest_rate.try :value}.to     expected_family_interest_rate }
         it { expect{ subject }.to change{family.payment}.to                      expected_family_payment }
 
+        context 'buy down amount > cost of borrowing' do
+          let(:pocketbook_buy_down_amount) { Money.new 10_000_00 }
+          let(:car_buy_down_amount)        { Money.new 10_000_00 }
+          let(:family_buy_down_amount)     { Money.new 10_000_00 }
+
+          let(:expected_cost_of_borrowing) { Money.new 0 }
+
+          let(:expected_buy_down_amount)   { Money.new 3_042_40 }
+
+          it { expect{ subject }.to change{lender.cost_of_borrowing}.to expected_cost_of_borrowing }
+          it { expect{ subject }.to change{lender.buy_down_amount}.to expected_buy_down_amount }
+
+          it { expect{ subject }.to change{pocketbook.interest_rate.try :value}.to 0.0 }
+          it { expect{ subject }.to change{       car.interest_rate.try :value}.to 0.0 }
+          it { expect{ subject }.to change{    family.interest_rate.try :value}.to 0.0 }
+        end
+
         context 'interest rate rounding engaged' do
           before do
             allow(lender).to receive(:rounding).and_return true

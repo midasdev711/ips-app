@@ -76,6 +76,7 @@ class Lender < ActiveRecord::Base
     calculator.calculate!
 
     @buy_down_amount, @profit = Money.new(0), Money.new(0)
+    buy_down_amount, kickback_amount = Money.new(0), Money.new(0)
 
     product_categories.each do |category|
       @amount += category.amount
@@ -88,10 +89,16 @@ class Lender < ActiveRecord::Base
           calculator.rate = interest_rate.value
           calculator.calculate!
 
-          @buy_down_amount += category.buy_down_amount
+          buy_down_amount += category.buy_down_amount
+          kickback_amount += category.buy_down_amount * kickback_rate
 
-          ratio = 1 - @buy_down_amount * (1 + kickback_rate) / calculator.cost_of_borrowing
-          ratio = 0 if ratio < 0
+          @buy_down_amount = buy_down_amount + kickback_amount
+
+          if @buy_down_amount > calculator.cost_of_borrowing
+            @buy_down_amount = calculator.cost_of_borrowing
+          end
+
+          ratio = 1 - @buy_down_amount / calculator.cost_of_borrowing
 
           @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
 
