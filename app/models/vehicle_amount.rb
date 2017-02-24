@@ -1,6 +1,6 @@
 class VehicleAmount
   STRATEGIES = {
-    finance: proc { amount + tax },
+    finance: proc { amount + lien + tax },
     lease: proc { amount }
   }
 
@@ -27,7 +27,7 @@ class VehicleAmount
   end
 
   def amount
-    @amount ||= base_amount + lien - rebate - cash_down + bank_reg_fee
+    @amount ||= base_amount - rebate - cash_down + bank_reg_fee
   end
 
   private

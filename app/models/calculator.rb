@@ -106,10 +106,10 @@ module Calculator
     validates :residual, presence: true
     validates :tax, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-    attr_accessor :residual, :tax
+    attr_accessor :residual, :tax, :lien
 
     def initialize(opts = {})
-      @residual, @tax = opts.values_at :residual, :tax
+      @residual, @tax, @lien = opts.values_at :residual, :tax, :lien
       super
     end
 
@@ -130,13 +130,16 @@ module Calculator
     end
 
     def calculate_payment
+      lien_payment = lien / compounding_periods
+
       if rate.zero?
-        payment = (amount - residual) / compounding_periods
+        taxable_payment = (amount - residual) / compounding_periods
       else
-        cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
-        payment = Money.new cents
+        taxable_cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
+        taxable_payment = Money.new taxable_cents
       end
-      payment * (1 + tax)
+
+      taxable_payment * (1 + tax) + lien_payment
     end
 
     def compounding_periods

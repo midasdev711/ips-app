@@ -56,7 +56,7 @@ class Lender < ActiveRecord::Base
       opts.merge! amortization: amortization
       Calculator::Finance.new opts
     when 'lease'
-      opts.merge! residual: residual, tax: tax_rate
+      opts.merge! residual: residual, tax: tax_rate, lien: lien
       Calculator::Lease.new opts
     end
   end

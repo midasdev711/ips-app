@@ -9,13 +9,13 @@ RSpec.describe ProductAmount, 'strategies', type: :model do
   subject { product_amount.instance_eval(&strategy) }
 
   context 'finance' do
-    let(:strategy) { VehicleAmount::STRATEGIES[:finance] }
+    let(:strategy) { ProductAmount::STRATEGIES[:finance] }
 
     it { is_expected.to eq(amount + tax) }
   end
 
   context 'lease' do
-    let(:strategy) { VehicleAmount::STRATEGIES[:lease] }
+    let(:strategy) { ProductAmount::STRATEGIES[:lease] }
 
     it { is_expected.to eq(amount) }
   end
