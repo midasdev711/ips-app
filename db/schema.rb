@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20161215140644) do
   end
 
   create_table "interest_rates", force: :cascade do |t|
-    t.float    "value"
+    t.decimal  "value"
     t.integer  "lender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

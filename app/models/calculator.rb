@@ -130,16 +130,17 @@ module Calculator
     end
 
     def calculate_payment
-      lien_payment = lien / compounding_periods
-
       if rate.zero?
-        taxable_payment = (amount - residual) / compounding_periods
+        lease_payment = (amount - residual) / compounding_periods
+        lien_payment  = lien / compounding_periods
       else
-        taxable_cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
-        taxable_payment = Money.new taxable_cents
+        lease_cents   = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
+        lease_payment = Money.new lease_cents
+
+        lien_payment = lien * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
       end
 
-      taxable_payment * (1 + tax) + lien_payment
+      lease_payment * (1 + tax) + lien_payment
     end
 
     def compounding_periods

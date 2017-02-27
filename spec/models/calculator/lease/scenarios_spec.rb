@@ -33,8 +33,10 @@ RSpec.describe Calculator::Lease, type: :calculation do
     LeaseScenario.new(50_000_00, :monthly,  0.050, 18_500_00,    0, 60, 0,  8_624_40,  668_74),
     LeaseScenario.new(50_000_00, :monthly,  0.075, 18_500_00,    0, 60, 0, 13_030_80,  742_18),
 
-    LeaseScenario.new(30_000_00, :monthly,  0.000, 12_900_00, 0.1, 48, 10_000_00,         0,  600_21),
-    LeaseScenario.new(30_000_00, :monthly,  0.005, 12_900_00, 0.1, 48, 10_000_00, 12_178_08,  609_96),
+    LeaseScenario.new(30_000_00, :monthly,  0.000, 12_900_00, 0.12, 60, 10_000_00,         0,  485_87),
+    LeaseScenario.new(30_000_00, :monthly,  0.025, 12_900_00, 0.12, 60, 10_000_00, 15_702_00,  546_70),
+    LeaseScenario.new(30_000_00, :monthly,  0.050, 12_900_00, 0.12, 60, 10_000_00, 19_415_40,  608_59),
+    LeaseScenario.new(30_000_00, :monthly,  0.075, 12_900_00, 0.12, 60, 10_000_00, 23_190_00,  671_50),
 
   ].each do |s|
     context s.to_s do
