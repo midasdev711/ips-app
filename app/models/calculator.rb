@@ -121,26 +121,42 @@ module Calculator
       true
     end
 
+    def lien_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lien_payment * compounding_periods - lien
+    end
+
+    def lease_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lease_payment * compounding_periods - (amount - residual)
+    end
+
     def calculate_cost_of_borrowing
-      if rate.zero?
-        Money.new 0
-      else
-        @payment * compounding_periods - (amount - residual)
-      end
+      lease_cost_of_borrowing + lien_cost_of_borrowing
+    end
+
+    def lease_payment
+      return (amount - residual) / compounding_periods if rate.zero?
+
+      lease_cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
+
+      Money.new lease_cents
+    end
+
+    def lien_payment
+      return lien / compounding_periods if rate.zero?
+
+      lien * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
+    end
+
+    def lease_payment_taxed
+      lease_payment * (1 + tax)
     end
 
     def calculate_payment
-      if rate.zero?
-        lease_payment = (amount - residual) / compounding_periods
-        lien_payment  = lien / compounding_periods
-      else
-        lease_cents   = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
-        lease_payment = Money.new lease_cents
-
-        lien_payment = lien * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
-      end
-
-      lease_payment * (1 + tax) + lien_payment
+      lease_payment_taxed + lien_payment
     end
 
     def compounding_periods
