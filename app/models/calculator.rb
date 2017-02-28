@@ -121,12 +121,20 @@ module Calculator
       true
     end
 
+    def lien_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lien_payment * compounding_periods - lien
+    end
+
+    def lease_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lease_payment * compounding_periods - (amount - residual)
+    end
+
     def calculate_cost_of_borrowing
-      if rate.zero?
-        Money.new 0
-      else
-        lease_payment * compounding_periods - (amount - residual)
-      end
+      lease_cost_of_borrowing + lien_cost_of_borrowing
     end
 
     def lease_payment
