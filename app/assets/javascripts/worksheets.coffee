@@ -45,10 +45,9 @@ WorksheetsController.prototype.show = ->
 
       $target.append(template)
 
-      $('[data-autonumeric]:last-child', $target).val('')
       $('[data-autonumeric]:last-child', $target).focus()
 
-      $(document).trigger('refresh_autonumeric');
+      $(document).trigger('refresh_autonumeric')
 
     $document.on 'change', '.residual-unit-select', (e) ->
       $select = $(e.target)
