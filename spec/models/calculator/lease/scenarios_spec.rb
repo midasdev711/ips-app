@@ -19,9 +19,9 @@ RSpec.describe Calculator::Lease, type: :calculation do
     LeaseScenario.new(50_000_00, :monthly,  0.075, 25_000_00,    0, 60, 0, 14_187_20,  653_12),
 
     LeaseScenario.new(50_000_00, :monthly,  0.000, 25_000_00, 0.12, 60, 0,         0,  466_67),
-    LeaseScenario.new(50_000_00, :monthly,  0.025, 25_000_00, 0.12, 60, 0,  4_684_40,  554_11),
-    LeaseScenario.new(50_000_00, :monthly,  0.050, 25_000_00, 0.12, 60, 0,  9_413_60,  642_39),
-    LeaseScenario.new(50_000_00, :monthly,  0.075, 25_000_00, 0.12, 60, 0, 14_187_20,  731_49),
+    LeaseScenario.new(50_000_00, :monthly,  0.025, 25_000_00, 0.12, 60, 0,  5_246_53,  554_11),
+    LeaseScenario.new(50_000_00, :monthly,  0.050, 25_000_00, 0.12, 60, 0, 10_543_23,  642_39),
+    LeaseScenario.new(50_000_00, :monthly,  0.075, 25_000_00, 0.12, 60, 0, 15_889_66,  731_49),
 
     LeaseScenario.new(50_000_00, :monthly,  0.000, 50_000_00,    0, 60, 0,         0,       0),
     LeaseScenario.new(50_000_00, :monthly,  0.025, 50_000_00,    0, 60, 0,  6_237_00,  103_95),
@@ -34,9 +34,9 @@ RSpec.describe Calculator::Lease, type: :calculation do
     LeaseScenario.new(50_000_00, :monthly,  0.075, 18_500_00,    0, 60, 0, 13_030_80,  742_18),
 
     LeaseScenario.new(30_000_00, :monthly,  0.000, 12_900_00, 0.12, 60, 10_000_00,         0,  485_87),
-    LeaseScenario.new(30_000_00, :monthly,  0.025, 12_900_00, 0.12, 60, 10_000_00,  3_328_40,  546_70),
-    LeaseScenario.new(30_000_00, :monthly,  0.050, 12_900_00, 0.12, 60, 10_000_00,  6_716_00,  608_59),
-    LeaseScenario.new(30_000_00, :monthly,  0.075, 12_900_00, 0.12, 60, 10_000_00, 10_161_20,  671_50),
+    LeaseScenario.new(30_000_00, :monthly,  0.025, 12_900_00, 0.12, 60, 10_000_00,  3_650_02,  546_70),
+    LeaseScenario.new(30_000_00, :monthly,  0.050, 12_900_00, 0.12, 60, 10_000_00,  7_363_21,  608_59),
+    LeaseScenario.new(30_000_00, :monthly,  0.075, 12_900_00, 0.12, 60, 10_000_00, 11_137_81,  671_50),
   ].each do |s|
     context s.to_s do
       let(:amount) { Money.new s.amount }

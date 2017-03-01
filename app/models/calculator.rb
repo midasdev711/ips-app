@@ -134,7 +134,7 @@ module Calculator
     end
 
     def calculate_cost_of_borrowing
-      lease_cost_of_borrowing + lien_cost_of_borrowing
+      lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing
     end
 
     def lease_payment
