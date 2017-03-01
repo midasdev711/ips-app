@@ -98,7 +98,11 @@ class Lender < ActiveRecord::Base
             @buy_down_amount = calculator.cost_of_borrowing
           end
 
-          ratio = 1 - @buy_down_amount / calculator.cost_of_borrowing
+          if calculator.cost_of_borrowing > 0
+            ratio = 1 - @buy_down_amount / calculator.cost_of_borrowing
+          else
+            ratio = 0
+          end
 
           @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
 
