@@ -315,14 +315,15 @@ RSpec.describe Lender, type: :model do
     end
 
     context 'when loan is lease' do
-      let(:loan) { 'lease' }
+      let(:loan)     { 'lease' }
       let(:residual) { double :residual }
-      let(:lien) { double :lien }
+      let(:lien)     { double :lien }
+      let(:rebate)   { double :rebate }
 
       let(:lease_calculator_klass) { class_double('Calculator::Lease').as_stubbed_const }
       let(:lease_calculator)       { double :lease_calculator   }
 
-      let(:expected_arguments) { { frequency: frequency, rate: rate, residual: residual, tax: tax, term: term, lien: lien } }
+      let(:expected_arguments) { { frequency: frequency, rate: rate, residual: residual, rebate: rebate, tax: tax, term: term, lien: lien } }
 
       before do
         allow(lender).to receive(:residual)
@@ -330,6 +331,9 @@ RSpec.describe Lender, type: :model do
 
         allow(lender).to receive(:lien)
           .and_return lien
+
+        allow(lender).to receive(:rebate)
+          .and_return rebate
 
         allow(lease_calculator_klass).to receive(:new)
           .with(expected_arguments)

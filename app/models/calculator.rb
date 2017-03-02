@@ -106,10 +106,10 @@ module Calculator
     validates :residual, presence: true
     validates :tax, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-    attr_accessor :residual, :tax, :lien
+    attr_accessor :residual, :tax, :lien, :rebate
 
     def initialize(opts = {})
-      @residual, @tax, @lien = opts.values_at :residual, :tax, :lien
+      @residual, @tax, @lien, @rebate = opts.values_at :residual, :tax, :lien, :rebate
       super
     end
 
@@ -134,7 +134,7 @@ module Calculator
     end
 
     def calculate_cost_of_borrowing
-      lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing
+      lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing - rebate * tax
     end
 
     def lease_payment
