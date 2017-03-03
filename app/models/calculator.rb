@@ -134,7 +134,11 @@ module Calculator
     end
 
     def calculate_cost_of_borrowing
-      lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing - rebate * tax
+      cost_of_borrowing = lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing - rebate * tax
+
+      return Money.new(0) if cost_of_borrowing < 0
+
+      cost_of_borrowing
     end
 
     def lease_payment
