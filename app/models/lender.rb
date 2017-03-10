@@ -1,7 +1,7 @@
 class Lender < ActiveRecord::Base
   include Loan
   include Term
-  
+
   TERMS = [12, 24, 36, 48, 60, 72, 84, 96]
 
   enum frequency: [:biweekly, :monthly, :semimonthly, :weekly]
@@ -22,6 +22,8 @@ class Lender < ActiveRecord::Base
   validates :amortization, numericality: { greater_than_or_equal_to: :term, allow_nil: true }
   validates :bank, :frequency, :position, presence: true
   validates :position, uniqueness: { scope: :deal }
+  validates :kickback_percent, numericality: { greater_than_or_equal_to: 0 }
+
   validate :has_at_least_one_interest_rate
 
   accepts_nested_attributes_for :interest_rates, :insurance_terms, allow_destroy: true
@@ -43,7 +45,20 @@ class Lender < ActiveRecord::Base
   end
 
   def buydown?
-    tier.present?
+    tier.present? && tier <= max_tier
+  end
+
+  def build_calculator
+    opts = { frequency: frequency.to_sym, rate: interest_rate.value, term: term }
+
+    case loan
+    when 'finance'
+      opts.merge! amortization: amortization
+      Calculator::Finance.new opts
+    when 'lease'
+      opts.merge! residual: residual, tax: tax_rate, lien: lien, rebate: rebate
+      Calculator::Lease.new opts
+    end
   end
 
   def calculate!
@@ -61,6 +76,7 @@ class Lender < ActiveRecord::Base
     calculator.calculate!
 
     @buy_down_amount, @profit = Money.new(0), Money.new(0)
+    buy_down_amount, kickback_amount = Money.new(0), Money.new(0)
 
     product_categories.each do |category|
       @amount += category.amount
@@ -70,23 +86,27 @@ class Lender < ActiveRecord::Base
 
       if right? # All the magic happens for the right-hand-side lender.
         if buydown? # Buy Down engaged.
-          category_buy_down_amount = category.buy_down_amount
+          calculator.rate = interest_rate.value
+          calculator.calculate!
 
-          if category_buy_down_amount.positive?
-            @buy_down_amount += category_buy_down_amount
+          buy_down_amount += category.buy_down_amount
+          kickback_amount += category.buy_down_amount * kickback_rate
 
-            calculator.rate = interest_rate.value
-            calculator.calculate!
+          @buy_down_amount = buy_down_amount + kickback_amount
 
-            cost_of_borrowing = calculator.cost_of_borrowing
-
-            ratio = 1 - @buy_down_amount / cost_of_borrowing
-            ratio = 0 if ratio < 0
-
-            @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
-
-            @current_rate.round! if rounding
+          if @buy_down_amount > calculator.cost_of_borrowing
+            @buy_down_amount = calculator.cost_of_borrowing
           end
+
+          if calculator.cost_of_borrowing > 0
+            ratio = 1 - @buy_down_amount / calculator.cost_of_borrowing
+          else
+            ratio = 0
+          end
+
+          @current_rate = InterestRate.new value: (interest_rate.value * ratio).round(4)
+
+          @current_rate.round! if rounding
         else
           case category.name
           when 'pocketbook' # Each deselected product from pocketbook changes the interest rate to the next highest rate available.
@@ -121,10 +141,6 @@ class Lender < ActiveRecord::Base
     @balloon = calculator.balloon if finance?
     @cost_of_borrowing = calculator.cost_of_borrowing
 
-    if kickback # Optional 15% bank kick-back.
-      @buy_down_amount *= 0.85
-    end
-
     @profit -= @buy_down_amount
 
     self
@@ -145,17 +161,13 @@ class Lender < ActiveRecord::Base
   end
 
   def products_amount
-    (invisible_products + products).reduce(Money.new(0)) { |acc, item| acc + item.retail_price }
+    @products_amount ||= (invisible_products + products).reduce(Money.new(0)) do |acc, item|
+      acc + ProductAmount.calculate(deal: deal, lender: self, product: item)
+    end
   end
 
   def insurable_amount
-    amount = products_amount + vehicle_amount
-
-    calculator.amount = amount
-    calculator.rate = interest_rate.value
-    calculator.calculate!
-
-    amount + calculator.cost_of_borrowing
+    @insurable_amount ||= InsurableAmount.calculate(self)
   end
 
   def max_tier
@@ -163,7 +175,7 @@ class Lender < ActiveRecord::Base
   end
 
   def product_categories
-    @product_categories ||= Product.categories.map { |k, _| ProductCategory.new name: k, product_list: product_list, lender: self }
+    @product_categories ||= Product.categories.map { |k, _| ProductCategory.new name: k, product_list: product_list, deal: deal, lender: self }
   end
 
   def warnings
@@ -176,6 +188,14 @@ class Lender < ActiveRecord::Base
 
   def invisible_products
     product_list.products.invisible
+  end
+
+  def kickback_percent
+    (kickback_rate * 100).round 4
+  end
+
+  def kickback_percent=(new_percent)
+    self.kickback_rate = (new_percent.to_d / 100).round(4)
   end
 
   private
@@ -238,16 +258,7 @@ class Lender < ActiveRecord::Base
   end
 
   def calculator
-    opts = { frequency: frequency.to_sym, rate: interest_rate.value, term: term }
-
-    @calculator ||= case loan
-                  when 'finance'
-                    opts.merge! amortization: amortization
-                    Calculator::Finance.new opts
-                  when 'lease'
-                    opts.merge! residual: residual, tax: tax_rate
-                    Calculator::Lease.new opts
-                  end
+    @calculator ||= build_calculator
   end
 
   Warning = Struct.new(:field, :message)

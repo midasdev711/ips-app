@@ -1,4 +1,4 @@
-FROM ruby:2.2.3
+FROM ruby:2.2.5
 
 RUN apt-get update -q && apt-get install -y build-essential \
 
@@ -36,6 +36,8 @@ RUN bundle install
 
 ADD . $APP_PATH
 
-CMD ["puma", "--config", "config/puma.rb"]
+ARG ASSETS_PRECOMPILE
+RUN if [ -n "$ASSETS_PRECOMPILE" ]; then RAILS_ENV=production rake assets:precompile; else exit 0; fi
 
-EXPOSE 9292
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["start"]

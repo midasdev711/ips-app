@@ -154,6 +154,15 @@
               %td
                 = f.fields_for :lenders, @lender_r do |lf|
                   = lf.select :term, Lender::TERMS, include_blank: true, label: false
+            %tr.kickback
+              %th
+                Kickback
+                %small (%)
+              %td
+              %td
+              %td
+                = f.fields_for :lenders, @lender_r do |lf|
+                  = lf.text_field :kickback_percent, label: false, data: { autonumeric: autonumeric_options }
             %tr.amortization
               %th
                 Amortization
@@ -180,15 +189,7 @@
                       = lf.text_field :residual_value, label: false, data: { autonumeric: autonumeric_options }, id: 'lender-r-residual'
                     .small-3.columns
                       = lf.select :residual_unit, residual_units, { label: false }, data: { target: '#lender-r-residual' }, class: 'residual-unit-select'
-            %tr.kickback
-              %th
-              %td.lender-l
-              %td
-              %td.lender-r
-                .row.collapse
-                  = f.fields_for :lenders, @lender_r do |lf|
-                    .small-12.columns
-                      = lf.check_box :kickback
+
             %tr.rounding
               %th
               %td.lender-l
@@ -204,12 +205,12 @@
                 %small ($)
               %td
                 = f.fields_for :lenders, @lender_l do |lf|
-                  = lf.text_field :max_amount, label: false, data: { autonumeric: autonumeric_options }
+                  = lf.text_field :max_amount, label: false, data: { autonumeric: autonumeric_options }, class: 'autoclear'
               %td
                 = cross_copy(:max_amount)
               %td
                 = f.fields_for :lenders, @lender_r do |lf|
-                  = lf.text_field :max_amount, label: false, data: { autonumeric: autonumeric_options }
+                  = lf.text_field :max_amount, label: false, data: { autonumeric: autonumeric_options }, class: 'autoclear'
             %tr
               %th
                 Rates

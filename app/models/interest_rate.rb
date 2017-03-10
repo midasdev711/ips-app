@@ -7,11 +7,15 @@ class InterestRate < ActiveRecord::Base
   ROUNDED_RATES =  [0.0] + (1..50).step(0.5).map { |i| i - 0.51 }
 
   def percent_value
-    (value.to_f * 100).round 4
+    (value.to_f * 100).round 4 unless value.nil?
   end
 
   def percent_value=(percent_value)
-    self.value = (percent_value.to_f / 100.0).round 4
+    if percent_value.blank?
+      self.value = nil
+    else
+      self.value = (percent_value.to_f / 100.0).round 4
+    end
   end
 
   def round!

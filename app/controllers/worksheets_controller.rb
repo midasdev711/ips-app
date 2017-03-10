@@ -50,7 +50,7 @@ class WorksheetsController < ApplicationController
         :cash_price,
         :dci,
         :frequency,
-        :kickback,
+        :kickback_percent,
         :lien,
         :loan,
         :max_amount,

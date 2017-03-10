@@ -7,3 +7,11 @@ select, input[type="text"] {
   height: rem-calc(20);
   line-height: rem-calc(20)
 }
+
+form {
+  input[data-autonumeric] {
+    &::placeholder {
+      color: #c0c0c0;
+    }
+  }
+}

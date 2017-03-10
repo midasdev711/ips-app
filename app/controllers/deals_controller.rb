@@ -92,7 +92,8 @@ class DealsController < ApplicationController
       lenders_attributes: [
         :id,
         :interest_rate_id,
-
+        :residual_value,
+        :residual_unit,
         :amortization,
         :cash_down,
         :dci,

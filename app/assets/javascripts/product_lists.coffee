@@ -16,7 +16,7 @@ ProductListsController.prototype.edit = () ->
       $target.append(template)
       $target.find('select').trigger('change');
 
-      $document.trigger('refresh_autonumeric');
+      # $document.trigger('refresh_autonumeric');
 
     $document.on 'click', 'a.destroy', (e) ->
       e.preventDefault()
@@ -28,20 +28,20 @@ ProductListsController.prototype.edit = () ->
 
     $document.on 'click', '.insurance-rate-variation .add-insurance-rate', (e) ->
       e.preventDefault()
-      
+
       $element = $(e.target)
-      
+
       $insuranceRateVariation = $element.parents('.insurance-rate-variation')
       $insuranceRateVariationInsuranceRates = $insuranceRateVariation.find('.insurance-rates')
 
       template = $insuranceRateVariation.find('.insurance-rate-template').html()
       template = template.replace(/(product_list\[insurance_policies_attributes\]\[\d+\]\[insurance_rates_attributes\])(\[\d+\])/g, '$1' + '[' + new Date().getTime() + ']')
-      
+
       $insuranceRateVariationInsuranceRates.prepend(template)
 
     $document.on 'click', '.insurance-rate-variation .remove-insurance-rate', (e) ->
       e.preventDefault()
-      
+
       $element = $(e.target)
 
       $insuranceRate = $element.parents('.insurance-rate')
@@ -49,7 +49,7 @@ ProductListsController.prototype.edit = () ->
 
       $insuranceRateDestroyInput = $insuranceRate.find('input[name$="[_destroy]"]')
       $insuranceRateDestroyInput.val(true)
-      
+
 
     $('#province').on 'change', (e) ->
       selected = $('option:selected', e.target)
@@ -61,12 +61,17 @@ ProductListsController.prototype.edit = () ->
     $('.product-profit, #total-profit').autoNumeric('init', autoNumericOptions).autoNumeric('update')
 
     $document.on 'keyup', '.product-retail-price, .product-dealer-cost', (e) ->
-      retailPrice = $(e.target).closest('tr').find('.product-retail-price').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
-      dealerCost = $(e.target).closest('tr').find('.product-dealer-cost').autoNumeric('init', autoNumericOptions).autoNumeric('get') || 0
+      $target = $(e.target)
+
+      $retailPriceInput = $target.closest('tr').find('.product-retail-price')
+      $dealerCostInput  = $target.closest('tr').find('.product-dealer-cost')
+
+      retailPrice = $retailPriceInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $retailPriceInput.data('raw-value')
+      dealerCost  = $dealerCostInput.autoNumeric('init', autoNumericOptions).autoNumeric('get') || $dealerCostInput.data('raw-value')
 
       profit = retailPrice - dealerCost
 
-      $(e.target).closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
+      $target.closest('tr').find('.product-profit').autoNumeric('init', autoNumericOptions).autoNumeric('set', profit)
 
       total = $.makeArray($('.product-profit')).reduce ((memo, node) ->
         memo + parseInt $(node).autoNumeric('get')

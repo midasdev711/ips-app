@@ -93,8 +93,7 @@ module Calculator
       if rate.zero?
         amount / compounding_periods
       else
-        cents = amount.cents * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
-        Money.new(cents)
+        amount * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
       end
     end
 
@@ -107,10 +106,10 @@ module Calculator
     validates :residual, presence: true
     validates :tax, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-    attr_accessor :residual, :tax
+    attr_accessor :residual, :tax, :lien, :rebate
 
     def initialize(opts = {})
-      @residual, @tax = opts.values_at :residual, :tax
+      @residual, @tax, @lien, @rebate = opts.values_at :residual, :tax, :lien, :rebate
       super
     end
 
@@ -122,22 +121,46 @@ module Calculator
       true
     end
 
+    def lien_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lien_payment * compounding_periods - lien
+    end
+
+    def lease_cost_of_borrowing
+      return Money.new 0 if rate.zero?
+
+      lease_payment * compounding_periods - (amount - residual)
+    end
+
     def calculate_cost_of_borrowing
-      if rate.zero?
-        Money.new 0
-      else
-        @payment * compounding_periods - (amount - residual)
-      end
+      cost_of_borrowing = lease_cost_of_borrowing * (1 + tax) + lien_cost_of_borrowing - rebate * tax
+
+      return Money.new(0) if cost_of_borrowing < 0
+
+      cost_of_borrowing
+    end
+
+    def lease_payment
+      return (amount - residual) / compounding_periods if rate.zero?
+
+      lease_cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
+
+      Money.new lease_cents
+    end
+
+    def lien_payment
+      return lien / compounding_periods if rate.zero?
+
+      lien * (effective_rate + effective_rate / ((1 + effective_rate) ** compounding_periods - 1))
+    end
+
+    def lease_payment_taxed
+      lease_payment * (1 + tax)
     end
 
     def calculate_payment
-      if rate.zero?
-        payment = (amount - residual) / compounding_periods
-      else
-        cents = effective_rate * (residual.cents - amount.cents * (1 + effective_rate) ** compounding_periods) / ((1 + effective_rate) * (1 - (1 + effective_rate) ** compounding_periods))
-        payment = Money.new cents
-      end
-      payment * (1 + tax)
+      lease_payment_taxed + lien_payment
     end
 
     def compounding_periods

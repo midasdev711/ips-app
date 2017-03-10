@@ -10,6 +10,7 @@ class ProductListsController < ApplicationController
       @listable.product_list_done! if @listable.is_a?(Deal)
       redirect_to redirect_path, notice: 'Product List was successfully updated.'
     else
+      # binding.pry
       js :edit
       render :edit
     end
@@ -29,7 +30,7 @@ class ProductListsController < ApplicationController
       insurance_policies_attributes = [
         :id, :name, :category, :_destroy,
         insurance_rates_attributes: [
-          :id, 
+          :id,
           :loan,
           :residual,
           :term,

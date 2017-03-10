@@ -1,3 +1,4 @@
+ruby '2.2.5'
 source 'https://rubygems.org'
 
 gem 'rails', '5.0.0'
@@ -8,7 +9,6 @@ gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'foundation-rails', '~> 5.5'
 gem 'foundation_rails_helper', '~> 1.0'
-gem 'font-awesome-rails'
 gem 'autoprefixer-rails'
 gem 'haml-rails'
 gem 'devise'

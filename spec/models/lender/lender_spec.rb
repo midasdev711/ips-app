@@ -16,25 +16,45 @@ RSpec.describe Lender, type: :model do
 
   it { is_expected.to callback(:set_residual).after :validation }
 
+  it { is_expected.to allow_value(0).for(:kickback_percent) }
+  it { is_expected.to_not allow_value(-1).for(:kickback_percent) }
 
   let(:lender) { build :lender }
 
   describe '#buydown?' do
     subject { lender.buydown? }
 
+    let(:tier) { double :tier, present?: true }
+
     before do
       allow(lender).to receive(:tier).and_return tier
+    end
+
+    context 'when tier selected' do
+      let(:max_tier) { double :max_tier }
+
+      before do
+        allow(lender).to receive(:max_tier).and_return max_tier
+        allow(tier).to   receive(:<=).with(max_tier).and_return enough
+      end
+
+      context 'and there is enough pocketbook profit for buy down' do
+        let(:enough) { true }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'and there is not enough pocketbook profit for buy down' do
+        let(:enough) { false }
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'when no tier selected' do
       let(:tier) { double :tier, present?: false }
 
       it { is_expected.to be_falsey }
-    end
-
-    context 'when tier selected' do
-      let(:tier) { double :tier, present?: true }
-      it { is_expected.to be_truthy }
     end
   end
 
@@ -53,18 +73,25 @@ RSpec.describe Lender, type: :model do
   describe '#products_amount' do
     subject { lender.products_amount }
 
-    let(:products)           { [double(:product, retail_price: money)] }
-    let(:invisible_products) { [double(:product, retail_price: money)] }
+    let(:product_one) { double :product }
+    let(:product_two) { double :product }
 
     let(:money_class) { class_double('Money').as_stubbed_const }
     let(:money)       { double :money }
 
-    before do
-      allow(lender).to receive(:products).and_return products
-      allow(lender).to receive(:invisible_products).and_return invisible_products
+    let(:product_amount_class) { class_double('ProductAmount').as_stubbed_const }
 
-      allow(money_class).to receive(:new).and_return money
+    before do
+      allow(lender).to receive(:products).and_return           [product_one]
+      allow(lender).to receive(:invisible_products).and_return [product_two]
+
+      allow(money_class).to receive(:new).with(0).and_return money
       allow(money).to receive(:+).with(money).and_return money
+
+      allow(product_amount_class).to receive(:calculate).and_return money
+
+      expect(product_amount_class).to receive(:calculate).with(deal: lender.deal, lender: lender, product: product_one).once
+      expect(product_amount_class).to receive(:calculate).with(deal: lender.deal, lender: lender, product: product_two).once
     end
 
     it { is_expected.to eq money }
@@ -73,31 +100,11 @@ RSpec.describe Lender, type: :model do
   describe '#insurable_amount' do
     subject { lender.insurable_amount }
 
-    let(:interest_rate)       { double :interest_rate, value: interest_rate_value }
-    let(:interest_rate_value) { double :interest_rate_value }
-
-    let(:amount) { double :amount }
-
-    let(:calculator) { double :calculator, cost_of_borrowing: cost_of_borrowing }
-    let(:cost_of_borrowing) { double :cost_of_borrowing }
-
+    let(:insurable_amount_class) { class_double('InsurableAmount').as_stubbed_const }
     let(:expected_amount) { double :expected_amount }
 
     before do
-      allow(lender).to receive(:interest_rate).and_return interest_rate
-
-      allow(lender).to receive(:vehicle_amount).and_return amount
-      allow(lender).to receive(:products_amount).and_return amount
-
-      allow(lender).to receive(:calculator).and_return calculator
-
-      allow(amount).to receive(:+).with(amount).and_return amount
-
-      allow(calculator).to receive(:amount=).with amount
-      allow(calculator).to receive(:rate=).with interest_rate_value
-      allow(calculator).to receive(:calculate!)
-
-      allow(amount).to receive(:+).with(cost_of_borrowing).and_return expected_amount
+      expect(insurable_amount_class).to receive(:calculate).with(lender).and_return expected_amount
     end
 
     it { is_expected.to eq expected_amount }
@@ -210,7 +217,7 @@ RSpec.describe Lender, type: :model do
       let(:insurance_policies) { [insurance_policy] }
       let(:insurance_policy) { double :insurance_policy, category: insurance_policy_category }
       let(:insurance_policy_category) { double :insurance_policy_category }
-      
+
       before do
         expect(insurance_terms).to receive(:destroy_all).once
 
@@ -308,17 +315,25 @@ RSpec.describe Lender, type: :model do
     end
 
     context 'when loan is lease' do
-      let(:loan) { 'lease' }
+      let(:loan)     { 'lease' }
       let(:residual) { double :residual }
+      let(:lien)     { double :lien }
+      let(:rebate)   { double :rebate }
 
       let(:lease_calculator_klass) { class_double('Calculator::Lease').as_stubbed_const }
       let(:lease_calculator)       { double :lease_calculator   }
 
-      let(:expected_arguments) { { frequency: frequency, rate: rate, residual: residual, tax: tax, term: term } }
+      let(:expected_arguments) { { frequency: frequency, rate: rate, residual: residual, rebate: rebate, tax: tax, term: term, lien: lien } }
 
       before do
         allow(lender).to receive(:residual)
           .and_return residual
+
+        allow(lender).to receive(:lien)
+          .and_return lien
+
+        allow(lender).to receive(:rebate)
+          .and_return rebate
 
         allow(lease_calculator_klass).to receive(:new)
           .with(expected_arguments)
