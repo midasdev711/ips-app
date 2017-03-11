@@ -76,3 +76,4 @@ production:
     $DOCKER_IMAGE_ANSIBLE deploy:production
   only:
     - master
+  when: manual
