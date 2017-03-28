@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ProductAmount, '#tax', type: :model do
+RSpec.describe ProductAmount, '#tax_amount', type: :model do
   let(:amount)   { Money.new 1000 }
   let(:tax_rate) { 0.12 }
 
@@ -14,7 +14,7 @@ RSpec.describe ProductAmount, '#tax', type: :model do
     allow(product_amount).to receive(:tax_rate).and_return(tax_rate)
   end
 
-  subject { product_amount.send :tax }
+  subject { product_amount.send :tax_amount }
 
   it { is_expected.to eq(amount * tax_rate) }
 end

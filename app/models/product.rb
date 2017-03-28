@@ -1,6 +1,8 @@
 class Product < ActiveRecord::Base
   include Category
-  include Tax
+  include Taxable
+
+  enum tax: [:no, :one, :two]
 
   belongs_to :product_list
   has_and_belongs_to_many :lenders
