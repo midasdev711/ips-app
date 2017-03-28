@@ -255,6 +255,8 @@
           .small-6.columns
             = f.select :max_frequency, compounding_frequencies, label: '&nbsp;'
         %hr
+          = f.check_box :pst_trade_in_allowance, label: 'PST Trade-in Allowance'
+          = f.check_box :gst_trade_in_allowance, label: 'GST Trade-in Allowance'
           = f.check_box :status_indian, label: 'Status Indian'
           = f.check_box :used, label: 'Used vehicle'
           = f.select :tax, taxes, label: 'Vehicle tax'

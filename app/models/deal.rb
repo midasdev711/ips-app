@@ -1,7 +1,7 @@
 class Deal < ActiveRecord::Base
   include AASM
   include Province
-  include Tax
+  include Taxable
 
   COMPOUNDING_FREQUENCIES = [:biweekly, :monthly, :semimonthly, :weekly]
 
@@ -9,6 +9,7 @@ class Deal < ActiveRecord::Base
   enum max_frequency: COMPOUNDING_FREQUENCIES, _prefix: :max
 
   enum state: [:product_list, :worksheet, :active]
+  enum tax: [:no, :one, :two]
 
   belongs_to :user
   has_one :client, as: :contactable, class_name: 'Contact', dependent: :destroy
@@ -27,16 +28,6 @@ class Deal < ActiveRecord::Base
 
   monetize :min_payment_cents, :max_payment_cents, numericality: { greater_than_or_equal_to: 0 }
 
-  def tax_rate
-    return 0.0 if status_indian
-
-    case tax
-    when 'no'  then 0.0
-    when 'one' then province.gst
-    when 'two' then province.gst + province.pst
-    end
-  end
-
   aasm column: :state, skip_validation_on_save: true do
     state :product_list, initial: true
     state :worksheet
@@ -49,6 +40,22 @@ class Deal < ActiveRecord::Base
     event :worksheet_done do
       transitions to: :active
     end
+  end
+
+  def tax_type
+    tax
+  end
+
+  def pst_rate
+    province.pst
+  end
+
+  def gst_rate
+    province.gst
+  end
+
+  def tax_trade_in_not_allowed?(type)
+    !send(:"#{type}_trade_in_allowance?")
   end
 
   private

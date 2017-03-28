@@ -1,6 +1,8 @@
 class ProductAmount
+  include Taxable
+
   STRATEGIES = {
-    finance: proc { amount + tax },
+    finance: proc { amount + tax_amount },
     lease: proc { amount }
   }
 
@@ -22,23 +24,13 @@ class ProductAmount
 
   attr_reader :deal, :product
 
-  def tax
-    @tax ||= amount * tax_rate
+  def tax_amount
+    @tax_amount ||= amount * tax_rate
   end
 
   def amount
     @amount ||= product.retail_price
   end
 
-  delegate :status_indian, :province, to: :deal
-
-  def tax_rate
-    return 0.0 if status_indian
-
-    case product.tax
-    when 'no'  then 0.0
-    when 'one' then province.gst
-    when 'two' then province.gst + province.pst
-    end
-  end
+  delegate :status_indian, :province, :tax, to: :deal
 end

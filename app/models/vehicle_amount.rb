@@ -1,6 +1,6 @@
 class VehicleAmount
   STRATEGIES = {
-    finance: proc { amount + lien + tax },
+    finance: proc { amount + lien + tax.total },
     lease: proc { amount }
   }
 
@@ -18,23 +18,15 @@ class VehicleAmount
     instance_eval(&strategy)
   end
 
-  def base_amount
-    @base_amount ||= cash_price - trade_in - dci
-  end
-
-  def tax
-    @tax ||= base_amount.positive? ? base_amount * tax_rate : zero_amount
-  end
-
   def amount
-    @amount ||= base_amount - rebate - cash_down + bank_reg_fee
+    cash_price - trade_in - dci - rebate - cash_down + bank_reg_fee
   end
 
   private
 
   attr_reader :lender
 
-  delegate :cash_price, :trade_in, :dci, :tax_rate, :lien, :rebate, :cash_down, :bank_reg_fee, :loan, to: :lender
+  delegate :cash_price, :trade_in, :dci, :lien, :rebate, :cash_down, :bank_reg_fee, :tax, to: :lender
 
   def zero_amount
     Money.new(0)
