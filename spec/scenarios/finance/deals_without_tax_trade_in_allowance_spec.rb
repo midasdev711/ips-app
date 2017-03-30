@@ -31,8 +31,8 @@ RSpec.describe 'Deals without tax trade id allowance', type: :scenario do
   end
 
   context 'when PST and GST trade-in allowance are disabled' do
-    it { expect(@lender.payment).to eql(Money.new(169_80)) }
-    it { expect(@lender.cost_of_borrowing).to eql(Money.new(8_003_60)) }
+    it { expect(@lender.payment).to eql(Money.new(172_70)) }
+    it { expect(@lender.cost_of_borrowing).to eql(Money.new(8_141_40)) }
   end
 
   context 'when one tax' do
