@@ -32,5 +32,6 @@ class ProductAmount
     @amount ||= product.retail_price
   end
 
-  delegate :status_indian, :province, :tax, to: :deal
+  delegate :status_indian, :province, to: :deal
+  delegate :tax, to: :product
 end
