@@ -20,17 +20,17 @@ RSpec.describe '$20,000 deal', type: :scenario do
   end
 
   [
-    Example.new(0.0699, 153_83, 5_879_32),
-    Example.new(0.0474, 142_91, 3_891_88),
-    Example.new(0.0399, 139_38, 3_249_42),
-    Example.new(0.0349, 137_06, 2_827_18),
-    Example.new(0.0299, 134_76, 2_408_58),
-    Example.new(0.0249, 132_48, 1_993_62),
-    Example.new(0.0199, 130_23, 1_584_12),
-    Example.new(0.0149, 128_01, 1_180_08),
-    Example.new(0.0099, 125_81,   779_68),
-    Example.new(0.0049, 123_63,   382_92),
-    Example.new(0.0000, 121_53,        0)
+    Example.new(0.0699, 155_22, 5_932_30),
+    Example.new(0.0474, 144_20, 3_926_66),
+    Example.new(0.0399, 140_64, 3_278_74),
+    Example.new(0.0349, 138_29, 2_851_04),
+    Example.new(0.0299, 135_98, 2_430_62),
+    Example.new(0.0249, 133_68, 2_012_02),
+    Example.new(0.0199, 131_41, 1_598_88),
+    Example.new(0.0149, 129_17, 1_191_20),
+    Example.new(0.0099, 126_95,   787_16),
+    Example.new(0.0049, 124_75,   386_76),
+    Example.new(0.0000, 122_62,        0)
   ].each do |item|
     context "at #{item.rate}%" do
       let(:interest_rate_value) { item.rate }
