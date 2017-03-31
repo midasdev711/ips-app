@@ -37,6 +37,8 @@ class WorksheetsController < ApplicationController
       :min_frequency,
       :min_payment,
       :status_indian,
+      :pst_trade_in_allowance,
+      :gst_trade_in_allowance,
       :tax,
       :used,
 

@@ -32,7 +32,7 @@ class Lender < ActiveRecord::Base
 
   monetize :max_amount_cents, :bank_reg_fee_cents, :cash_down_cents, :cash_price_cents, :dci_cents, :lien_cents, :msrp_cents, :rebate_cents, :residual_cents, :trade_in_cents, numericality: { greater_than_or_equal_to: 0 }
 
-  delegate :tax_rate, to: :deal
+  delegate :tax_rate, :tax_type, :no_taxation?, :pst_rate, :gst_rate, :tax_trade_in_not_allowed?, to: :deal
 
   after_validation :set_residual
 
@@ -196,6 +196,10 @@ class Lender < ActiveRecord::Base
 
   def kickback_percent=(new_percent)
     self.kickback_rate = (new_percent.to_d / 100).round(4)
+  end
+
+  def tax
+    Tax.new(self)
   end
 
   private
