@@ -1,0 +1,75 @@
+%nav
+  .row
+    .columns
+      %ul.breadcrumbs
+        %li= link_to 'Back', :back
+%main
+  .row.video-content
+    .medium-8.columns
+      .row
+        .medium-12.columns
+          .plyr__video-embed#player
+            %iframe{:src => "https://player.vimeo.com/video/" + @videos[0]["id"] + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media",  :allow => "autoplay", :allowfullscreen => true, :allowtransparency => true}
+
+      .row.videolist
+        - @videos.each do |item|
+          .medium-4.columns
+            .content-item{:id => item["id"]}
+              %img{:src => item["thumbnail"] }
+              %strong= item["name"]
+        
+    .medium-4.columns
+      %ul.pdflist
+        %li
+          %a{:href => "/1-intro.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Introduction Script
+        %li
+          %a{:href => "/2-Credit.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Credit Information Script
+        %li
+          %a{:href => "/3-Buy down point.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Buy Down Points
+        %li
+          %a{:href => "/4-worksheet.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Worksheet Script
+        %li
+          %a{:href => "/5-bank option script.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Bank Option Sheet Script
+        %li
+          %a{:href => "/6 - product pres 1 .pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Product Presentation #1 Script
+        %li
+          %a{:href => "/7 - product pres 2 .pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Product Presentation #2 Script
+        %li
+          %a{:href => "/8 - product pres 3 .pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Product Presentation #3 Script
+        %li
+          %a{:href => "/cash conversion.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Cash Conversion Script
+        %li
+          %a{:href => "/Risk vs Rates.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Risk vs Rates
+        %li
+          %a{:href => "/Tied Selling vs Preferential Pricing.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Tied Selling vs Preferential Pricing
+        %li
+          %a{:href => "/deal16347.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } Top 4 Questions
+        %li
+          %a{:href => "/what do you want to do with that interest money.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } What To Do With That Interest Money
+        %li
+          %a{:href => "/what happened to my original deal.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } What Happened to my Original Deal?
+        %li
+          %a{:href => "/if i could give you this for free would you take it.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } If I Could Give You This For Free, Would You Take It?
+        %li
+          %a{:href => "/ten-steps.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } The 10 Step Process
+        %li
+          %a{:href => "/BDP Training sheet.png.pdf", :target => "_blank"} 
+            %img{:src => "/pdfImage.png", :width => "30px", :height => "60px" } BDP Training Sheet
+
+  

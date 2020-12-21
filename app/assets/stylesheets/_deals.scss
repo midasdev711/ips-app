@@ -20,7 +20,11 @@
   }
   .button {
     margin-bottom: rem-calc(5);
+    &.video-button {
+      background-color: #E65100;
+    }
   }
+
 
   .button-group {
     .active {

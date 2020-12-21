@@ -10,35 +10,40 @@
     <%= javascript_include_tag "vendor/modernizr" %>
     <%= javascript_include_tag "application" %>
     <script src="https://use.fontawesome.com/559c3ab777.js"></script>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <%= csrf_meta_tags %>
   </head>
 
   <body class="<%= controller.controller_name %>">
-    <%= display_flash_messages %>
-    <%= yield %>
-    <%= insert_paloma_hook %>
+    <div class="container">
+      <%= display_flash_messages %>
+      <%= yield %>
+      <%= insert_paloma_hook %>
+    </div>
     <footer>
-      <div class="row">
-        <div class="medium-2 columns">
-          <%= image_tag 'ips-logo-orange', class: 'logo' %>
-        </div>
-        <div class="medium-8 columns">
-          <p><%= t :company_legal_name %>, Vancouver, BC, Canada</p>
-          <p>
-            <span><%= mail_to 'info@innovativepricingsolutions.com' %></span>
-            <% if user_signed_in? %>
-              <span><%= link_to('Logout', destroy_user_session_path, :method => :delete) %></span>
-            <% end %>
-          </p>
-          <p>Developed by <%= link_to 'Pieoneers', 'http://pieoneers.com/' %></p>
-        </div>
-        <div class="medium-2 columns">
-            <p class="right">
-              Software <br> Patent pending
+      <div class="container">
+        <div class="row">
+          <div class="medium-2 columns">
+            <%= image_tag 'ips-logo-orange', class: 'logo' %>
+          </div>
+          <div class="medium-8 columns">
+            <p><%= t :company_legal_name %>, Vancouver, BC, Canada</p>
+            <p>
+              <span><%= mail_to 'info@innovativepricingsolutions.com' %></span>
+              <% if user_signed_in? %>
+                <span><%= link_to('Logout', destroy_user_session_path, :method => :delete) %></span>
+              <% end %>
             </p>
+            <p>Developed by <%= link_to 'Pieoneers', 'http://pieoneers.com/' %></p>
+          </div>
+          <div class="medium-2 columns">
+              <p class="right">
+                Software <br> Patent pending
+              </p>
+          </div>
         </div>
       </div>
     </footer>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   </body>
 </html>

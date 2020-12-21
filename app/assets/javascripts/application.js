@@ -17,8 +17,44 @@
 //= require paloma
 //= require autonumeric
 //= require_tree .
+//= require plyr
+//= require owl.carousel
 
 $(function(){
   Paloma.start();
   $(document).foundation();
+
+  var vimeoPlayer;
+
+  $(document).on("turbolinks:load", function() {
+    vimeoPlayer = new Plyr('#player');
+  });
+
+  $(".owl-carousel").owlCarousel({
+    loop: true,
+    margin: 10,
+    autoplay: true,
+    autoplayTimeout: 5000,
+    center: true,
+    video: true,
+  });
+
+  // $(".owl-carousel .content-item").click(function () {
+  //   var id = $(this).attr('id');
+  //   console.log(id);
+  //   var newVideoLink = "https://player.vimeo.com/video/" + id + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media";
+  //   $(".plyr__video-embed iframe").attr("src", newVideoLink);
+  //   if (vimeoPlayer) {
+  //     vimeoPlayer.source = newVideoLink;
+  //   }
+  // });
+  $(".videolist .content-item").click(function () {
+    var id = $(this).attr('id');
+    console.log(id);
+    var newVideoLink = "https://player.vimeo.com/video/" + id + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media";
+    $(".plyr__video-embed iframe").attr("src", newVideoLink);
+    if (vimeoPlayer) {
+      vimeoPlayer.source = newVideoLink;
+    }
+  });
 });

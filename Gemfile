@@ -21,6 +21,9 @@ gem 'autonumeric-rails'
 gem 'money-rails'
 gem 'aasm'
 gem 'colorize'
+gem 'plyr-rails'
+gem 'owlcarousel-rails'
+gem 'vimeo_me2', :git => "https://github.com/bo-oz/vimeo_me2.git"
 
 # Error monitoring
 gem 'sentry-raven'

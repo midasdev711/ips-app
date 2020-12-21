@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
     resource :profile, only: [:edit, :update]
 
+    resources :video
+
     resources :dealerships do
       resource :product_list, only: [:edit, :update]
 

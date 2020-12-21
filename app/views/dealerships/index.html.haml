@@ -6,6 +6,7 @@
         = link_to 'Add new dealership', new_dealership_path, class: 'button success'
         = link_to 'Master Product List', edit_product_list_path, class: 'button'
       = link_to 'Profile', edit_profile_path, class: 'button'
+      
 %main
   .row
     - if @dealerships.empty?

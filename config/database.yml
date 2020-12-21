@@ -1,8 +1,9 @@
-development: &default
+default: &default
   adapter: postgresql
+  timeout: 5000
 
-test:
+development:
   <<: *default
-
-production:
-  <<: *default
+  database: ips_dev
+  username: midas
+  password: midas
