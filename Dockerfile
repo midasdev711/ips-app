@@ -8,6 +8,12 @@ RUN apt-get update -q && apt-get install -y build-essential \
   # wkhtmltopdf dependencies
   xfonts-base xfonts-75dpi \
 
+  libpng16-16 \
+
+  libjpeg-turbo8 \
+
+  libssl1.1 \
+
   # phantomjs dependencies
   fontconfig
 
