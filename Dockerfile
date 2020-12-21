@@ -8,20 +8,14 @@ RUN apt-get update -q && apt-get install -y build-essential \
   # wkhtmltopdf dependencies
   xfonts-base xfonts-75dpi \
 
-  libpng16-16 \
-
-  libjpeg-turbo8 \
-
-  libssl1.1 \
-
   # phantomjs dependencies
   fontconfig
 
 WORKDIR /tmp/
 
 # wkhtmltopdf
-RUN FILE=wkhtmltox_0.12.6-1.bionic_amd64.deb \
-  && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/$FILE \
+RUN FILE=wkhtmltox-0.12.1_linux-wheezy-amd64.deb \
+  wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.1/$FILE \
   && dpkg -i $FILE \
   && rm $FILE
 
