@@ -14,8 +14,8 @@ RUN apt-get update -q && apt-get install -y build-essential \
 WORKDIR /tmp/
 
 # wkhtmltopdf
-RUN FILE=wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
-  && wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/$FILE \
+RUN FILE=wkhtmltox_0.12.6-1.bionic_amd64.deb \
+  && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/$FILE \
   && dpkg -i $FILE \
   && rm $FILE
 
