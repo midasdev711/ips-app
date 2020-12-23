@@ -4,9 +4,9 @@
       %ul.breadcrumbs
         %li= link_to 'Back', :back
 %main
-  .row.video-content
-    .medium-8.columns
-      .row
+  .row.page-content
+    .medium-8.columns.video-content
+      .row.player
         .medium-12.columns
           .plyr__video-embed#player
             %iframe{:src => "https://player.vimeo.com/video/" + @videos[0]["id"] + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media",  :allow => "autoplay", :allowfullscreen => true, :allowtransparency => true}
@@ -17,6 +17,7 @@
             .content-item{:id => item["id"]}
               %img{:src => item["thumbnail"] }
               %strong= item["name"]
+              %span.buttons Play
         
     .medium-4.columns
       %ul.pdflist

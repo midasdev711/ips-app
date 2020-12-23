@@ -5,11 +5,50 @@
     margin-top: 30px;
     .content-item {
         margin-top: 20px;
+        cursor: pointer;
+        position: relative;
+        
+        .buttons {
+            background-color: #E65100;
+            position: absolute;
+            top: 40px;
+            left: calc(50% - 30px);
+            display: none;
+            width: 60px;
+            height: 30px;
+            font-size: 17px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+    }
+    .content-item:hover {
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            opacity: .6;
+        }
     }
 }
 
-.video-content {
+.page-content {
     padding-top: 30px;
+    .video-content {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+
+        .player {
+            position: sticky;
+            top: 30px;
+            z-index: 10;
+        }
+
+    }
 }
 
 .pdflist {

@@ -13,11 +13,6 @@ RUN apt-get update -q && apt-get install -y build-essential \
 
 WORKDIR /tmp/
 
-# wkhtmltopdf
-RUN FILE=wkhtmltox-0.12.1_linux-wheezy-amd64.deb \
-  wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.1/$FILE \
-  && dpkg -i $FILE \
-  && rm $FILE
 
 # phantomjs
 RUN FILE=phantomjs-2.1.1-linux-x86_64 \
