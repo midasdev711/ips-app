@@ -7,3 +7,6 @@ development:
   database: ips_dev
   username: midas
   password: midas
+
+production:
+  <<: *default
