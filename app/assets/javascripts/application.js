@@ -50,12 +50,16 @@ $(function(){
   // });
   $(".videolist .content-item").click(function () {
     var id = $(this).attr('id');
-    $(this).find('img').attr('style', 'border: 2px solid #E65100');
+    $(this).find('img').attr('style', 'border: 5px solid #E65100');
     console.log(id);
-    var newVideoLink = "https://player.vimeo.com/video/" + id + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media";
+    var newVideoLink = "https://player.vimeo.com/video/" + id + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media&amp;autoplay=true";
     $(".plyr__video-embed iframe").attr("src", newVideoLink);
     if (vimeoPlayer) {
       vimeoPlayer.source = newVideoLink;
+      vimeoPlayer.play();
+      vimeoPlayer.on('ready', event => {
+        vimeoPlayer.play();
+      });
     }
   });
 });

@@ -10,16 +10,13 @@
     <%= javascript_include_tag "vendor/modernizr" %>
     <%= javascript_include_tag "application" %>
     <script src="https://use.fontawesome.com/559c3ab777.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <%= csrf_meta_tags %>
   </head>
 
   <body class="<%= controller.controller_name %>">
-    <div class="container">
-      <%= display_flash_messages %>
-      <%= yield %>
-      <%= insert_paloma_hook %>
-    </div>
+    <%= display_flash_messages %>
+    <%= yield %>
+    <%= insert_paloma_hook %>
     <footer>
       <div class="container">
         <div class="row">

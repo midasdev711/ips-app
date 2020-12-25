@@ -3,10 +3,17 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 .videolist {
     margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
     .content-item {
         margin-top: 20px;
         cursor: pointer;
         position: relative;
+        //min-height: 300px;
+
+        img {
+            box-sizing: border-box;
+        }
         
         .buttons {
             background-color: #E65100;
