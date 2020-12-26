@@ -48,10 +48,24 @@ $(function(){
   //     vimeoPlayer.source = newVideoLink;
   //   }
   // });
+  var watched = localStorage.getItem('watched');
+  watched = watched ? JSON.parse(watched) : [];
+  $(".videolist .content-item").each(function(index) {
+    var id = $(this).attr('id');
+    if (watched.indexOf(id) > -1) {
+      $(this).find('img').attr('style', 'border: 5px solid #E65100');
+    }
+  });
+
   $(".videolist .content-item").click(function () {
     var id = $(this).attr('id');
+    var watched = localStorage.getItem('watched');
+    watched = watched ? JSON.parse(watched) : [];
+    if (watched.indexOf(id) == -1) {
+      watched.push(id);
+    }
+    localStorage.setItem('watched', JSON.stringify(watched));
     $(this).find('img').attr('style', 'border: 5px solid #E65100');
-    console.log(id);
     var newVideoLink = "https://player.vimeo.com/video/" + id + "?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media&amp;autoplay=true";
     $(".plyr__video-embed iframe").attr("src", newVideoLink);
     if (vimeoPlayer) {
