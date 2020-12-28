@@ -14,10 +14,12 @@
 
         .row.videolist
           - @videos.each do |item|
-            .medium-4.columns
+            .medium-12.columns
               .content-item{:id => item["id"]}
                 %img{:src => item["thumbnail"] }
-                %strong= item["name"]
+                .title
+                  %span= item["index"]
+                  %p= item["name"]
                 %span.buttons Play
           
       .medium-4.columns

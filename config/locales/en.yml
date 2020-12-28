@@ -23,7 +23,7 @@ en:
   dealership_mailer:
     deactivation_notification:
       subject: '[IPS] Account deactivated'
-  company_legal_name: IPS Software, Ltd.
+  company_legal_name: Finx Software Technology Inc.
 
   lender:
     warnings:

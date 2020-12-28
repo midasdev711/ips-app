@@ -2,12 +2,18 @@ $bg-color: #5d2100;
 
 .landing {
   width: 100%;
-  min-width: auto;
+  flex-flow: column;
   height: 100%;
   position: relative;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
   color: white;
   background-color: $bg-color;
+
+  .alert-box {
+    width: 100%;
+  }
 
   &:after {
     content: "";
@@ -21,99 +27,111 @@ $bg-color: #5d2100;
     //opacity: 0.45;
   }
 
-  .logo, .sub-nav, footer {
-    padding: $column-gutter;
+  .landing-page-content {
+    flex: 1 1 auto;
+    max-width: 1400px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-    @media #{$small-only} {
-      padding-left: $column-gutter/2;
-    }
-  }
-
-  .logo {
-    width: 18rem;
-    height: 9rem;
-  }
-
-  a {
-    color: inherit;
-    transition: all 0.3s ease-out;
-
-    &:hover {
-      opacity: 0.5;
-    }
-  }
-
-  .form {
-    margin-top: auto;
-    margin-bottom: auto;
-    color: white;
-
-    input[type="text"], input[type="email"], input[type="password"] {
-      height: rem-calc(50);
-      padding: 0 rem-calc(20);
-      color: inherit;
-      background-color: rgba($bg-color, 0.5);
-      border-color: white;
-      font-size: rem-calc(16);
-
-      &:focus {
-        background-color: rgba($bg-color, 0.75);
+    .logo, .sub-nav, footer {
+      padding: $column-gutter;
+  
+      @media #{$small-only} {
+        padding-left: $column-gutter/2;
       }
-
-      &::placeholder {
+    }
+  
+    .logo {
+      width: 24rem;
+      height: 11rem;
+      margin-top: 5rem;
+    }
+  
+    a {
+      color: inherit;
+      transition: all 0.3s ease-out;
+  
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+  
+    .form {
+      margin-top: auto;
+      margin-bottom: auto;
+      color: white;
+  
+      input[type="text"], input[type="email"], input[type="password"] {
+        height: rem-calc(50);
+        padding: 0 rem-calc(20);
+        color: inherit;
+        background-color: rgba($bg-color, 0.5);
+        border-color: white;
+        font-size: rem-calc(16);
+  
+        &:focus {
+          background-color: rgba($bg-color, 0.75);
+        }
+  
+        &::placeholder {
+          color: inherit;
+        }
+      }
+  
+      label {
+        font-size: rem-calc(14);
         color: inherit;
       }
-    }
-
-    label {
-      font-size: rem-calc(14);
-      color: inherit;
-    }
-
-    .button {
-      width: 100%;
-      border: 2px solid #fff;
-      border-radius: 0;
-      background-color: #1b81c1;
-      transition-duration: 200ms;
-
-      &:hover {
-        background-color: #f45914;
+  
+      .button {
+        width: 100%;
+        border: 2px solid #fff;
+        border-radius: 0;
+        background-color: #1b81c1;
+        transition-duration: 200ms;
+  
+        &:hover {
+          background-color: #f45914;
+        }
       }
     }
-  }
-
-  .remember {
-    margin-left: rem-calc(20);
-    margin-bottom: rem-calc(20);
-  }
-
-  .forgot {
-    display: block;
-    font-size: rem-calc(14);
-    text-align: center;
-  }
-
-  .sub-nav {
-    margin: 0;
-    //padding-top: 0;
-
-    li {
-      display: inline-block;
-      padding-left: 0;
-      list-style: none;
-      font-weight: bold;
-
-      &:not(:last-child):after {
-        content: " •";
-        opacity: 0.5;
+  
+    .remember {
+      margin-left: rem-calc(20);
+      margin-bottom: rem-calc(20);
+    }
+  
+    .forgot {
+      display: block;
+      font-size: rem-calc(14);
+      text-align: center;
+    }
+  
+    .sub-nav {
+      margin: 0;
+      //padding-top: 0;
+  
+      li {
+        display: inline-block;
+        padding-left: 0;
+        list-style: none;
+        font-weight: bold;
+  
+        &:not(:last-child):after {
+          content: " •";
+          opacity: 0.5;
+        }
       }
     }
   }
 
   footer {
-    padding-top: 0;
+    padding: 10px 30px;
     font-size: rem-calc(14);
+    max-width: 1400px;
+    width: 90%;
 
     .row {
       width: auto;

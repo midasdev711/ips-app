@@ -10,16 +10,31 @@
         cursor: pointer;
         position: relative;
         //min-height: 300px;
+        display: flex;
+
+        .title {
+            padding: 20px;
+            font-size: 17px;
+            line-height: 1.6;
+            font-weight: bold;
+            display: flex;
+            p {
+                font-size: 17px;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+        }
 
         img {
             box-sizing: border-box;
+            width: 250px;
         }
         
         .buttons {
             background-color: #E65100;
             position: absolute;
-            top: 40px;
-            left: calc(50% - 30px);
+            top: 55px;
+            left: 95px;
             display: none;
             width: 60px;
             height: 30px;

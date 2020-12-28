@@ -1,17 +1,19 @@
-= image_tag 'ips-logo-white', class: 'logo'
+.landing-page-content
 
-.form.row
-  .medium-6.medium-centered.columns
-    = form_for :user, url: session_path(:user) do |f|
-      = f.text_field :email, label: false, placeholder: 'Email', autofocus: true
-      = f.password_field :password, label: false, placeholder: 'Password'
-      = f.check_box :remember_me, class: 'remember'
-      = f.submit 'Sign in', class: 'button'
+  = image_tag 'logo', class: 'logo'
 
-      = link_to "Forgot your password?", new_password_path(:user), class: 'forgot'
+  .form.row
+    .medium-6.medium-centered.columns
+      = form_for :user, url: session_path(:user) do |f|
+        = f.text_field :email, label: false, placeholder: 'Email', autofocus: true
+        = f.password_field :password, label: false, placeholder: 'Password'
+        = f.check_box :remember_me, class: 'remember'
+        = f.submit 'Sign in', class: 'button'
 
-%ul.sub-nav
-  %li
-    = mail_to 'support@pieoneers.com', 'Support'
-  %li
-    = link_to 'Legal info', '/IPS%20Software%20Services%20Terms%20and%20Conditions.pdf'
+        = link_to "Forgot your password?", new_password_path(:user), class: 'forgot'
+
+  %ul.sub-nav
+    %li
+      = mail_to 'support@pieoneers.com', 'Support'
+    %li
+      = link_to 'Legal info', '/IPS%20Software%20Services%20Terms%20and%20Conditions.pdf'
