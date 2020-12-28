@@ -26,7 +26,6 @@
           <div class="medium-8 columns">
             <p><%= t :company_legal_name %>, Vancouver, BC, Canada</p>
             <p>
-              <span><%= mail_to 'info@finx.ca' %></span>
               <% if user_signed_in? %>
                 <span><%= link_to('Logout', destroy_user_session_path, :method => :delete) %></span>
               <% end %>
@@ -34,12 +33,55 @@
             <p>FinX Software Solutions</p>
           </div>
           <div class="medium-2 columns">
-              <p class="right">
-                Software <br> Patent pending
-              </p>
           </div>
         </div>
       </div>
     </footer>
+    <div class="bottom-row">
+      <div class="item">
+          <img src="/assets/patent-system.svg" class="icon">
+          <p>Patent System</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/increases-profit.svg" class="icon">
+          <p>Increases Profit Per Unit</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/increases-product-penetrations.svg" class="icon">
+          <p>Increases Product Penetrations</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/buy-down-interest-rates.svg" class="icon">
+          <p>Buy Down Interest Rate</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/recapture.svg" class="icon">
+          <p>Recapture Lost Dealer Reserve</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/finance-training.svg" class="icon">
+          <p>Finance Training &amp; Support</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/increases-cash-conversions.svg" class="icon">
+          <p>Increases Cash Conversions</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/beats-lines-of-credit-rates.svg" class="icon">
+          <p>Beats Lines of Credit Rates</p>
+      </div>
+
+      <div class="item">
+          <img src="/assets/low-pressure-sales-tactics.svg" class="icon">
+          <p>Low Pressure Sales Tactics</p>
+      </div>
+    </div>
   </body>
 </html>
