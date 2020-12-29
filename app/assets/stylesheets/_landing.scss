@@ -46,7 +46,6 @@ $bg-color: #5d2100;
     .logo {
       width: 24rem;
       height: 11rem;
-      margin-top: 3rem;
     }
   
     a {
@@ -79,7 +78,7 @@ $bg-color: #5d2100;
           color: #ff590a;
           font-size: 23px;
           text-transform: uppercase;
-          margin-top: 20px;
+          // margin-top: 20px;
         }
       }
 
@@ -189,7 +188,7 @@ $bg-color: #5d2100;
     width: 100%;
     background-color: black;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 5px;
     .bottom-row {
       max-width: 1400px;
       width: 90%;
