@@ -28,7 +28,7 @@ body {
     footer {
       margin-top: auto;
       padding: rem-calc(15) 0;
-      background-color: $smoke;
+      background-color: #757575;
       font-size: rem-calc(12);
       color: $base;
 
@@ -40,6 +40,11 @@ body {
       p {
         margin-bottom: 0;
         font-size: inherit;
+        color: white;
+
+        a {
+          color: red;
+        }
 
         span:not(:last-of-type) {
           &:after {
