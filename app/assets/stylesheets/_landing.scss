@@ -235,11 +235,16 @@ $bg-color: #5d2100;
 }
 
 @media (max-width: 750px) {
+  .logo {
+    margin: 1rem auto!important;
+  }
+
   .bottom-row {
     flex-wrap: wrap;
     .item {
-      max-width: 100px;
-      min-width: 100px;
+      max-width: 95px!important;
+      min-width: 95px!important;
+      padding: 10px!important;
     }
   }
 
@@ -247,6 +252,13 @@ $bg-color: #5d2100;
     flex-wrap: wrap!important;
     .form-text {
       width: 100%!important;
+      h2 {
+        font-size: 25px!important;
+      }
+      
+      h3 {
+        font-size: 11px!important;
+      }
     }
     .form-fields {
       margin-top: 30px;
