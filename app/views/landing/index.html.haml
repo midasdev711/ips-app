@@ -2,8 +2,13 @@
 
   = image_tag 'logo', class: 'logo'
 
-  .form.row
-    .medium-6.medium-centered.columns
+  .form
+    .form-text
+      %h2 A Brave New Way to
+      %h2 Boost Your Auto-financing
+      %h2 & Aftermarket Profits
+      %h3 WITH OUR CUSTOM FINANCE MENU SELLING SOFTWARE
+    .form-fields
       = form_for :user, url: session_path(:user) do |f|
         = f.text_field :email, label: false, placeholder: 'Email', autofocus: true
         = f.password_field :password, label: false, placeholder: 'Password'
@@ -14,6 +19,6 @@
 
   %ul.sub-nav
     %li
-      = mail_to 'support@pieoneers.com', 'Support'
+      = mail_to 'info@finx.ca', 'Support'
     %li
       = link_to 'Legal info', '/IPS%20Software%20Services%20Terms%20and%20Conditions.pdf'

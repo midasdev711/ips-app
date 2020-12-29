@@ -57,18 +57,46 @@ $bg-color: #5d2100;
         opacity: 0.5;
       }
     }
-  
+
     .form {
       margin-top: auto;
       margin-bottom: auto;
       color: white;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 30px;
+
+      .form-text {
+        width: 60%;
+        h2 {
+          font-size: 55px;
+          font-weight: 800;
+          float: left;
+          clear: both;
+          line-height: 1.2;
+          color: white;
+        }
+    
+        h3 {
+          color: #ff590a;
+          font-size: 23px;
+          text-transform: uppercase;
+          float: left;
+          clear: both;
+          margin-top: 20px;
+        }
+      }
+
+      .form-fields {
+        width: 30%;
+      }
   
       input[type="text"], input[type="email"], input[type="password"] {
         height: rem-calc(50);
         padding: 0 rem-calc(20);
         color: inherit;
         background-color: rgba($bg-color, 0.5);
-        border-color: white;
+        border-color: #E65100;
         font-size: rem-calc(16);
   
         &:focus {
@@ -87,7 +115,7 @@ $bg-color: #5d2100;
   
       .button {
         width: 100%;
-        border: 2px solid #fff;
+        border: 2px solid #E65100;
         border-radius: 0;
         background-color: #1b81c1;
         transition-duration: 200ms;
@@ -161,15 +189,25 @@ $bg-color: #5d2100;
     }
   }
 
-  .bottom-row {
-    max-width: 1400px;
-    width: 90%;
-    display: flex;
-    justify-content: space-around;
-    .item {
-      flex: 1 1 0px;
-      padding: 20px;
-      text-align: center;
+  .bottom {
+    width: 100%;
+    background-color: black;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    .bottom-row {
+      max-width: 1400px;
+      width: 90%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      
+      .item {
+        flex: 1 1 0px;
+        max-width: 100px;
+        min-width: 100px;
+        padding: 5px;
+        text-align: center;
+      }
     }
   }
 }
@@ -182,6 +220,18 @@ $bg-color: #5d2100;
       }
     }
   }
+
+  .form {
+    .form-text {
+      h2 {
+        font-size: 35px!important;
+      }
+      
+      h3 {
+        font-size: 17px!important;
+      }
+    }
+  }
 }
 
 @media (max-width: 750px) {
@@ -190,6 +240,17 @@ $bg-color: #5d2100;
     .item {
       max-width: 100px;
       min-width: 100px;
+    }
+  }
+
+  .form {
+    flex-wrap: wrap!important;
+    .form-text {
+      width: 90%!important;
+    }
+    .form-fields {
+      margin-top: 30px;
+      width: 90%!important;
     }
   }
 }
