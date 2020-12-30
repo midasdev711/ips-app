@@ -230,6 +230,10 @@ $bg-color: #5d2100;
 }
 
 @media (max-width: 750px) {
+  .landing-page-content {
+    min-height: 700px!important;
+  }
+
   .logo {
     margin: 1rem auto!important;
   }
