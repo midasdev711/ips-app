@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   devise :authenticatable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :dealership
+  has_many :login_activities, as: :user # use :user no matter what your model name
   has_many :deals, dependent: :destroy
   has_many :clients, through: :deals, dependent: :destroy
   has_one :product_list, as: :listable, dependent: :destroy

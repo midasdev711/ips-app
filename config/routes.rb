@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
     resources :video
 
+    resources :activitylogs
+
     resources :dealerships do
       resource :product_list, only: [:edit, :update]
 

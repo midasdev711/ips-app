@@ -40,6 +40,8 @@ gem 'therubyracer'
 # Postmark for email delivery
 gem 'postmark-rails', '~> 0.14.0'
 
+gem 'authtrail'
+
 group :development do
   gem 'letter_opener'
 end

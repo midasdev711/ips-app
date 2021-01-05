@@ -1,0 +1,21 @@
+.container
+    %nav
+        .row
+            .columns
+                %ul.breadcrumbs
+                    %li= link_to 'Back', :back
+    %main
+        .row.page-content
+            .medium-12.columns
+                %table
+                    %thead
+                        %tr
+                            %th Email
+                            %th Logined at
+                    %tbody
+                        - @listable.each do |item|
+                            %tr
+                                %td 
+                                    %span= item["identity"]
+                                %td 
+                                    %span= item["created_at"]
