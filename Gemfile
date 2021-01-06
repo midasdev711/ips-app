@@ -41,6 +41,7 @@ gem 'therubyracer'
 gem 'postmark-rails', '~> 0.14.0'
 
 gem 'authtrail'
+gem 'devise_security_extension'
 
 group :development do
   gem 'letter_opener'
