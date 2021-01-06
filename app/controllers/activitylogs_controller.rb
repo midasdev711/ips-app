@@ -1,7 +1,7 @@
 class ActivitylogsController < ApplicationController
   before_filter :authorize_admin, only: :index
   def index
-    @listable = LoginActivity.all()
+    @listable = LoginActivity.where(success: 'true')
   end
 
   private

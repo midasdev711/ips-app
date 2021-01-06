@@ -7,10 +7,11 @@
     %main
         .row.page-content
             .medium-12.columns
-                %table
+                %table.logs
                     %thead
                         %tr
                             %th Email
+                            %th IP Address
                             %th Logined at
                     %tbody
                         - @listable.each do |item|
@@ -18,4 +19,6 @@
                                 %td 
                                     %span= item["identity"]
                                 %td 
-                                    %span= item["created_at"]
+                                    %span= item["ip"]
+                                %td 
+                                    %span= item["created_at"].in_time_zone("Pacific Time (US & Canada)")
