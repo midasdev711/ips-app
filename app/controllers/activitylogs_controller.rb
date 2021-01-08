@@ -1,14 +1,13 @@
 class ActivitylogsController < ApplicationController
   before_filter :authorize_admin, only: :index
   def index
-    @listable = User.where.not(unique_session_id: nil)
+    @listable = User.where("unique_session_id IS NOT ? AND force_logout = ?", nil, false)
   end
 
   def force_logout
     p "------------- force_logout ------------"
     admin = User.find(params[:id])
     admin.update_column(:force_logout, true)
-    admin.update_column(:unique_session_id, nil)
     redirect_to activitylogs_path
   end
 
