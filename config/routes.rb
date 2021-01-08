@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  devise_for :users
+  devise_for :users, controllers: { sessions: 'sessions'}
 
   authenticate :user do
     resource :product_list, only: [:edit, :update]
@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     resources :video
 
     resources :activitylogs
+
+    get 'user/forceout/:id', :to => 'activitylogs#force_logout'
 
     resources :dealerships do
       resource :product_list, only: [:edit, :update]

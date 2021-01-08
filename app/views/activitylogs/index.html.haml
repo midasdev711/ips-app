@@ -11,14 +11,20 @@
                     %thead
                         %tr
                             %th Email
-                            %th IP Address
+                            %th Name
                             %th Logined at
+                            %th Logined IP
+                            %th Action
                     %tbody
                         - @listable.each do |item|
                             %tr
                                 %td 
-                                    %span= item["identity"]
+                                    %span= item["email"]
                                 %td 
-                                    %span= item["ip"]
+                                    %span= item["name"]
                                 %td 
-                                    %span= item["created_at"].in_time_zone("Pacific Time (US & Canada)")
+                                    %span= item["current_sign_in_at"].in_time_zone("Pacific Time (US & Canada)")
+                                %td 
+                                    %span= item["current_sign_in_ip"]
+                                %td
+                                    %a{:href => '/user/forceout/' + item["id"].to_s } Logout
