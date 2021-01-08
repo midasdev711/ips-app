@@ -11,12 +11,9 @@ class ApplicationController < ActionController::Base
 
   def check_force_logout
     if current_user && current_user.force_logout
-      byebug
       current_user.update_column(:force_logout, false)
       current_user.update_column(:unique_session_id, nil)
 
-      # redirect_to destroy_user_session_path
-      # SessionsController.destroy
       sign_out current_user
       redirect_to "/"
     end
