@@ -1,10 +1,10 @@
 class DealsController < ApplicationController
-  # load_and_authorize_resource
+  load_and_authorize_resource
 
   before_action :normalize_insurance_terms_params, only: :update
 
   def index
-    @deals = Deal.includes(:client)
+    @deals = @deals.includes(:client)
   end
 
   def new
