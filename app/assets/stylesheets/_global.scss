@@ -26,11 +26,13 @@ body {
     }
 
     footer {
-      margin-top: auto;
       padding: rem-calc(15) 0;
       background-color: black;
       font-size: rem-calc(12);
       color: $base;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
 
       .logo {
         width: 9em;
