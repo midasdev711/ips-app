@@ -78,7 +78,9 @@ $bg-color: #42A5F5;
       padding: 10px 30px;
 
       .form-text {
-        width: 59%;
+        width: 62%;
+        background: rgba(66, 165, 245, 0.5);
+        padding: 20px;
         h2 {
           font-size: 55px;
           font-weight: 800;
@@ -87,7 +89,7 @@ $bg-color: #42A5F5;
         }
     
         h3 {
-          color: #0D47A1;
+          color: white;
           font-size: 23px;
           text-transform: uppercase;
           // margin-top: 20px;
@@ -102,12 +104,13 @@ $bg-color: #42A5F5;
         height: rem-calc(50);
         padding: 0 rem-calc(20);
         color: inherit;
-        background-color: rgba($bg-color, 0.5);
+        background-color: #1b81c1;
         border-color: #0D47A1;
         font-size: rem-calc(16);
   
         &:focus {
-          background-color: rgba($bg-color, 0.75);
+          // background-color: #0D47A1;
+          // background-color: rgba($bg-color, 0.75);
         }
   
         &::placeholder {
