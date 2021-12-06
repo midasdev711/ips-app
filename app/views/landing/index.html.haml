@@ -4,9 +4,6 @@
   = image_tag 'FinxSoftware-LOGO-BLACK', class: 'logo-mobile'
 
   .form
-    .form-text
-      %h2 A Brave New Way to Boost Your Auto-financing & Aftermarket Profits
-      %h3 WITH OUR CUSTOM FINANCE MENU SELLING SOFTWARE
     .form-fields
       = form_for :user, url: session_path(:user) do |f|
         = f.text_field :email, label: false, placeholder: 'Email', autofocus: true

@@ -35,7 +35,7 @@ $bg-color: #42A5F5;
     width: 90%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
 
     .logo, .logo-mobile, .sub-nav, footer {
       padding: $column-gutter;
