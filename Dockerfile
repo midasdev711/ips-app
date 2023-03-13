@@ -15,7 +15,7 @@ WORKDIR /tmp/
 
 # wkhtmltopdf
 RUN FILE=wkhtmltox_0.12.6-1.xenial_amd64.deb \
-  && wget --user=midasdev711 --ask-password https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/$FILE \
+  && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/$FILE \
   && dpkg -i $FILE \
   && rm $FILE
 

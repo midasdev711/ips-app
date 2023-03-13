@@ -13,8 +13,8 @@ provinces:
   -
     name: "Manitoba"
     abbr: "MB"
-    gst: 0.07
-    pst: 0.08
+    gst: 0.05
+    pst: 0.07
   -
     name: "New Brunswick"
     abbr: "NB"
